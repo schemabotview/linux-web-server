@@ -23,11 +23,15 @@ are recorded (`first-login/03-ssh`, `04-commands`). The app is not scaffolded ye
 python3 scripts/base.py                       # the chain's first state, from the pinned images (~15 min)
 python3 scripts/record.py first-login/04-commands   # record a step from its parent's saved machine
 python3 scripts/record.py --check             # every step recorded, current, untouched — runs NOTHING
+python3 scripts/states.py pull <step>         # a fresh session: download the chain a step needs
+python3 scripts/states.py push <step>…        # after recording: upload states (needs RELEASE_TOKEN)
 zsh scripts/macos-capture.sh                  # the owner, once, on a Mac
 ```
 
 Needs `qemu-system-x86`, `qemu-utils`, `genisoimage`, `zstd`, and Python's `pexpect` and `pyte`
-(`scripts/requirements.txt`). States live in `.machine/` (never committed; release assets).
+(`scripts/requirements.txt`). States live in `.machine/` (never committed): release `states`, one
+asset per step. RELEASE_TOKEN is a fine-grained token for this repo only (Contents: read and write),
+set in the environment — never in a file or on a command line.
 
 ## The machine and the spine (details in `scripts/machine.py`, `record.py`, `SPIKE.md`)
 

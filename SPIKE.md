@@ -161,12 +161,10 @@ What part 2 found and decided:
 
 ## 10. Open
 
-- **Release assets cannot be uploaded from a cloud session** (no tool here creates a release or
-  uploads to one). Until they are, the states live only in the container that recorded them: a new
-  session re-records the chain from `base.py` (~15 min) and each step (~1 min) — the committed
-  transcripts are then re-recorded too, so fingerprints, PIDs and times change (scenes read those
-  from the session, never type them). Options: the owner uploads them from a session's container
-  via a one-off token, or a GitHub Actions workflow records and publishes them.
+- **Release assets need a token**: no tool in a cloud session creates a release. `scripts/states.py`
+  pushes and pulls them (release `states`, one asset per step, every file checked against
+  state.json and recorded.json); push needs RELEASE_TOKEN in the environment. The owner is adding
+  one (2026-10-29). Until a push, states live only in the container that recorded them.
 - graphl-flow 0.7.0 is on its branch, not on npm.
 - The macOS capture waits for the owner's run of `scripts/macos-capture.sh`.
 - Repo scaffold (vite + shell + graphl-flow 0.7), the console frame, the server map, checks.
