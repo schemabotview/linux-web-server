@@ -1,0 +1,22 @@
+{
+ "vm": "laptop",
+ "with": ["web-01"],
+ "setup": [
+  "su - ana -c \"ssh-keygen -q -t ed25519 -N '' -C ana@laptop -f ~/.ssh/id_ed25519 && ssh-keyscan -q -t ed25519 192.0.2.10 > ~/.ssh/known_hosts\" && cat ~ana/.ssh/id_ed25519.pub",
+  {"on": "web-01", "pipe": true, "run": "install -d -m 700 -o ana -g ana ~ana/.ssh && install -m 600 -o ana -g ana /dev/stdin ~ana/.ssh/authorized_keys"}
+ ],
+ "session": [
+  "ssh ana@192.0.2.10",
+  "sudo sshd -T | grep -E '^(passwordauth|permitroot|pubkeyauth)'",
+  "printf 'PasswordAuthentication no\\nPermitRootLogin no\\n' | sudo tee /etc/ssh/sshd_config.d/10-lockdown.conf",
+  "sudo sshd -t && echo config OK",
+  "sudo systemctl reload ssh",
+  "sudo sshd -T | grep -E '^(passwordauth|permitroot)'",
+  {"window": "second"},
+  "ssh -o PubkeyAuthentication=no ana@192.0.2.10",
+  "ssh ana@192.0.2.10",
+  "exit",
+  {"window": "main"},
+  "exit"
+ ]
+}

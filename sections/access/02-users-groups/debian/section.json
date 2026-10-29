@@ -1,0 +1,11 @@
+{
+ "vm": "web-01",
+ "session": [
+  "getent passwd ana",
+  "getent group sudo",
+  "sudo adduser --disabled-password --comment 'Site deploys' deploy",
+  "getent passwd deploy",
+  "id deploy",
+  "ls -l /home"
+ ]
+}

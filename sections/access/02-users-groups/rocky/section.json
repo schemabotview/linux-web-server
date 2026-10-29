@@ -1,0 +1,9 @@
+{
+ "vm": "web-02",
+ "session": [
+  "sudo useradd --comment 'Site deploys' deploy",
+  "getent passwd deploy",
+  "id deploy",
+  "ls -l /home"
+ ]
+}

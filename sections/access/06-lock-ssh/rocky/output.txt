@@ -1,0 +1,19 @@
+[ana@web-02 ~]$ systemctl is-active sshd
+active
+[ana@web-02 ~]$ sudo ls /etc/ssh/sshd_config.d
+
+We trust you have received the usual lecture from the local System
+Administrator. It usually boils down to these three things:
+
+    #1) Respect the privacy of others.
+    #2) Think before you type.
+    #3) With great power comes great responsibility.
+
+For security reasons, the password you type will not be visible.
+
+[sudo] password for ana:
+40-redhat-crypto-policies.conf  50-cloud-init.conf  50-redhat.conf
+[ana@web-02 ~]$ sudo sshd -T | grep -E '^(passwordauth|permitroot)'
+permitrootlogin without-password
+passwordauthentication yes
+[ana@web-02 ~]$

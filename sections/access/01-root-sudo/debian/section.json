@@ -1,0 +1,11 @@
+{
+ "vm": "web-01",
+ "session": [
+  "id",
+  "cat /etc/shadow",
+  "sudo head -n 1 /etc/shadow",
+  "sudo whoami",
+  "sudo -l",
+  "sudo journalctl -q --no-pager -o cat _COMM=sudo -g COMMAND"
+ ]
+}

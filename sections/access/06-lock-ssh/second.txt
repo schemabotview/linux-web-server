@@ -1,0 +1,17 @@
+ana@laptop:~$ ssh -o PubkeyAuthentication=no ana@192.0.2.10
+ana@192.0.2.10: Permission denied (publickey).
+ana@laptop:~$ ssh ana@192.0.2.10
+Linux web-01 6.12.113+deb13-cloud-amd64 #1 SMP PREEMPT_DYNAMIC Debian 6.12.113-1
+ (2026-10-15) x86_64
+
+The programs included with the Debian GNU/Linux system are free software;
+the exact distribution terms for each program are described in the
+individual files in /usr/share/doc/*/copyright.
+
+Debian GNU/Linux comes with ABSOLUTELY NO WARRANTY, to the extent
+permitted by applicable law.
+Last login: Mon Nov  2 09:11:33 2026 from 192.0.2.1
+ana@web-01:~$ exit
+logout
+Connection to 192.0.2.10 closed.
+ana@laptop:~$

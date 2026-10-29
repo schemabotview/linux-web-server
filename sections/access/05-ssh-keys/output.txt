@@ -1,0 +1,69 @@
+ana@laptop:~$ ls -la ~/.ssh
+ls: cannot access '/home/ana/.ssh': No such file or directory
+ana@laptop:~$ ssh-keygen -t ed25519 -C ana@laptop
+Generating public/private ed25519 key pair.
+Enter file in which to save the key (/home/ana/.ssh/id_ed25519):
+Created directory '/home/ana/.ssh'.
+Enter passphrase for "/home/ana/.ssh/id_ed25519" (empty for no passphrase):
+Enter same passphrase again:
+Your identification has been saved in /home/ana/.ssh/id_ed25519
+Your public key has been saved in /home/ana/.ssh/id_ed25519.pub
+The key fingerprint is:
+SHA256:APFudhy0VxNN33+DwM8BDdlcNFBm090m6DqKRSXhf/Y ana@laptop
+The key's randomart image is:
++--[ED25519 256]--+
+|    o.  o. oX**O+|
+|     o o..ooo==.O|
+|      o +o.+ . oo|
+|     . o.+  = o .|
+|      +.S ..o+ .o|
+|     o .. oo .  o|
+|       o . .  E  |
+|      . .        |
+|                 |
++----[SHA256]-----+
+ana@laptop:~$ ls -l ~/.ssh
+total 8
+-rw------- 1 ana ana 399 Nov  2 09:09 id_ed25519
+-rw-r--r-- 1 ana ana  92 Nov  2 09:09 id_ed25519.pub
+ana@laptop:~$ cat ~/.ssh/id_ed25519.pub
+ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINLlKJVDqfMRODSkvJfQSN4i2BBS9lMkJr3p5TpcJkeW
+ ana@laptop
+ana@laptop:~$ ssh-copy-id ana@192.0.2.10
+/usr/bin/ssh-copy-id: INFO: Source of key(s) to be installed: "/home/ana/.ssh/id
+_ed25519.pub"
+The authenticity of host '192.0.2.10 (192.0.2.10)' can't be established.
+ED25519 key fingerprint is SHA256:JRO8K7PaWaYM6n76C3VzcqJb2NvHlgb4o1kUzCuPY+Q.
+This key is not known by any other names.
+Are you sure you want to continue connecting (yes/no/[fingerprint])? yes
+/usr/bin/ssh-copy-id: INFO: attempting to log in with the new key(s), to filter
+out any that are already installed
+/usr/bin/ssh-copy-id: INFO: 1 key(s) remain to be installed -- if you are prompt
+ed now it is to install the new keys
+ana@192.0.2.10's password:
+
+Number of key(s) added: 1
+
+Now try logging into the machine, with: "ssh 'ana@192.0.2.10'"
+and check to make sure that only the key(s) you wanted were added.
+
+ana@laptop:~$ ssh ana@192.0.2.10
+Linux web-01 6.12.113+deb13-cloud-amd64 #1 SMP PREEMPT_DYNAMIC Debian 6.12.113-1
+ (2026-10-15) x86_64
+
+The programs included with the Debian GNU/Linux system are free software;
+the exact distribution terms for each program are described in the
+individual files in /usr/share/doc/*/copyright.
+
+Debian GNU/Linux comes with ABSOLUTELY NO WARRANTY, to the extent
+permitted by applicable law.
+ana@web-01:~$ cat ~/.ssh/authorized_keys
+ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINLlKJVDqfMRODSkvJfQSN4i2BBS9lMkJr3p5TpcJkeW
+ ana@laptop
+ana@web-01:~$ ls -ld ~/.ssh ~/.ssh/authorized_keys
+drwx------ 2 ana ana 4096 Nov  2 09:11 /home/ana/.ssh
+-rw------- 1 ana ana   92 Nov  2 09:11 /home/ana/.ssh/authorized_keys
+ana@web-01:~$ exit
+logout
+Connection to 192.0.2.10 closed.
+ana@laptop:~$

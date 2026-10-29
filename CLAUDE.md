@@ -15,13 +15,13 @@ Change it first; never drift from it.
 ## Status
 
 Plan agreed 2026-10-29. The simulator works (`scripts/sim.py`): one real VM, commands in, real
-output out. Course 1 (`first-login`) 02–07 are authored and captured; 01 comes last. The app
-is not scaffolded yet.
+output out. Courses 1 (`first-login`, 02–07; 01 comes last) and 2 (`access`) are authored and
+captured. The app is not scaffolded yet.
 
 ## Commands
 
 ```sh
-python3 scripts/sim.py up [web-01|web-02]        # start the VM (first time: build it, ~2–5 min)
+python3 scripts/sim.py up [web-01|web-02|laptop] # start a VM (first time: build it, ~2–5 min)
 python3 scripts/sim.py run first-login/04-commands   # capture a section's real output
 python3 scripts/sim.py sh web-01 'ls -l /etc'    # one command as ana, real output (quick checks)
 python3 scripts/sim.py down                      # stop the VMs
@@ -41,6 +41,14 @@ Needs `qemu-system-x86`, `qemu-utils`, `genisoimage`, `openssh-client`, and Pyth
 - `sections/<course>/<NN-id>/section.json` = `vm` + `setup` + `session` (commands; `answer` for
   prompts — `@password` is never echoed; `tty` for a full-screen program). Output beside it:
   `output.txt` (the 80 × 44 terminal, row for row) and `<name>.tty.json`.
+- `laptop` (Debian 13, 192.0.2.100) is Ana's laptop: from it, `ssh ana@192.0.2.10` reaches the real
+  web-01 (and .20 web-02). A section on the laptop names its servers in `with`; `setup` steps can
+  run `on` another VM, `pipe` passes one step's output to the next (a key made on the laptop, put on
+  web-01); `{"window": "second"}` opens a second terminal (`second.txt`), as §2.6 tests a lockdown.
+- Each VM has its own network, so a server sees the laptop's logins as coming from 192.0.2.1
+  (`Last login: … from 192.0.2.1`, `who`, auth logs). Scenes and narration never quote that address.
+- A command that does not return in 5 minutes fails with the screen it is stuck on (a pager:
+  `journalctl` needs `--no-pager`, or a `tty` item).
 - `first-login/03-ssh` was captured by the earlier recorder (ssh from a laptop VM); it has no
   session to run.
 

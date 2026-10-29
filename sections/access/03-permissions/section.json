@@ -1,0 +1,11 @@
+{
+ "vm": "web-01",
+ "session": [
+  "ls -l /etc/hostname /etc/shadow",
+  "cat /etc/hostname",
+  "cat /etc/shadow",
+  "echo web-03 > /etc/hostname",
+  "ls -ld /etc /root",
+  "ls /root"
+ ]
+}

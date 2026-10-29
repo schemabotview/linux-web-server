@@ -1,0 +1,21 @@
+{
+ "vm": "web-01",
+ "setup": [
+  "adduser --quiet --disabled-password --comment 'Site deploys' deploy"
+ ],
+ "session": [
+  "umask",
+  "sudo mkdir -p /var/www/ana.example",
+  "ls -ld /var/www/ana.example",
+  "sudo chown deploy:deploy /var/www/ana.example",
+  "ls -ld /var/www/ana.example",
+  "sudo -u deploy sh -c 'echo \"<h1>ana.example</h1>\" > /var/www/ana.example/index.html'",
+  "ls -l /var/www/ana.example",
+  "touch /var/www/ana.example/notes.txt",
+  "sudo chmod 640 /var/www/ana.example/index.html",
+  "ls -l /var/www/ana.example",
+  "cat /var/www/ana.example/index.html",
+  "sudo chmod 644 /var/www/ana.example/index.html",
+  "cat /var/www/ana.example/index.html"
+ ]
+}

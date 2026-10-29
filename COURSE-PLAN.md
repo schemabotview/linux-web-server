@@ -135,8 +135,9 @@ So every server is a real VM, and the simulator (`scripts/sim.py`) gives real ou
 - Labelled stand-ins: HTTPS uses **real certbot against a local ACME CA** (Pebble), labelled as
   standing in for Let's Encrypt, because `ana.example` is not on public DNS. Firmware and GRUB are
   this VM's own, labelled "a VM".
-- Sections that need a second machine (keys from the laptop §2.5, `rsync` §5.2, backups §7.3, the
-  local CA §5.7) are set up when they are authored; the simulator does not run them yet.
+- **`laptop`**: a Debian 13 VM standing in for Ana's laptop (keys §2.5–2.6, `rsync` §5.2, backups
+  §7.3); from it, `ssh ana@192.0.2.10` reaches the real web-01. The macOS differences come from the
+  owner's capture. The local ACME CA (§5.7) is set up when that section is authored.
 
 ## Facts (frozen once a frame quotes them)
 
@@ -144,7 +145,7 @@ So every server is a real VM, and the simulator (`scripts/sim.py`) gives real ou
 | --- | --- |
 | site | `ana.example` (static), web root `/var/www/ana.example` |
 | servers | `web-01` Debian 13 (192.0.2.10), `web-02` Rocky Linux 10 (192.0.2.20) |
-| laptop | `laptop` (192.0.2.100); macOS capture from the owner's Mac |
+| laptop | `laptop` (192.0.2.100), a VM; macOS capture from the owner's Mac |
 | people | `ana` (admin: `sudo` / `wheel`), `deploy` (owns the web root, no sudo) |
 | first login | `ssh ana@192.0.2.10`, the provider's password (password logins on, no key until §2.5) |
 | Ana's terminal | 80 × 44, logged in as `ana` on the section's server |

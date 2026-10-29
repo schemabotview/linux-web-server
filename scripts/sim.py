@@ -8,22 +8,27 @@
 
 web-01 is Debian 13, web-02 Rocky Linux 10, both from the official cloud images pinned below, under
 QEMU. The first `up` boots the image, sets it up with cloud-init as a fresh VPS (user `ana` with the
-provider's password, in sudo/wheel) and saves a snapshot, `fresh`. Every `run` starts from `fresh`,
+provider's password; sudo through the sudo/wheel group) and saves a snapshot, `fresh`. Every `run` starts from `fresh`,
 so a section never depends on what ran before it.
 
 A section is sections/<course>/<NN-id>/section.json:
 
   {"vm": "web-01",                          which VM (default web-01)
-   "setup": ["apt-get install -y nginx"],   run first, as root, OFF screen: what the section assumes
+   "with": ["web-01"],                      other VMs the section uses, reset with it (the laptop's servers)
+   "setup": ["apt-get install -y nginx",    run first, as root, OFF screen: what the section assumes;
+             {"on": "web-01", "run": "…",     on another VM; "pipe": true feeds it the previous
+              "pipe": true}],                 step's output (a key made on the laptop, put on a server)
    "session": [                             typed in Ana's terminal (80 × 44), ON screen:
      "ls -l",                                 a command; done when the prompt comes back
      {"type": "sudo passwd ana",              a command that asks: answers are typed (echoed)
       "answer": [["password: $", "@password"]]},   @password: the provider's, never echoed
      {"tty": "man ls", "after": 4,            a full-screen program: its screen after N seconds
-      "quit": "q", "name": "man-ls"}            into <name>.tty.json, then quit it
-   ]}
+      "quit": "q", "name": "man-ls"},           into <name>.tty.json, then quit it
+     {"window": "second"}                     switch to (or open) another terminal on the same VM;
+   ]}                                         {"window": "main"} switches back
 
-Output beside it: output.txt (the terminal, row for row) and any <name>.tty.json. `[sudo] password`
+Output beside it: output.txt (the main terminal, row for row), <window>.txt for any other, and any
+<name>.tty.json. `[sudo] password`
 is always answered. Nothing here is a container: `uname`, `ip addr`, `lsblk`, the boot log are the VM's.
 """
 from __future__ import annotations
@@ -62,6 +67,7 @@ IMAGE = {
 VMS = {
     'web-01': {'image': 'debian', 'ip': '192.0.2.10', 'port': 2210},
     'web-02': {'image': 'rocky', 'ip': '192.0.2.20', 'port': 2220},
+    'laptop': {'image': 'debian', 'ip': '192.0.2.100', 'port': 2300},   # Ana's laptop: ssh reaches the servers
 }
 # Debian: ana@web-01:~$   Red Hat: [ana@web-02 ~]$   root: # in both
 PROMPT = re.compile(rb'(?:\S+@[\w.-]+:[^\r\n]*|\[\S+@[\w.-]+ [^\]\r\n]*\])[$#] $')
@@ -112,7 +118,7 @@ def user_data(name: str) -> str:
     cas = ''.join('    - |\n' + ''.join(f'      {line}\n' for line in pem.splitlines()) for pem in egress_cas())
     return (f'#cloud-config\nhostname: {name}\nfqdn: {name}\n'
             f'users:\n  - name: ana\n    shell: /bin/bash\n    groups: [{"wheel" if rocky else "sudo"}]\n'
-            f'    sudo: "ALL=(ALL) ALL"\n    lock_passwd: false\n'
+            f'    lock_passwd: false\n'
             f'ssh_pwauth: true\nchpasswd:\n  expire: false\n  users:\n    - {{name: ana, password: "{PASSWORD}", type: text}}\n'
             f'disable_root: false\nssh_authorized_keys: ["{pub}"]\n'
             + (f'ca_certs:\n  trusted:\n{cas}' if cas else '')
@@ -137,6 +143,10 @@ class VM:
     def start(self, extra: list[str]) -> None:
         net = (f'user,id=net,net=192.0.2.0/24,host=192.0.2.1,dhcpstart={self.spec["ip"]},'
                f'hostfwd=tcp:127.0.0.1:{self.spec["port"]}-:22')
+        if self.name == 'laptop':
+            # Each VM has its own network; from the laptop, a server's address:22 is that server's sshd.
+            net += ''.join(f',guestfwd=tcp:{v["ip"]}:22-cmd:socat - TCP:127.0.0.1:{v["port"]}'
+                           for n, v in VMS.items() if n != 'laptop')
         self.mon.unlink(missing_ok=True)
         subprocess.Popen(
             ['qemu-system-x86_64', '-nodefaults', '-vga', 'std', '-accel', 'tcg,thread=multi', '-cpu', 'max',
@@ -205,12 +215,17 @@ class VM:
                 raise SystemExit(f'{self.name}: cloud-init did not finish (see {log})')
             time.sleep(5)
         self.wait_ssh()
+        self.settle()
         # The seed goes before the snapshot: a snapshot needs every disk writable, and a VPS has one disk.
         self.hmp('device_del seedblk')
         while 'seedblk' in self.hmp('info pci') or 'seed' in self.hmp('info block'):
             time.sleep(1)
         self.hmp('savevm fresh')
         print(f'{self.name}: built and saved as `fresh` ({time.time() - t0:.0f}s)', flush=True)
+
+    def settle(self) -> None:
+        """What a fresh VPS has that cloud-init leaves different: no ~/.ssh until something makes one."""
+        sh(*self.ssh(), 'rm -rf /home/ana/.ssh && sync')
 
     def up(self) -> None:
         if self.running():
@@ -250,7 +265,7 @@ class Terminal:
             return b''
 
     def wait(self, answers: list[tuple[re.Pattern, str]], keep: bool = True) -> None:
-        buf, deadline = bytearray(), time.time() + 1800
+        buf, deadline = bytearray(), time.time() + 300
         while time.time() < deadline:
             chunk = self.read(1)
             if not chunk:
@@ -270,7 +285,7 @@ class Terminal:
                     buf.clear()
                     answers = [a for a in answers if a[0] is not pat]
                     break
-        raise SystemExit('no prompt after 30 minutes')
+        raise SystemExit(f'no prompt after 5 minutes; the screen ends with:\n{bytes(buf[-400:]).decode(errors="replace")}')
 
     def run(self, item: str | dict, out: Path) -> None:
         if isinstance(item, str):
@@ -335,18 +350,31 @@ def run(section: str) -> None:
     if 'session' not in spec:
         raise SystemExit(f'{section}: nothing to run — {spec.get("captured", "no session")}')
     vm = VM(spec.get('vm', 'web-01'))
-    vm.up()
-    vm.reset()
+    vms = {vm.name: vm, **{n: VM(n) for n in spec.get('with', [])}}
+    for v in vms.values():
+        v.up()
+        v.reset()
     t0 = time.time()
-    for line in spec.get('setup', []):
-        r = subprocess.run(vm.ssh() + [line], capture_output=True, text=True)
+    prev = ''
+    for step in spec.get('setup', []):
+        step = {'run': step} if isinstance(step, str) else step
+        r = subprocess.run(vms[step.get('on', vm.name)].ssh() + [step['run']], capture_output=True, text=True,
+                           input=prev if step.get('pipe') else None)
         if r.returncode:
-            raise SystemExit(f'setup failed: {line}\n{r.stdout}{r.stderr}')
-    term = Terminal(vm)
+            raise SystemExit(f'setup failed: {step["run"]}\n{r.stdout}{r.stderr}')
+        prev = r.stdout
+    windows = {'main': Terminal(vm)}
+    term = windows['main']
     for item in spec['session']:
+        if isinstance(item, dict) and 'window' in item:
+            if item['window'] not in windows:
+                windows[item['window']] = Terminal(vm)
+            term = windows[item['window']]
+            continue
         term.run(item, out)
-    term.child.close()
-    (out / 'output.txt').write_text(term.output())
+    for name, t in windows.items():
+        t.child.close()
+        (out / ('output.txt' if name == 'main' else f'{name}.txt')).write_text(t.output())
     print(f'{section}: {out / "output.txt"} ({time.time() - t0:.0f}s)')
 
 

@@ -1,0 +1,30 @@
+ana@laptop:~$ ssh ana@192.0.2.10
+Linux web-01 6.12.113+deb13-cloud-amd64 #1 SMP PREEMPT_DYNAMIC Debian 6.12.113-1
+ (2026-10-15) x86_64
+
+The programs included with the Debian GNU/Linux system are free software;
+the exact distribution terms for each program are described in the
+individual files in /usr/share/doc/*/copyright.
+
+Debian GNU/Linux comes with ABSOLUTELY NO WARRANTY, to the extent
+permitted by applicable law.
+ana@web-01:~$ sudo sshd -T | grep -E '^(passwordauth|permitroot|pubkeyauth)'
+[sudo] password for ana:
+permitrootlogin without-password
+pubkeyauthentication yes
+passwordauthentication yes
+pubkeyauthoptions none
+ana@web-01:~$ printf 'PasswordAuthentication no\nPermitRootLogin no\n' | sudo te
+e /etc/ssh/sshd_config.d/10-lockdown.conf
+PasswordAuthentication no
+PermitRootLogin no
+ana@web-01:~$ sudo sshd -t && echo config OK
+config OK
+ana@web-01:~$ sudo systemctl reload ssh
+ana@web-01:~$ sudo sshd -T | grep -E '^(passwordauth|permitroot)'
+permitrootlogin no
+passwordauthentication no
+ana@web-01:~$ exit
+logout
+Connection to 192.0.2.10 closed.
+ana@laptop:~$

@@ -21,11 +21,11 @@ oc/systemd/README.logs
 -rw-r-----  1 root adm             4.8K Nov  2 09:01 cloud-init-output.log
 -rw-r-----  1 root adm             110K Nov  2 09:01 cloud-init.log
 drwxr-sr-x+ 3 root systemd-journal 4.0K Nov  2 09:00 journal
--rw-rw-r--  1 root utmp            286K Nov  2 09:02 lastlog
+-rw-rw-r--  1 root utmp            286K Nov  2 09:12 lastlog
 drwx------  2 root root            4.0K Oct 26 04:58 private
 drwxr-xr-x  3 root root            4.0K Oct 26 04:58 runit
 drwxr-x---  2 root adm             4.0K Nov  2 09:01 unattended-upgrades
--rw-rw-r--  1 root utmp            1.2K Nov  2 09:02 wtmp
--rw-r--r--  1 root root            8.0K Nov  2 09:02 wtmp.db
+-rw-rw-r--  1 root utmp            1.2K Nov  2 09:12 wtmp
+-rw-r--r--  1 root root            8.0K Nov  2 09:12 wtmp.db
 ana@web-01:~$ man ls
 ana@web-01:~$

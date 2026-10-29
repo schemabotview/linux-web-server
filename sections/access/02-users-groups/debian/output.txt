@@ -1,0 +1,15 @@
+ana@web-01:~$ getent passwd ana
+ana:x:1000:1000::/home/ana:/bin/bash
+ana@web-01:~$ getent group sudo
+sudo:x:27:ana
+ana@web-01:~$ sudo adduser --disabled-password --comment 'Site deploys' deploy
+[sudo] password for ana:
+ana@web-01:~$ getent passwd deploy
+deploy:x:1001:1001:Site deploys:/home/deploy:/bin/bash
+ana@web-01:~$ id deploy
+uid=1001(deploy) gid=1001(deploy) groups=1001(deploy),100(users)
+ana@web-01:~$ ls -l /home
+total 8
+drwx------ 2 ana    ana    4096 Nov  2 09:10 ana
+drwx------ 2 deploy deploy 4096 Nov  2 09:10 deploy
+ana@web-01:~$

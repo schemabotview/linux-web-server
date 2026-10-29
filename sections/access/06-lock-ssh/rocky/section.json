@@ -1,0 +1,8 @@
+{
+ "vm": "web-02",
+ "session": [
+  "systemctl is-active sshd",
+  "sudo ls /etc/ssh/sshd_config.d",
+  "sudo sshd -T | grep -E '^(passwordauth|permitroot)'"
+ ]
+}

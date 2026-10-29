@@ -1,0 +1,15 @@
+ana@web-01:~$ ls -l /etc/hostname /etc/shadow
+-rw-r--r-- 1 root root     7 Nov  2 09:00 /etc/hostname
+-rw-r----- 1 root shadow 800 Nov  2 09:01 /etc/shadow
+ana@web-01:~$ cat /etc/hostname
+web-01
+ana@web-01:~$ cat /etc/shadow
+cat: /etc/shadow: Permission denied
+ana@web-01:~$ echo web-03 > /etc/hostname
+-bash: /etc/hostname: Permission denied
+ana@web-01:~$ ls -ld /etc /root
+drwxr-xr-x 66 root root 4096 Nov  2 09:01 /etc
+drwx------  3 root root 4096 Oct 26 04:58 /root
+ana@web-01:~$ ls /root
+ls: cannot open directory '/root': Permission denied
+ana@web-01:~$
