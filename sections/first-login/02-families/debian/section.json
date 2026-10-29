@@ -1,0 +1,7 @@
+{
+ "vm": "web-01",
+ "session": [
+  "uname -srm",
+  "cat /etc/os-release"
+ ]
+}

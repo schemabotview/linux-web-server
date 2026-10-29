@@ -1,0 +1,16 @@
+ana@web-01:~$ pwd
+/home/ana
+ana@web-01:~$ cd /etc
+ana@web-01:/etc$ pwd
+/etc
+ana@web-01:/etc$ ls -l hostname hosts os-release
+-rw-r--r-- 1 root root   7 Nov  2 09:00 hostname
+-rw-r--r-- 1 root root 109 Oct 26 04:58 hosts
+lrwxrwxrwx 1 root root  21 Jul 17 17:05 os-release -> ../usr/lib/os-release
+ana@web-01:/etc$ cd ..
+ana@web-01:/$ pwd
+/
+ana@web-01:/$ cd
+ana@web-01:~$ pwd
+/home/ana
+ana@web-01:~$

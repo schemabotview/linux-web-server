@@ -1,0 +1,11 @@
+{
+ "vm": "web-01",
+ "session": [
+  "ls /",
+  "ls /etc | head",
+  "ls /var",
+  "ls /home",
+  "ls /usr",
+  "ls /proc | head"
+ ]
+}

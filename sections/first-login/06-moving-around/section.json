@@ -1,0 +1,13 @@
+{
+ "vm": "web-01",
+ "session": [
+  "pwd",
+  "cd /etc",
+  "pwd",
+  "ls -l hostname hosts os-release",
+  "cd ..",
+  "pwd",
+  "cd",
+  "pwd"
+ ]
+}

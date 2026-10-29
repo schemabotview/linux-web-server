@@ -1,0 +1,32 @@
+ana@web-01:~$ ls /
+bin   dev  home  lib64       media  opt   root  sbin  sys  usr
+boot  etc  lib   lost+found  mnt    proc  run   srv   tmp  var
+ana@web-01:~$ ls /etc | head
+adduser.conf
+alternatives
+apparmor
+apparmor.d
+apt
+bash.bashrc
+bash_completion
+bash_completion.d
+bindresvport.blacklist
+binfmt.d
+ana@web-01:~$ ls /var
+backups  cache  lib  local  lock  log  mail  opt  run  spool  tmp
+ana@web-01:~$ ls /home
+ana
+ana@web-01:~$ ls /usr
+bin  games  include  lib  lib64  libexec  local  sbin  share  src
+ana@web-01:~$ ls /proc | head
+1
+10
+105
+109
+11
+12
+124
+13
+14
+15
+ana@web-01:~$

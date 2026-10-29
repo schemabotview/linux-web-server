@@ -1,0 +1,12 @@
+{
+ "vm": "web-01",
+ "session": [
+  "cat /etc/hostname",
+  {"tty": "less /etc/ssh/sshd_config", "after": 3, "quit": "q", "name": "less-sshd_config"},
+  "tail -n 5 /etc/ssh/sshd_config",
+  "echo $$",
+  "ls /proc/$$",
+  "cat /proc/$$/comm",
+  "ls -l /proc/$$/cwd"
+ ]
+}
