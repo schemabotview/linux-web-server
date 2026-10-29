@@ -1,0 +1,47 @@
+ana@laptop:~$ getent hosts ana.example
+192.0.2.10      ana.example
+ana@laptop:~$ ssh ana@192.0.2.10
+Linux web-01 6.12.113+deb13-cloud-amd64 #1 SMP PREEMPT_DYNAMIC Debian 6.12.113-1
+ (2026-10-15) x86_64
+
+The programs included with the Debian GNU/Linux system are free software;
+the exact distribution terms for each program are described in the
+individual files in /usr/share/doc/*/copyright.
+
+Debian GNU/Linux comes with ABSOLUTELY NO WARRANTY, to the extent
+permitted by applicable law.
+ana@web-01:~$ curl -sS http://ana.example/
+curl: (7) Failed to connect to ana.example port 80 after 25 ms: Could not connec
+t to server
+ana@web-01:~$ systemctl is-active nginx
+failed
+ana@web-01:~$ sudo journalctl -u nginx -n 4 --no-pager -o cat
+[sudo] password for ana:
+nginx: configuration file /etc/nginx/nginx.conf test failed
+nginx.service: Control process exited, code=exited, status=1/FAILURE
+nginx.service: Failed with result 'exit-code'.
+Failed to start nginx.service - A high performance web server and a reverse prox
+y server.
+ana@web-01:~$ sudo nginx -t
+2026/11/02 09:31:09 [emerg] 2366#2366: unexpected "}" in /etc/nginx/sites-enable
+d/ana.example:6
+nginx: configuration file /etc/nginx/nginx.conf test failed
+ana@web-01:~$ sudo sed -i 's|index index.html$|index index.html;|' /etc/nginx/si
+tes-available/ana.example
+ana@web-01:~$ sudo nginx -t && sudo systemctl start nginx
+nginx: the configuration file /etc/nginx/nginx.conf syntax is ok
+nginx: configuration file /etc/nginx/nginx.conf test is successful
+ana@web-01:~$ curl -sSI http://ana.example/ | head -n 1
+HTTP/1.1 403 Forbidden
+ana@web-01:~$ ls -l /var/www/ana.example
+total 4
+-rw------- 1 deploy deploy 75 Nov  2 09:30 index.html
+ana@web-01:~$ sudo chmod 644 /var/www/ana.example/index.html
+ana@web-01:~$ curl -sSI http://ana.example/ | head -n 1
+HTTP/1.1 200 OK
+ana@web-01:~$ exit
+logout
+Connection to 192.0.2.10 closed.
+ana@laptop:~$ curl -sSI http://ana.example/ | head -n 1
+HTTP/1.1 200 OK
+ana@laptop:~$

@@ -1,0 +1,13 @@
+{
+ "vm": "web-01",
+ "setup": [
+  "apt-get update -q >/dev/null"
+ ],
+ "session": [
+  "uname -r",
+  "dpkg -l 'linux-image-*' | grep ^ii",
+  "ls /boot/vmlinuz-*",
+  "ls /run/reboot-required",
+  "apt-cache policy linux-image-cloud-amd64"
+ ]
+}

@@ -1,0 +1,22 @@
+{
+ "vm": "web-01",
+ "setup": [
+  "apt-get update -q >/dev/null && apt-get install -y -q nginx >/dev/null 2>&1",
+  "adduser --quiet --disabled-password --comment 'Site deploys' deploy && install -d -o deploy -g deploy /var/www/ana.example && printf '<!doctype html>\\n<title>ana.example</title>\\n<h1>Hello from ana.example</h1>\\n' > /var/www/ana.example/index.html && chown deploy:deploy /var/www/ana.example/index.html",
+  "printf 'server {\\n    listen 80;\\n    server_name ana.example;\\n    root /var/www/ana.example;\\n    index index.html;\\n}\\n' > /etc/nginx/sites-available/ana.example && ln -s /etc/nginx/sites-available/ana.example /etc/nginx/sites-enabled/ && rm /etc/nginx/sites-enabled/default && systemctl reload nginx",
+  "printf '192.0.2.10 ana.example   # stand-in for public DNS: ana.example is a documentation name\\n' >> /etc/hosts",
+  "printf '<h1>About</h1>\\n' > /var/www/ana.example/about.html && chown deploy:deploy /var/www/ana.example/about.html && for i in $(seq 9); do curl -s -o /dev/null -A 'Mozilla/5.0 (X11; Linux x86_64) Firefox/140.0' http://ana.example/; done && for i in $(seq 4); do curl -s -o /dev/null -A 'Mozilla/5.0 (Macintosh) Safari/605.1.15' http://ana.example/about.html; done && for p in /wp-login.php /.env /admin /wp-login.php /.git/config; do curl -s -o /dev/null -A 'Mozilla/5.0 zgrab/0.x' http://ana.example$p; done && for p in /robots.txt / /about.html; do curl -s -o /dev/null -A 'Mozilla/5.0 (compatible; Googlebot/2.1)' http://ana.example$p; done && for i in $(seq 3); do curl -s -o /dev/null -A 'Mozilla/5.0 (X11; Linux x86_64) Firefox/140.0' http://ana.example/; done",
+  "fallocate -l 3G /var/log/nginx/access.log"
+ ],
+ "session": [
+  "df -h /",
+  "sudo du -sh /var/log/nginx",
+  "ls -lh /var/log/nginx",
+  "sudo rm /var/log/nginx/access.log",
+  "df -h /",
+  "sudo du -sh /var/log/nginx",
+  "sudo find /proc/*/fd -lname '*(deleted)' -printf '%p -> %l\\n' 2>/dev/null",
+  "sudo systemctl reload nginx",
+  "df -h /"
+ ]
+}

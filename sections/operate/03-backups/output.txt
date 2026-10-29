@@ -1,0 +1,20 @@
+ana@laptop:~$ mkdir -p ~/backups
+ana@laptop:~$ rsync -a ana@192.0.2.10:/var/www/ana.example/ ~/backups/ana.exampl
+e/
+ana@laptop:~$ ls -l ~/backups/ana.example
+total 8
+-rw-r--r-- 1 ana ana 15 Nov  2 09:31 about.html
+-rw-r--r-- 1 ana ana 75 Nov  2 09:31 index.html
+ana@laptop:~$ rm -rf /tmp/restore-test && rsync -a ~/backups/ana.example/ /tmp/r
+estore-test/
+ana@laptop:~$ diff -r ~/backups/ana.example /tmp/restore-test && echo 'restore m
+atches the backup'
+restore matches the backup
+ana@laptop:~$ ssh ana@192.0.2.10 'cd /var/www/ana.example && sha256sum *'
+3fc557d15e2108a348b353585d23b0f11c965ddc6c4e3019dc7b9cfa5dc5f6d1  about.html
+20ffa009fd321a481b883ffd04e2ffbab9c2a1b4dafa33d651a2e00a0c6381a5  index.html
+ana@laptop:~$ cd /tmp/restore-test && sha256sum *
+3fc557d15e2108a348b353585d23b0f11c965ddc6c4e3019dc7b9cfa5dc5f6d1  about.html
+20ffa009fd321a481b883ffd04e2ffbab9c2a1b4dafa33d651a2e00a0c6381a5  index.html
+ana@laptop:/tmp/restore-test$ cd
+ana@laptop:~$

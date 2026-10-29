@@ -1,0 +1,41 @@
+{
+ "vm": "laptop",
+ "with": [
+  "web-01"
+ ],
+ "setup": [
+  {
+   "on": "web-01",
+   "run": "apt-get update -q >/dev/null && apt-get install -y -q nginx >/dev/null 2>&1 && apt-get install -y -q rsync >/dev/null 2>&1"
+  },
+  {
+   "on": "web-01",
+   "run": "adduser --quiet --disabled-password --comment 'Site deploys' deploy && install -d -o deploy -g deploy /var/www/ana.example && printf '<!doctype html>\\n<title>ana.example</title>\\n<h1>Hello from ana.example</h1>\\n' > /var/www/ana.example/index.html && chown deploy:deploy /var/www/ana.example/index.html"
+  },
+  {
+   "on": "web-01",
+   "run": "printf 'server {\\n    listen 80;\\n    server_name ana.example;\\n    root /var/www/ana.example;\\n    index index.html;\\n}\\n' > /etc/nginx/sites-available/ana.example && ln -s /etc/nginx/sites-available/ana.example /etc/nginx/sites-enabled/ && rm /etc/nginx/sites-enabled/default && systemctl reload nginx"
+  },
+  {
+   "on": "web-01",
+   "run": "printf '<h1>About</h1>\\n' > /var/www/ana.example/about.html && chown deploy:deploy /var/www/ana.example/about.html"
+  },
+  "apt-get update -q >/dev/null && apt-get install -y -q rsync >/dev/null 2>&1",
+  "su - ana -c \"ssh-keygen -q -t ed25519 -N '' -C ana@laptop -f ~/.ssh/id_ed25519 && ssh-keyscan -q -t ed25519 192.0.2.10 > ~/.ssh/known_hosts\" && cat ~ana/.ssh/id_ed25519.pub",
+  {
+   "on": "web-01",
+   "pipe": true,
+   "run": "install -d -m 700 -o ana -g ana ~ana/.ssh && install -m 600 -o ana -g ana /dev/stdin ~ana/.ssh/authorized_keys"
+  }
+ ],
+ "session": [
+  "mkdir -p ~/backups",
+  "rsync -a ana@192.0.2.10:/var/www/ana.example/ ~/backups/ana.example/",
+  "ls -l ~/backups/ana.example",
+  "rm -rf /tmp/restore-test && rsync -a ~/backups/ana.example/ /tmp/restore-test/",
+  "diff -r ~/backups/ana.example /tmp/restore-test && echo 'restore matches the backup'",
+  "ssh ana@192.0.2.10 'cd /var/www/ana.example && sha256sum *'",
+  "cd /tmp/restore-test && sha256sum *",
+  "cd"
+ ]
+}

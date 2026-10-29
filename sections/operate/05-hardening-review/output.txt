@@ -1,0 +1,51 @@
+ana@laptop:~$ ssh ana@192.0.2.10
+Linux web-01 6.12.113+deb13-cloud-amd64 #1 SMP PREEMPT_DYNAMIC Debian 6.12.113-1
+ (2026-10-15) x86_64
+
+The programs included with the Debian GNU/Linux system are free software;
+the exact distribution terms for each program are described in the
+individual files in /usr/share/doc/*/copyright.
+
+Debian GNU/Linux comes with ABSOLUTELY NO WARRANTY, to the extent
+permitted by applicable law.
+ana@web-01:~$ sudo ss -tlnp
+[sudo] password for ana:
+State     Recv-Q    Send-Q       Local Address:Port        Peer Address:Port
+Process
+LISTEN    0         4096         127.0.0.53%lo:53               0.0.0.0:*
+ users:(("systemd-resolve",pid=360,fd=19))
+LISTEN    0         4096            127.0.0.54:53               0.0.0.0:*
+ users:(("systemd-resolve",pid=360,fd=21))
+LISTEN    0         4096               0.0.0.0:5355             0.0.0.0:*
+ users:(("systemd-resolve",pid=360,fd=12))
+LISTEN    0         511                0.0.0.0:80               0.0.0.0:*
+ users:(("nginx",pid=2307,fd=5),("nginx",pid=2306,fd=5),("nginx",pid=2256,fd=5))
+LISTEN    0         128                0.0.0.0:22               0.0.0.0:*
+ users:(("sshd",pid=1849,fd=6))
+LISTEN    0         4096                  [::]:5355                [::]:*
+ users:(("systemd-resolve",pid=360,fd=14))
+LISTEN    0         128                   [::]:22                  [::]:*
+ users:(("sshd",pid=1849,fd=7))
+ana@web-01:~$ sudo sshd -T | grep -E '^(passwordauth|permitroot)'
+permitrootlogin no
+passwordauthentication no
+ana@web-01:~$ getent group sudo
+sudo:x:27:ana
+ana@web-01:~$ awk -F: '$7 !~ /(nologin|false)$/ {print $1, $7}' /etc/passwd
+root /bin/bash
+sync /bin/sync
+ana /bin/bash
+deploy /bin/bash
+ana@web-01:~$ sudo nft list ruleset | grep -E 'policy|dport'
+                type filter hook input priority filter; policy drop;
+                tcp dport { 22, 80, 443 } accept
+ana@web-01:~$ apt list --upgradable
+ana@web-01:~$ systemctl is-active unattended-upgrades nginx ssh nftables
+active
+active
+active
+active
+ana@web-01:~$ exit
+logout
+Connection to 192.0.2.10 closed.
+ana@laptop:~$

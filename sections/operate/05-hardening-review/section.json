@@ -1,0 +1,49 @@
+{
+ "vm": "laptop",
+ "with": [
+  "web-01"
+ ],
+ "setup": [
+  {
+   "on": "web-01",
+   "run": "apt-get update -q >/dev/null && apt-get install -y -q nginx >/dev/null 2>&1"
+  },
+  {
+   "on": "web-01",
+   "run": "adduser --quiet --disabled-password --comment 'Site deploys' deploy && install -d -o deploy -g deploy /var/www/ana.example && printf '<!doctype html>\\n<title>ana.example</title>\\n<h1>Hello from ana.example</h1>\\n' > /var/www/ana.example/index.html && chown deploy:deploy /var/www/ana.example/index.html"
+  },
+  {
+   "on": "web-01",
+   "run": "printf 'server {\\n    listen 80;\\n    server_name ana.example;\\n    root /var/www/ana.example;\\n    index index.html;\\n}\\n' > /etc/nginx/sites-available/ana.example && ln -s /etc/nginx/sites-available/ana.example /etc/nginx/sites-enabled/ && rm /etc/nginx/sites-enabled/default && systemctl reload nginx"
+  },
+  {
+   "on": "web-01",
+   "run": "printf 'PasswordAuthentication no\\nPermitRootLogin no\\n' > /etc/ssh/sshd_config.d/10-lockdown.conf && systemctl reload ssh"
+  },
+  {
+   "on": "web-01",
+   "run": "apt-get install -y -q nftables >/dev/null 2>&1 && printf '#!/usr/sbin/nft -f\\nflush ruleset\\n\\ntable inet filter {\\n    chain input {\\n        type filter hook input priority filter; policy drop;\\n        iif lo accept\\n        ct state established,related accept\\n        tcp dport { 22, 80, 443 } accept\\n        icmp type echo-request accept\\n    }\\n}\\n' > /etc/nftables.conf && systemctl enable --now nftables >/dev/null 2>&1"
+  },
+  {
+   "on": "web-01",
+   "run": "apt-get update -q >/dev/null"
+  },
+  "su - ana -c \"ssh-keygen -q -t ed25519 -N '' -C ana@laptop -f ~/.ssh/id_ed25519 && ssh-keyscan -q -t ed25519 192.0.2.10 > ~/.ssh/known_hosts\" && cat ~ana/.ssh/id_ed25519.pub",
+  {
+   "on": "web-01",
+   "pipe": true,
+   "run": "install -d -m 700 -o ana -g ana ~ana/.ssh && install -m 600 -o ana -g ana /dev/stdin ~ana/.ssh/authorized_keys"
+  }
+ ],
+ "session": [
+  "ssh ana@192.0.2.10",
+  "sudo ss -tlnp",
+  "sudo sshd -T | grep -E '^(passwordauth|permitroot)'",
+  "getent group sudo",
+  "awk -F: '$7 !~ /(nologin|false)$/ {print $1, $7}' /etc/passwd",
+  "sudo nft list ruleset | grep -E 'policy|dport'",
+  "apt list --upgradable",
+  "systemctl is-active unattended-upgrades nginx ssh nftables",
+  "exit"
+ ]
+}

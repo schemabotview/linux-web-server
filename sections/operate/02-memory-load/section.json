@@ -1,0 +1,20 @@
+{
+ "vm": "web-01",
+ "setup": [
+  "apt-get update -q >/dev/null && apt-get install -y -q nginx >/dev/null 2>&1"
+ ],
+ "session": [
+  "free -h",
+  "grep -E '^(MemTotal|MemFree|MemAvailable|Cached):' /proc/meminfo",
+  "nproc",
+  "uptime",
+  "for i in 1 2 3 4; do yes > /dev/null & done",
+  {
+   "pause": 75
+  },
+  "uptime",
+  "top -b -n 1 | head -n 12",
+  "kill $(jobs -p)",
+  "uptime"
+ ]
+}

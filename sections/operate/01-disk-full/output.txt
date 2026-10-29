@@ -1,0 +1,26 @@
+ana@web-01:~$ df -h /
+Filesystem      Size  Used Avail Use% Mounted on
+/dev/vda1       9.7G  3.9G  5.4G  42% /
+ana@web-01:~$ sudo du -sh /var/log/nginx
+[sudo] password for ana:
+3.1G    /var/log/nginx
+ana@web-01:~$ ls -lh /var/log/nginx
+total 3.1G
+-rw-r----- 1 www-data adm 3.0G Nov  2 09:30 access.log
+-rw-r----- 1 www-data adm 1.4K Nov  2 09:30 error.log
+ana@web-01:~$ sudo rm /var/log/nginx/access.log
+ana@web-01:~$ df -h /
+Filesystem      Size  Used Avail Use% Mounted on
+/dev/vda1       9.7G  3.9G  5.4G  42% /
+ana@web-01:~$ sudo du -sh /var/log/nginx
+8.0K    /var/log/nginx
+ana@web-01:~$ sudo find /proc/*/fd -lname '*(deleted)' -printf '%p -> %l\n' 2>/d
+ev/null
+/proc/2259/fd/12 -> /var/log/nginx/access.log (deleted)
+/proc/2310/fd/12 -> /var/log/nginx/access.log (deleted)
+/proc/2311/fd/12 -> /var/log/nginx/access.log (deleted)
+ana@web-01:~$ sudo systemctl reload nginx
+ana@web-01:~$ df -h /
+Filesystem      Size  Used Avail Use% Mounted on
+/dev/vda1       9.7G  1.9G  7.4G  20% /
+ana@web-01:~$

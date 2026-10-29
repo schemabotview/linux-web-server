@@ -1,0 +1,41 @@
+ana@web-01:~$ free -h
+               total        used        free      shared  buff/cache   available
+Mem:           1.4Gi       243Mi       945Mi       492Ki       417Mi       1.2Gi
+Swap:             0B          0B          0B
+ana@web-01:~$ grep -E '^(MemTotal|MemFree|MemAvailable|Cached):' /proc/meminfo
+MemTotal:        1504452 kB
+MemFree:          968576 kB
+MemAvailable:    1255012 kB
+Cached:           389484 kB
+ana@web-01:~$ nproc
+2
+ana@web-01:~$ uptime
+ 09:30:53 up 20 min,  1 user,  load average: 0.58, 0.20, 0.19
+ana@web-01:~$ for i in 1 2 3 4; do yes > /dev/null & done
+[1] 2302
+[2] 2303
+[3] 2304
+[4] 2305
+ana@web-01:~$ uptime
+ 09:32:08 up 21 min,  1 user,  load average: 3.16, 1.09, 0.50
+ana@web-01:~$ top -b -n 1 | head -n 12
+top - 09:32:09 up 21 min,  1 user,  load average: 3.16, 1.09, 0.50
+Tasks:  99 total,   5 running,  94 sleeping,   0 stopped,   0 zombie
+%Cpu(s): 49.2 us, 49.2 sy,  0.0 ni,  0.0 id,  0.0 wa,  0.0 hi,  1.6 si,  0.0 st
+MiB Mem :   1469.2 total,    945.6 free,    243.5 used,    418.2 buff/cache
+MiB Swap:      0.0 total,      0.0 free,      0.0 used.   1225.6 avail Mem
+
+    PID USER      PR  NI    VIRT    RES    SHR S  %CPU  %MEM     TIME+ COMMAND
+   2305 ana       20   0    3008   1804   1684 R  40.9   0.1   0:37.75 yes
+   2302 ana       20   0    3008   1680   1556 R  31.8   0.1   0:37.86 yes
+   2303 ana       20   0    3008   1724   1604 R  31.8   0.1   0:37.66 yes
+   2304 ana       20   0    3008   1812   1692 R  31.8   0.1   0:37.51 yes
+   2307 ana       20   0    7860   5128   3048 R  13.6   0.3   0:00.17 top
+ana@web-01:~$ kill $(jobs -p)
+ana@web-01:~$ uptime
+ 09:32:10 up 21 min,  1 user,  load average: 3.16, 1.09, 0.50
+[1]   Terminated              yes > /dev/null
+[2]   Terminated              yes > /dev/null
+[3]-  Terminated              yes > /dev/null
+[4]+  Terminated              yes > /dev/null
+ana@web-01:~$
