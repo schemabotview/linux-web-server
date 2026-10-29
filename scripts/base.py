@@ -12,7 +12,9 @@ What the course finds:
 - gw: the provider's network, never on screen as a machine.
 
 What the machinery adds OFF SCREEN, all of it named here and in SPIKE.md:
-- every VM trusts this environment's egress proxy CA (it re-signs TLS); servers and laptop also trust
+- every VM trusts the cloud session's egress proxy CA (it re-signs TLS; scripts/proxy-ca.crt is its
+  public certificate, so a base built elsewhere still works when a cloud session records the next
+  step); servers and laptop also trust
   the lab CA (Pebble's listener) and Pebble's root — the role the public trust store plays for
   Let's Encrypt;
 - /etc/cloud/cloud-init.disabled on every VM (no VM may re-run cloud-init on a reboot);
@@ -22,11 +24,14 @@ What the machinery adds OFF SCREEN, all of it named here and in SPIKE.md:
 import socket
 import sys
 import time
+from pathlib import Path
 
 from machine import KEY, TERM, RUN, STATES, VMS, VM, image, save_state, sh, ssh_args, wait_ssh
 
 PASSWORD = 'mango-river-4821'   # the provider's password for ana on web-01 and web-02; never echoed
-PROXY_CA = open('/root/.ccr/ca-bundle.crt').read()
+# The live session's proxy CA when there is one (it may rotate), else the committed copy.
+_LIVE_CA = Path('/root/.ccr/agent-proxy-ca.crt')
+PROXY_CA = (_LIVE_CA if _LIVE_CA.exists() else Path(__file__).with_name('proxy-ca.crt')).read_text()
 
 
 def indent(text: str, n: int) -> str:

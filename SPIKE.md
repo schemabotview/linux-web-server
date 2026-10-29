@@ -161,14 +161,17 @@ What part 2 found and decided:
 
 ## 10. Open
 
-- **Release assets need a token**: no tool in a cloud session creates a release. `scripts/states.py`
-  pushes and pulls them (release `states`, one asset per step, every file checked against
-  state.json and recorded.json); push needs RELEASE_TOKEN in the environment. The token is set
-  and GitHub grants it push on the repo, but the cloud session's egress proxy refuses the write:
-  `POST /releases` → 403 "Creating, editing, or deleting releases is not permitted for this session
-  type" (2026-10-29). The base and both steps were rebuilt and re-recorded that day; the states are
-  NOT published and live only in the container that recorded them. Push from a machine outside
-  the cloud session (or a session type that allows release writes); a pull needs no token.
+- **States are published by a GitHub workflow** (`.github/workflows/states.yml`), not from a cloud
+  session: its egress proxy refuses release writes (`POST /releases` → 403 "Creating, editing, or
+  deleting releases is not permitted for this session type", 2026-10-29, with a valid
+  RELEASE_TOKEN). The workflow runs on Ubuntu 24.04 with QEMU 8.2.2 — the cloud sessions' own, so
+  its states resume there (`-cpu max` and the saved-state format follow the QEMU version; a Mac's
+  Homebrew QEMU would not do). It rebuilds the base, records every step in chain order, publishes
+  the release `states` with the run's own token, pulls it back and compares sha256s, then commits
+  the transcripts that match. The VMs trust the cloud proxy's CA from `scripts/proxy-ca.crt` when
+  the base is built outside a session, so a session can record the next step from it. A pull needs
+  no token. Re-run the workflow after editing a step; record new steps in a session from pulled
+  states, then publish them the same way.
 - graphl-flow 0.7.0 is on its branch, not on npm.
 - The macOS capture waits for the owner's run of `scripts/macos-capture.sh`.
 - Repo scaffold (vite + shell + graphl-flow 0.7), the console frame, the server map, checks.
