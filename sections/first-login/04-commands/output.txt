@@ -1,0 +1,31 @@
+ana@web-01:~$ ls
+ana@web-01:~$ ls -l /etc/ssh
+total 624
+-rw-r--r-- 1 root root 592383 May  6 12:33 moduli
+-rw-r--r-- 1 root root   1668 May  6 12:33 ssh_config
+drwxr-xr-x 2 root root   4096 Oct 26 04:58 ssh_config.d
+-rw------- 1 root root    505 Nov  2 09:01 ssh_host_ecdsa_key
+-rw-r--r-- 1 root root    173 Nov  2 09:01 ssh_host_ecdsa_key.pub
+-rw------- 1 root root    399 Nov  2 09:01 ssh_host_ed25519_key
+-rw-r--r-- 1 root root     93 Nov  2 09:01 ssh_host_ed25519_key.pub
+-rw------- 1 root root   2590 Nov  2 09:01 ssh_host_rsa_key
+-rw-r--r-- 1 root root    565 Nov  2 09:01 ssh_host_rsa_key.pub
+-rw-r--r-- 1 root root    342 Feb 28  2020 ssh_import_id
+-rw-r--r-- 1 root root   3446 Oct 26 04:59 sshd_config
+drwxr-xr-x 2 root root   4096 Nov  2 09:01 sshd_config.d
+ana@web-01:~$ ls -l --human-readable /var/log
+total 152K
+lrwxrwxrwx  1 root root              39 Oct 26 04:58 README -> ../../usr/share/d
+oc/systemd/README.logs
+-rw-rw----  1 root utmp               0 Oct 26 04:56 btmp
+-rw-r-----  1 root adm             4.8K Nov  2 09:01 cloud-init-output.log
+-rw-r-----  1 root adm             110K Nov  2 09:01 cloud-init.log
+drwxr-sr-x+ 3 root systemd-journal 4.0K Nov  2 09:00 journal
+-rw-rw-r--  1 root utmp            286K Nov  2 09:02 lastlog
+drwx------  2 root root            4.0K Oct 26 04:58 private
+drwxr-xr-x  3 root root            4.0K Oct 26 04:58 runit
+drwxr-x---  2 root adm             4.0K Nov  2 09:01 unattended-upgrades
+-rw-rw-r--  1 root utmp            1.2K Nov  2 09:02 wtmp
+-rw-r--r--  1 root root            8.0K Nov  2 09:02 wtmp.db
+ana@web-01:~$ man ls
+ana@web-01:~$

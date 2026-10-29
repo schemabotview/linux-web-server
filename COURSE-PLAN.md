@@ -124,25 +124,19 @@ developed.
 ## The machine: real VMs, not containers
 
 A container shows the host's kernel, boot, disks and memory — exactly what a Linux course teaches.
-So every server is a real VM:
+So every server is a real VM, and the simulator (`scripts/sim.py`) gives real output to author with:
 
 - **`web-01`**: the official Debian 13 cloud image (`20261026-2643`) under QEMU, set up by cloud-init.
 - **`web-02`**: the official Rocky Linux 10.2 cloud image (`20260525.0`), the same way.
-- **`laptop`**: a small Linux VM standing in for Ana's laptop (SSH, keys, `rsync`, backups' target);
-  the macOS differences come from the owner's capture.
-- **`gw`**: the hosting provider's gateway, a stand-in, never on screen as a machine: NAT, DNS
-  (`ana.example`), and the local ACME CA. Every other VM has ONE network card, on the shared LAN
-  (192.0.2.0/24), so `ip addr` and `ip route` show what a VPS shows.
-- No KVM here, so QEMU runs unaccelerated (TCG): a boot is 1–3 minutes, acceptable because **each
-  step is recorded once**. A step resumes every VM from its parent's **saved running state**
-  (`savevm`, 7 s) — a server runs continuously, so uptime, PIDs and the journal carry on, and the
-  course reboots only when a section reboots. The check runs nothing.
-- Determinism: images pinned by checksum; each VM's clock pinned (`-rtc base=…,clock=vm`), so it runs
-  only while a step runs; PIDs, timings and inode numbers masked as volatile, read by scenes from the
-  session, never said in narration.
-- Labelled stand-ins: HTTPS uses **real certbot against a local ACME CA** (Pebble, from Debian),
-  labelled as standing in for Let's Encrypt, because `ana.example` is not on public DNS. Firmware and
-  GRUB are this VM's own, labelled "a VM". What the machinery adds off screen is in `SPIKE.md`.
+- One VM per command: commands in, real output out. Each section starts from the same fresh VM; what
+  it assumes is set up off screen first. PIDs, uptime and times are real but not continuous across
+  sections, so scenes read them from the output and narration never says them.
+- Clocks pinned (`-rtc base=…,clock=vm`) so dates in output are stable.
+- Labelled stand-ins: HTTPS uses **real certbot against a local ACME CA** (Pebble), labelled as
+  standing in for Let's Encrypt, because `ana.example` is not on public DNS. Firmware and GRUB are
+  this VM's own, labelled "a VM".
+- Sections that need a second machine (keys from the laptop §2.5, `rsync` §5.2, backups §7.3, the
+  local CA §5.7) are set up when they are authored; the simulator does not run them yet.
 
 ## Facts (frozen once a frame quotes them)
 
@@ -153,7 +147,7 @@ So every server is a real VM:
 | laptop | `laptop` (192.0.2.100); macOS capture from the owner's Mac |
 | people | `ana` (admin: `sudo` / `wheel`), `deploy` (owns the web root, no sudo) |
 | first login | `ssh ana@192.0.2.10`, the provider's password (password logins on, no key until §2.5) |
-| Ana's terminal | the laptop's console, 80 × 44; she stays logged in from section to section |
+| Ana's terminal | 80 × 44, logged in as `ana` on the section's server |
 | addresses | 192.0.2.0/24 (TEST-NET-1, documentation range) |
 | versions | pinned by the spike, recorded here |
 

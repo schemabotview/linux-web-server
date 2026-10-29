@@ -14,42 +14,38 @@ Change it first; never drift from it.
 
 ## Status
 
-Plan agreed 2026-10-29. Spike done (`SPIKE.md`): the recorder works and the chain's first two steps
-are recorded (`first-login/03-ssh`, `04-commands`). The app is not scaffolded yet.
+Plan agreed 2026-10-29. The simulator works (`scripts/sim.py`): one real VM, commands in, real
+output out. `first-login/04-commands` is captured with it. The app is not scaffolded yet.
 
 ## Commands
 
 ```sh
-python3 scripts/base.py                       # the chain's first state, from the pinned images (~15 min)
-python3 scripts/record.py first-login/04-commands   # record a step from its parent's saved machine
-python3 scripts/record.py --check             # every step recorded, current, untouched — runs NOTHING
-python3 scripts/states.py pull <step>         # a fresh session: download the chain a step needs
-python3 scripts/states.py push <step>…        # after recording: upload states (needs RELEASE_TOKEN)
-zsh scripts/macos-capture.sh                  # the owner, once, on a Mac
+python3 scripts/sim.py up [web-01|web-02]        # start the VM (first time: build it, ~2–5 min)
+python3 scripts/sim.py run first-login/04-commands   # capture a section's real output
+python3 scripts/sim.py sh web-01 'ls -l /etc'    # one command as ana, real output (quick checks)
+python3 scripts/sim.py down                      # stop the VMs
+zsh scripts/macos-capture.sh                     # the owner, once, on a Mac
 ```
 
-Needs `qemu-system-x86`, `qemu-utils`, `genisoimage`, `zstd`, and Python's `pexpect` and `pyte`
-(`scripts/requirements.txt`). States live in `.machine/` (never committed): release `states`, one
-asset per step. RELEASE_TOKEN is a fine-grained token for this repo only (Contents: read and write),
-set in the environment — never in a file or on a command line.
+Needs `qemu-system-x86`, `qemu-utils`, `genisoimage`, `openssh-client`, and Python's `pexpect` and
+`pyte` (`scripts/requirements.txt`). VM disks live in `.machine/` (never committed).
 
-## The machine and the spine (details in `scripts/machine.py`, `record.py`, `SPIKE.md`)
+## The simulator (details in `scripts/sim.py`)
 
-- Four real VMs on one LAN: `gw` (the provider, never on screen), `web-01` Debian 13, `web-02`
-  Rocky Linux 10, `laptop`. A step RESUMES all four from its parent's saved running state and saves
-  them after; nothing reboots unless a section does.
-- Every command on screen is typed at **Ana's terminal: the laptop's ttyS1**. Her shell and any ssh
-  she has open are laptop state, so a section starts where the last one left her.
-- `spine/<course>/<NN-id>/step.json` = `from` + `session` (commands; `answer` for prompts —
-  `@password` is never echoed; `tty` for a full-screen program). Recorded once: `session.txt`,
-  `<name>.tty.json`, `recorded.json` (key, transcript hash, states, the window title).
-- Editing a step makes it and every step after it STALE: re-record them in order.
-- First login is `ssh ana@192.0.2.10` with the provider's password: a single-label name like
-  `web-01` goes to LLMNR, not DNS, on Debian (systemd-resolved).
+- `web-01` Debian 13 (192.0.2.10), `web-02` Rocky Linux 10 (192.0.2.20): the official cloud images,
+  pinned, under QEMU, set up as a fresh VPS (`ana` with the provider's password, in sudo/wheel).
+- Every `run` starts from the snapshot `fresh`: a section never depends on another. What it assumes
+  (nginx installed, a user added) goes in its `setup`, run as root OFF screen. On Debian a setup
+  that installs packages starts with `apt-get update` (a fresh image has no package lists).
+- `sections/<course>/<NN-id>/section.json` = `vm` + `setup` + `session` (commands; `answer` for
+  prompts — `@password` is never echoed; `tty` for a full-screen program). Output beside it:
+  `output.txt` (the 80 × 44 terminal, row for row) and `<name>.tty.json`.
+- `first-login/03-ssh` was captured by the earlier recorder (ssh from a laptop VM); it has no
+  session to run.
 
 ## Invariants (from the plan)
 
-- Every output is real, from a real VM (`web-01` Debian 13, `web-02` Rocky Linux 10, `laptop`), or
+- Every output is real, from a real VM (`web-01` Debian 13, `web-02` Rocky Linux 10), or
   from the owner's macOS capture. Never a container for a server: it shows the host's kernel.
 - What is a stand-in says so on screen (the local ACME CA, "a VM", "macOS, not captured").
 - Taught on Debian; the other family appears as a family card, from real output.

@@ -1,9 +1,0 @@
-{
- "from": "first-login/03-ssh",
- "session": [
-  "ls",
-  "ls -l /etc/ssh",
-  "ls -l --human-readable /var/log",
-  {"tty": "man ls", "after": 4, "quit": "q", "name": "man-ls"}
- ]
-}

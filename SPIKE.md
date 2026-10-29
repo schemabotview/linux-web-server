@@ -179,3 +179,13 @@ What part 2 found and decided:
 - graphl-flow 0.7.0 is on its branch, not on npm.
 - The macOS capture waits for the owner's run of `scripts/macos-capture.sh`.
 - Repo scaffold (vite + shell + graphl-flow 0.7), the console frame, the server map, checks.
+
+## 11. Simplified (2026-10-29): the simulator replaces the recorder
+
+The owner's call: what authoring needs is real output to trust, not a continuous machine. §9–10's
+recorder (four VMs, saved running states chained step to step, published as release assets by a
+workflow) is removed. `scripts/sim.py` boots ONE real VM from the pinned image, snapshots it as
+`fresh`, and captures each section from that snapshot after an off-screen setup: ~2 min to build,
+~5 s for one command, ~10 s for a section. Kept from the spike: the pinned images, the clock pin,
+the 80 × 44 terminal through pyte, the `tty` screen capture, the egress CAs for a cloud session.
+The release `states` on GitHub is no longer used.
