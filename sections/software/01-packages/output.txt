@@ -58,7 +58,7 @@ Get:17 https://deb.debian.org/debian-security trixie-security/main amd64 Package
 s [270 kB]
 Get:18 https://deb.debian.org/debian-security trixie-security/main Translation-e
 n [166 kB]
-Fetched 28.5 MB in 15s (1882 kB/s)
+Fetched 28.5 MB in 13s (2129 kB/s)
 All packages are up to date.
 ana@web-01:~$ ls /var/lib/apt/lists | head -4
 _etc_apt_mirrors_debian-security.list_dists_trixie-security_InRelease

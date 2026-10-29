@@ -1,0 +1,11 @@
+{
+ "vm": "web-01",
+ "session": [
+  "ls /boot",
+  "cat /proc/cmdline",
+  "sudo journalctl -b -o short-monotonic --no-pager | head -n 6",
+  "sudo journalctl -b -o short-monotonic --no-pager -t kernel -t systemd -g 'Run /init|systemd 2|Reached target multi-user'",
+  "systemd-analyze --no-pager",
+  "systemd-analyze blame --no-pager | head -n 8"
+ ]
+}

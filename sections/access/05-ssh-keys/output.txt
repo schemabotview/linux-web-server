@@ -9,31 +9,31 @@ Enter same passphrase again:
 Your identification has been saved in /home/ana/.ssh/id_ed25519
 Your public key has been saved in /home/ana/.ssh/id_ed25519.pub
 The key fingerprint is:
-SHA256:APFudhy0VxNN33+DwM8BDdlcNFBm090m6DqKRSXhf/Y ana@laptop
+SHA256:QJrQaiCOnI1zCPBsCRskUxoeVcEcrWGO+Xi3vmsPbTA ana@laptop
 The key's randomart image is:
 +--[ED25519 256]--+
-|    o.  o. oX**O+|
-|     o o..ooo==.O|
-|      o +o.+ . oo|
-|     . o.+  = o .|
-|      +.S ..o+ .o|
-|     o .. oo .  o|
-|       o . .  E  |
-|      . .        |
-|                 |
+|X++o++=          |
+|*X.o.O .         |
+|OoX.B +          |
+|.Oo= o .         |
+| .o o  ES        |
+|   . o .+        |
+|    . ...o       |
+|       oo        |
+|      o++.       |
 +----[SHA256]-----+
 ana@laptop:~$ ls -l ~/.ssh
 total 8
--rw------- 1 ana ana 399 Nov  2 09:09 id_ed25519
--rw-r--r-- 1 ana ana  92 Nov  2 09:09 id_ed25519.pub
+-rw------- 1 ana ana 399 Nov  2 09:20 id_ed25519
+-rw-r--r-- 1 ana ana  92 Nov  2 09:20 id_ed25519.pub
 ana@laptop:~$ cat ~/.ssh/id_ed25519.pub
-ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINLlKJVDqfMRODSkvJfQSN4i2BBS9lMkJr3p5TpcJkeW
+ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIM5J/1x5b7ykjUuF3+zdOdmeuhRF0rRTqX3uCZ9t9db6
  ana@laptop
 ana@laptop:~$ ssh-copy-id ana@192.0.2.10
 /usr/bin/ssh-copy-id: INFO: Source of key(s) to be installed: "/home/ana/.ssh/id
 _ed25519.pub"
 The authenticity of host '192.0.2.10 (192.0.2.10)' can't be established.
-ED25519 key fingerprint is SHA256:JRO8K7PaWaYM6n76C3VzcqJb2NvHlgb4o1kUzCuPY+Q.
+ED25519 key fingerprint is SHA256:pQ6UCJjBDOi5tqu/SYAvnWHSOT2MLHpUSBXklacZBLA.
 This key is not known by any other names.
 Are you sure you want to continue connecting (yes/no/[fingerprint])? yes
 /usr/bin/ssh-copy-id: INFO: attempting to log in with the new key(s), to filter
@@ -58,11 +58,11 @@ individual files in /usr/share/doc/*/copyright.
 Debian GNU/Linux comes with ABSOLUTELY NO WARRANTY, to the extent
 permitted by applicable law.
 ana@web-01:~$ cat ~/.ssh/authorized_keys
-ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINLlKJVDqfMRODSkvJfQSN4i2BBS9lMkJr3p5TpcJkeW
+ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIM5J/1x5b7ykjUuF3+zdOdmeuhRF0rRTqX3uCZ9t9db6
  ana@laptop
 ana@web-01:~$ ls -ld ~/.ssh ~/.ssh/authorized_keys
-drwx------ 2 ana ana 4096 Nov  2 09:11 /home/ana/.ssh
--rw------- 1 ana ana   92 Nov  2 09:11 /home/ana/.ssh/authorized_keys
+drwx------ 2 ana ana 4096 Nov  2 09:23 /home/ana/.ssh
+-rw------- 1 ana ana   92 Nov  2 09:23 /home/ana/.ssh/authorized_keys
 ana@web-01:~$ exit
 logout
 Connection to 192.0.2.10 closed.

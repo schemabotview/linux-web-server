@@ -1,0 +1,55 @@
+ana@laptop:~$ ssh ana@192.0.2.10
+Linux web-01 6.12.113+deb13-cloud-amd64 #1 SMP PREEMPT_DYNAMIC Debian 6.12.113-1
+ (2026-10-15) x86_64
+
+The programs included with the Debian GNU/Linux system are free software;
+the exact distribution terms for each program are described in the
+individual files in /usr/share/doc/*/copyright.
+
+Debian GNU/Linux comes with ABSOLUTELY NO WARRANTY, to the extent
+permitted by applicable law.
+ana@web-01:~$ systemctl is-enabled nginx; systemctl is-active nginx
+enabled
+active
+ana@web-01:~$ sudo systemctl disable nginx
+[sudo] password for ana:
+Synchronizing state of nginx.service with SysV service script with /usr/lib/syst
+emd/systemd-sysv-install.
+Executing: /usr/lib/systemd/systemd-sysv-install disable nginx
+Removed '/etc/systemd/system/multi-user.target.wants/nginx.service'.
+ana@web-01:~$ systemctl is-enabled nginx; systemctl is-active nginx
+disabled
+active
+ana@web-01:~$ sudo reboot
+ana@web-01:~$ Connection to 192.0.2.10 closed by remote host.
+Connection to 192.0.2.10 closed.
+ana@laptop:~$ ssh ana@192.0.2.10
+Linux web-01 6.12.113+deb13-cloud-amd64 #1 SMP PREEMPT_DYNAMIC Debian 6.12.113-1
+ (2026-10-15) x86_64
+
+The programs included with the Debian GNU/Linux system are free software;
+the exact distribution terms for each program are described in the
+individual files in /usr/share/doc/*/copyright.
+
+Debian GNU/Linux comes with ABSOLUTELY NO WARRANTY, to the extent
+permitted by applicable law.
+Last login: Mon Nov  2 09:27:17 2026 from 192.0.2.1
+ana@web-01:~$ uptime
+ 09:29:15 up 1 min,  1 user,  load average: 0.70, 0.37, 0.14
+ana@web-01:~$ systemctl is-enabled nginx; systemctl is-active nginx
+disabled
+inactive
+ana@web-01:~$ sudo systemctl enable --now nginx
+[sudo] password for ana:
+Synchronizing state of nginx.service with SysV service script with /usr/lib/syst
+emd/systemd-sysv-install.
+Executing: /usr/lib/systemd/systemd-sysv-install enable nginx
+Created symlink '/etc/systemd/system/multi-user.target.wants/nginx.service' → '/
+usr/lib/systemd/system/nginx.service'.
+ana@web-01:~$ systemctl is-enabled nginx; systemctl is-active nginx
+enabled
+active
+ana@web-01:~$ exit
+logout
+Connection to 192.0.2.10 closed.
+ana@laptop:~$

@@ -1,0 +1,13 @@
+{
+ "vm": "web-01",
+ "setup": [
+  "apt-get update -q >/dev/null && apt-get install -y -q nginx >/dev/null 2>&1"
+ ],
+ "session": [
+  "ps -o pid,ppid,user,cmd -p 1,$$",
+  "pstree",
+  "ps -o pid,ppid,user,cmd -C nginx",
+  "ls -l /proc/1/exe",
+  "sudo ls -l /proc/1/exe"
+ ]
+}

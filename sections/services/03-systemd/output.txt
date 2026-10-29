@@ -1,0 +1,61 @@
+ana@web-01:~$ systemctl status nginx --no-pager
+● nginx.service - A high performance web server and a reverse proxy server
+     Loaded: loaded (/usr/lib/systemd/system/nginx.service; enabled; preset: ena
+bled)
+     Active: active (running) since Mon 2026-11-02 09:26:03 UTC; 11s ago
+ Invocation: fbf378c14472492b8c11c20c72ba802a
+       Docs: man:nginx(8)
+    Process: 2227 ExecStartPre=/usr/sbin/nginx -t -q -g daemon on; master_proces
+s on; (code=exited, status=0/SUCCESS)
+    Process: 2229 ExecStart=/usr/sbin/nginx -g daemon on; master_process on; (co
+de=exited, status=0/SUCCESS)
+   Main PID: 2257 (nginx)
+      Tasks: 3 (limit: 1732)
+     Memory: 2.7M (peak: 6.9M)
+        CPU: 784ms
+     CGroup: /system.slice/nginx.service
+             ├─2257 "nginx: master process /usr/sbin/nginx -g daemon on; master…
+             ├─2259 "nginx: worker process"
+             └─2260 "nginx: worker process"
+
+Warning: some journal files were not opened due to insufficient permissions.
+ana@web-01:~$ systemctl cat nginx --no-pager
+# /usr/lib/systemd/system/nginx.service
+# Stop dance for nginx
+# =======================
+#
+# ExecStop sends SIGQUIT (graceful stop) to the nginx process.
+# If, after 5s (--retry QUIT/5) nginx is still running, systemd takes control
+# and sends SIGTERM (fast shutdown) to the main process.
+# After another 5s (TimeoutStopSec=5), and if nginx is alive, systemd sends
+# SIGKILL to all the remaining processes in the process group (KillMode=mixed).
+#
+# nginx signals reference doc:
+# http://nginx.org/en/docs/control.html
+#
+[Unit]
+Description=A high performance web server and a reverse proxy server
+Documentation=man:nginx(8)
+After=network-online.target remote-fs.target nss-lookup.target
+Wants=network-online.target
+ConditionFileIsExecutable=/usr/sbin/nginx
+
+[Service]
+Type=forking
+PIDFile=/run/nginx.pid
+ExecStartPre=/usr/sbin/nginx -t -q -g 'daemon on; master_process on;'
+ExecStart=/usr/sbin/nginx -g 'daemon on; master_process on;'
+ExecReload=/usr/sbin/nginx -g 'daemon on; master_process on;' -s reload
+ExecStop=-/sbin/start-stop-daemon --quiet --stop --retry QUIT/5 --pidfile /run/n
+ginx.pid
+TimeoutStopSec=5
+KillMode=mixed
+
+[Install]
+WantedBy=multi-user.target
+ana@web-01:~$ systemctl show nginx -p Requires -p Wants -p After --no-pager
+Requires=sysinit.target system.slice
+Wants=network-online.target
+After=basic.target sysinit.target systemd-journald.socket network-online.target
+system.slice remote-fs.target nss-lookup.target
+ana@web-01:~$

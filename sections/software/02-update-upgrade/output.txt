@@ -23,7 +23,7 @@ Get:17 https://deb.debian.org/debian-security trixie-security/main amd64 Package
 s [270 kB]
 Get:18 https://deb.debian.org/debian-security trixie-security/main Translation-e
 n [166 kB]
-Fetched 28.5 MB in 14s (2049 kB/s)
+Fetched 28.5 MB in 13s (2148 kB/s)
 All packages are up to date.
 ana@web-01:~$ apt list --upgradable
 ana@web-01:~$ sudo apt upgrade -y

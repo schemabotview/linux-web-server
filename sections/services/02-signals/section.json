@@ -1,0 +1,11 @@
+{
+ "vm": "web-01",
+ "session": [
+  "kill -l | head -n 2",
+  "bash -c 'trap \"echo got TERM: cleaning up; exit\" TERM; sleep 1000 & wait' &",
+  "kill $!; sleep 1",
+  "bash -c 'trap \"echo got KILL: cleaning up; exit\" KILL; sleep 1000 & wait' &",
+  "kill -KILL $!; sleep 1",
+  "jobs"
+ ]
+}

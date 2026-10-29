@@ -15,7 +15,8 @@ A section is sections/<course>/<NN-id>/section.json:
 
   {"vm": "web-01",                          which VM (default web-01)
    "with": ["web-01"],                      other VMs the section uses, reset with it (the laptop's servers)
-   "setup": ["apt-get install -y nginx",    run first, as root, OFF screen: what the section assumes;
+   "setup": ["apt-get install -y nginx",    run first, as root, OFF screen (the guest agent, never a
+                                              login): what the section assumes;
              {"on": "web-01", "run": "…",     on another VM; "pipe": true feeds it the previous
               "pipe": true}],                 step's output (a key made on the laptop, put on a server)
    "session": [                             typed in Ana's terminal (80 × 44), ON screen:
@@ -24,8 +25,10 @@ A section is sections/<course>/<NN-id>/section.json:
       "answer": [["password: $", "@password"]]},   @password: the provider's, never echoed
      {"tty": "man ls", "after": 4,            a full-screen program: its screen after N seconds
       "quit": "q", "name": "man-ls"},           into <name>.tty.json, then quit it
-     {"window": "second"}                     switch to (or open) another terminal on the same VM;
-   ]}                                         {"window": "main"} switches back
+     {"window": "second"},                    switch to (or open) another terminal on the same VM;
+                                              {"window": "main"} switches back
+     {"pause": 90}                            wait, typing nothing (while a server reboots)
+   ]}
 
 Output beside it: output.txt (the main terminal, row for row), <window>.txt for any other, and any
 <name>.tty.json. `[sudo] password`
@@ -33,6 +36,7 @@ is always answered. Nothing here is a container: `uname`, `ip addr`, `lsblk`, th
 """
 from __future__ import annotations
 
+import base64
 import hashlib
 import json
 import os
@@ -50,7 +54,6 @@ import pyte
 REPO = Path(__file__).resolve().parent.parent
 MACHINE = REPO / '.machine'              # images, disks, keys — never committed
 SECTIONS = REPO / 'sections'
-KEY = MACHINE / 'sim_key'                # root's key: setup only, never on screen
 PASSWORD = 'mango-river-4821'            # the provider's password for ana; never echoed
 CLOCK = '2026-11-02T09:00:00'            # every VM's clock starts here: dates in output are stable
 COLS, ROWS = 80, 44
@@ -65,11 +68,12 @@ IMAGE = {
               '9fc9e9ff16888bb68ac39b0392e25c9c92684d50c85f1cce6ab549363bbc4b48'),
 }
 VMS = {
-    'web-01': {'image': 'debian', 'ip': '192.0.2.10', 'port': 2210},
+    'web-01': {'image': 'debian', 'ip': '192.0.2.10', 'port': 2210},     # host ports 2210–2213: 22 80 443 8080
     'web-02': {'image': 'rocky', 'ip': '192.0.2.20', 'port': 2220},
     'laptop': {'image': 'debian', 'ip': '192.0.2.100', 'port': 2300},   # Ana's laptop: ssh reaches the servers
 }
 # Debian: ana@web-01:~$   Red Hat: [ana@web-02 ~]$   root: # in both
+GUEST_PORTS = (22, 80, 443, 8080)          # a server's ports the laptop reaches
 PROMPT = re.compile(rb'(?:\S+@[\w.-]+:[^\r\n]*|\[\S+@[\w.-]+ [^\]\r\n]*\])[$#] $')
 SUDO = re.compile(rb'\[sudo\] password for \w+: $')
 
@@ -114,15 +118,22 @@ def egress_cas() -> list[str]:
 
 def user_data(name: str) -> str:
     rocky = VMS[name]['image'] == 'rocky'
-    pub = KEY.with_suffix('.pub').read_text().strip()
     cas = ''.join('    - |\n' + ''.join(f'      {line}\n' for line in pem.splitlines()) for pem in egress_cas())
     return (f'#cloud-config\nhostname: {name}\nfqdn: {name}\n'
             f'users:\n  - name: ana\n    shell: /bin/bash\n    groups: [{"wheel" if rocky else "sudo"}]\n'
             f'    lock_passwd: false\n'
             f'ssh_pwauth: true\nchpasswd:\n  expire: false\n  users:\n    - {{name: ana, password: "{PASSWORD}", type: text}}\n'
-            f'disable_root: false\nssh_authorized_keys: ["{pub}"]\n'
+            # the provider's guest agent: setup runs through it, never through a login (no root key, no
+            # auth log). Red Hat ships it locked down: allow guest-exec, and make the agent's own SELinux
+            # domain permissive (SELinux still enforces everything else: nginx's denials stay real).
+            'packages: [qemu-guest-agent]\n'
             + (f'ca_certs:\n  trusted:\n{cas}' if cas else '')
-            + 'runcmd:\n  - [touch, /etc/cloud/cloud-init.disabled]\n')
+            + 'runcmd:\n'
+            + ('  - [sh, -c, "sed -i \'s/^FILTER_RPC_ARGS=.*/FILTER_RPC_ARGS=/\' /etc/sysconfig/qemu-ga"]\n'
+               '  - [sh, -c, "echo \'(typepermissive virt_qemu_ga_t)\' > /run/qemu_ga_permissive.cil'
+               ' && semodule -i /run/qemu_ga_permissive.cil"]\n' if rocky else '')
+            + '  - [systemctl, restart, qemu-guest-agent]\n'
+            '  - [touch, /etc/cloud/cloud-init.disabled]\n')
 
 
 class VM:
@@ -131,7 +142,7 @@ class VM:
             raise SystemExit(f'no VM {name!r}: one of {", ".join(VMS)}')
         self.name, self.spec = name, VMS[name]
         self.dir = MACHINE / name
-        self.disk, self.mon = self.dir / 'disk.qcow2', self.dir / 'monitor'
+        self.disk, self.mon, self.qga = self.dir / 'disk.qcow2', self.dir / 'monitor', self.dir / 'agent'
 
     def running(self) -> bool:
         try:
@@ -141,12 +152,14 @@ class VM:
             return False
 
     def start(self, extra: list[str]) -> None:
-        net = (f'user,id=net,net=192.0.2.0/24,host=192.0.2.1,dhcpstart={self.spec["ip"]},'
-               f'hostfwd=tcp:127.0.0.1:{self.spec["port"]}-:22')
+        net = f'user,id=net,net=192.0.2.0/24,host=192.0.2.1,dhcpstart={self.spec["ip"]}'
         if self.name == 'laptop':
-            # Each VM has its own network; from the laptop, a server's address:22 is that server's sshd.
-            net += ''.join(f',guestfwd=tcp:{v["ip"]}:22-cmd:socat - TCP:127.0.0.1:{v["port"]}'
-                           for n, v in VMS.items() if n != 'laptop')
+            net += f',hostfwd=tcp:127.0.0.1:{self.spec["port"]}-:22'
+            # Each VM has its own network; from the laptop, a server's address:port is that server's port.
+            net += ''.join(f',guestfwd=tcp:{v["ip"]}:{gp}-cmd:socat - TCP:127.0.0.1:{v["port"] + i}'
+                           for n, v in VMS.items() if n != 'laptop' for i, gp in enumerate(GUEST_PORTS))
+        else:
+            net += ''.join(f',hostfwd=tcp:127.0.0.1:{self.spec["port"] + i}-:{gp}' for i, gp in enumerate(GUEST_PORTS))
         self.mon.unlink(missing_ok=True)
         subprocess.Popen(
             ['qemu-system-x86_64', '-nodefaults', '-vga', 'std', '-accel', 'tcg,thread=multi', '-cpu', 'max',
@@ -154,6 +167,8 @@ class VM:
              '-drive', f'file={self.disk},if=none,id=disk,discard=unmap',
              '-device', 'virtio-blk-pci,drive=disk,addr=0x4',
              '-netdev', net, '-device', 'virtio-net-pci,netdev=net,mac=52:54:00:00:02:10,addr=0x3',
+             '-chardev', f'socket,id=qga,path={self.qga},server=on,wait=off',
+             '-device', 'virtio-serial-pci,addr=0x6', '-device', 'virtserialport,chardev=qga,name=org.qemu.guest_agent.0',
              '-rtc', f'base={CLOCK},clock=vm', '-display', 'none',
              '-serial', f'file:{self.dir / "serial.log"}', '-monitor', f'unix:{self.mon},server,nowait', *extra],
             stdout=open(self.dir / 'qemu.log', 'w'), stderr=subprocess.STDOUT, start_new_session=True)
@@ -180,22 +195,61 @@ class VM:
         s.close()
         return out.decode(errors='replace')
 
-    def ssh(self, user: str = 'root') -> list[str]:
-        return ['ssh', '-q', '-i', str(KEY), '-o', 'StrictHostKeyChecking=no', '-o', 'UserKnownHostsFile=/dev/null',
+    def ssh(self, user: str = 'ana') -> list[str]:
+        """A login from the host: Ana's password, as on a fresh VPS (she has no key until the course
+        gives her one)."""
+        return ['ssh', '-q', '-o', 'StrictHostKeyChecking=no', '-o', 'UserKnownHostsFile=/dev/null',
+                '-o', 'PubkeyAuthentication=no', '-o', 'PreferredAuthentications=password',
                 '-o', 'ConnectTimeout=10', '-p', str(self.spec['port']), f'{user}@127.0.0.1']
 
-    def wait_ssh(self, timeout: int = 1200) -> None:
+    def agent(self, cmd: str, stdin: str = '', timeout: float = 1800) -> tuple[int, str, str]:
+        """Run `cmd` as root through the guest agent: no login, nothing in the auth log."""
+        s = socket.socket(socket.AF_UNIX)
+        s.connect(str(self.qga))
+        s.settimeout(10)
+        f = s.makefile('rwb')
+
+        def call(execute: str, **args) -> dict:
+            f.write(json.dumps({'execute': execute, 'arguments': args}).encode() + b'\n')
+            f.flush()
+            while True:
+                msg = json.loads(f.readline())
+                if 'error' in msg:
+                    raise SystemExit(f'{self.name}: guest agent: {msg["error"]}')
+                if execute != 'guest-sync' or msg.get('return') == args['id']:
+                    return msg['return']
+
+        try:
+            call('guest-sync', id=int(time.time() * 1000) % 2**31)   # skip anything stale on the channel
+            exe = {'path': '/bin/sh', 'arg': ['-c', cmd], 'capture-output': True}
+            if stdin:
+                exe['input-data'] = base64.b64encode(stdin.encode()).decode()
+            pid, end = call('guest-exec', **exe)['pid'], time.time() + timeout
+            while not (st := call('guest-exec-status', pid=pid))['exited']:
+                if time.time() > end:
+                    raise SystemExit(f'{self.name}: {cmd!r} still running after {timeout}s')
+                time.sleep(0.5)
+        finally:
+            s.close()
+        dec = lambda k: base64.b64decode(st.get(k, '')).decode(errors='replace')
+        return st.get('exitcode', 0), dec('out-data'), dec('err-data')
+
+    def ready(self, timeout: int = 1200) -> None:
+        """The agent answers and sshd is up (Ana's terminal logs in through it)."""
         t0 = time.time()
-        while subprocess.run(self.ssh() + ['-o', 'BatchMode=yes', 'true'], capture_output=True).returncode:
+        while True:
+            try:
+                if self.agent('systemctl is-active --quiet ssh || systemctl is-active --quiet sshd', timeout=30)[0] == 0:
+                    return
+            except (OSError, ValueError, SystemExit):
+                pass
             if time.time() - t0 > timeout:
-                raise SystemExit(f'{self.name}: no ssh after {timeout}s (see {self.dir / "serial.log"})')
+                raise SystemExit(f'{self.name}: not ready after {timeout}s (see {self.dir / "serial.log"})')
             time.sleep(3)
 
     def build(self) -> None:
         """First boot from the pinned image with a cloud-init seed; then the snapshot `fresh`."""
         self.dir.mkdir(parents=True, exist_ok=True)
-        if not KEY.exists():
-            sh('ssh-keygen', '-q', '-t', 'ed25519', '-N', '', '-C', 'sim', '-f', str(KEY))
         seed = self.dir / 'seed'
         seed.mkdir(exist_ok=True)
         (seed / 'user-data').write_text(user_data(self.name))
@@ -214,7 +268,7 @@ class VM:
             if time.time() - t0 > 1800:
                 raise SystemExit(f'{self.name}: cloud-init did not finish (see {log})')
             time.sleep(5)
-        self.wait_ssh()
+        self.ready()
         self.settle()
         # The seed goes before the snapshot: a snapshot needs every disk writable, and a VPS has one disk.
         self.hmp('device_del seedblk')
@@ -224,8 +278,10 @@ class VM:
         print(f'{self.name}: built and saved as `fresh` ({time.time() - t0:.0f}s)', flush=True)
 
     def settle(self) -> None:
-        """What a fresh VPS has that cloud-init leaves different: no ~/.ssh until something makes one."""
-        sh(*self.ssh(), 'rm -rf /home/ana/.ssh && sync')
+        """What a fresh VPS has that the build leaves different: no ~/.ssh until something makes one, and
+        no package lists or caches (installing the agent fetched them)."""
+        self.agent('rm -rf /home/ana/.ssh; if command -v apt-get >/dev/null; then apt-get clean; '
+                   'rm -rf /var/lib/apt/lists/*; else dnf -q clean all; fi; sync')
 
     def up(self) -> None:
         if self.running():
@@ -233,11 +289,11 @@ class VM:
         if not self.disk.exists() or 'fresh' not in sh('qemu-img', 'snapshot', '-l', str(self.disk)).stdout:
             return self.build()
         self.start(['-loadvm', 'fresh'])
-        self.wait_ssh(300)
+        self.ready(300)
 
     def reset(self) -> None:
         self.hmp('loadvm fresh')
-        self.wait_ssh(300)
+        self.ready(300)
 
     def down(self) -> None:
         if self.running():
@@ -251,7 +307,7 @@ class Terminal:
 
     def __init__(self, vm: VM):
         # ana logs in with her password, as on a fresh VPS (she has no key until the course gives her one)
-        args = vm.ssh('ana')[1:] + ['-tt', '-o', 'PubkeyAuthentication=no', '-o', 'PreferredAuthentications=password']
+        args = vm.ssh()[1:] + ['-tt']
         self.child = pexpect.spawn('ssh', args, dimensions=(ROWS, COLS), env={**os.environ, 'TERM': 'xterm'},
                                    timeout=1800)
         self.stream = bytearray()
@@ -264,8 +320,14 @@ class Terminal:
         except pexpect.TIMEOUT:
             return b''
 
+    def idle(self, seconds: float) -> None:
+        """Type nothing; what arrives meanwhile is on screen (a connection closing, a prompt)."""
+        end = time.time() + seconds
+        while time.time() < end:
+            self.stream += self.read(1)
+
     def wait(self, answers: list[tuple[re.Pattern, str]], keep: bool = True) -> None:
-        buf, deadline = bytearray(), time.time() + 300
+        buf, deadline = bytearray(), time.time() + 900
         while time.time() < deadline:
             chunk = self.read(1)
             if not chunk:
@@ -285,7 +347,7 @@ class Terminal:
                     buf.clear()
                     answers = [a for a in answers if a[0] is not pat]
                     break
-        raise SystemExit(f'no prompt after 5 minutes; the screen ends with:\n{bytes(buf[-400:]).decode(errors="replace")}')
+        raise SystemExit(f'no prompt after 15 minutes; the screen ends with:\n{bytes(buf[-400:]).decode(errors="replace")}')
 
     def run(self, item: str | dict, out: Path) -> None:
         if isinstance(item, str):
@@ -333,7 +395,9 @@ class Terminal:
     def output(self) -> str:
         screen = pyte.HistoryScreen(COLS, ROWS, history=100000, ratio=1)
         screen.set_mode(pyte.modes.LNM)
-        pyte.ByteStream(screen).feed(bytes(self.stream))
+        # systemd writes 256-colour SGR with ':' separators (ESC[38:5:245m); pyte reads only ';'
+        stream = re.sub(rb'\x1b\[[0-9;:]*m', lambda m: m.group().replace(b':', b';'), bytes(self.stream))
+        pyte.ByteStream(screen).feed(stream)
         rows = [''.join(r[x].data for x in range(COLS)) for r in screen.history.top] + list(screen.display)
         # a row that filled all 80 columns wrapped: keep its width, strip every other row
         rows = [r if len(r.rstrip()) == COLS else r.rstrip() for r in rows]
@@ -358,14 +422,16 @@ def run(section: str) -> None:
     prev = ''
     for step in spec.get('setup', []):
         step = {'run': step} if isinstance(step, str) else step
-        r = subprocess.run(vms[step.get('on', vm.name)].ssh() + [step['run']], capture_output=True, text=True,
-                           input=prev if step.get('pipe') else None)
-        if r.returncode:
-            raise SystemExit(f'setup failed: {step["run"]}\n{r.stdout}{r.stderr}')
-        prev = r.stdout
+        code, stdout, stderr = vms[step.get('on', vm.name)].agent(step['run'], prev if step.get('pipe') else '')
+        if code:
+            raise SystemExit(f'setup failed: {step["run"]}\n{stdout}{stderr}')
+        prev = stdout
     windows = {'main': Terminal(vm)}
     term = windows['main']
     for item in spec['session']:
+        if isinstance(item, dict) and 'pause' in item:     # time passes, nothing typed (a reboot)
+            term.idle(item['pause'])
+            continue
         if isinstance(item, dict) and 'window' in item:
             if item['window'] not in windows:
                 windows[item['window']] = Terminal(vm)
@@ -392,6 +458,9 @@ if __name__ == '__main__':
     elif cmd == 'sh' and len(args) == 2:
         vm = VM(args[0])
         vm.up()
-        sys.exit(subprocess.run(vm.ssh() + [f'su - ana -c {shlex.quote(args[1])}']).returncode)
+        code, stdout, stderr = vm.agent(f'su - ana -c {shlex.quote(args[1])}')
+        sys.stdout.write(stdout)
+        sys.stderr.write(stderr)
+        sys.exit(code)
     else:
         raise SystemExit(__doc__)

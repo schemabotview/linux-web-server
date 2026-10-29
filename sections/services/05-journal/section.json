@@ -1,0 +1,15 @@
+{
+ "vm": "web-01",
+ "setup": [
+  "apt-get update -q >/dev/null && apt-get install -y -q nginx >/dev/null 2>&1",
+  "curl -s http://localhost/ >/dev/null; curl -s http://localhost/missing >/dev/null; true"
+ ],
+ "session": [
+  "journalctl -u nginx --no-pager",
+  "sudo journalctl -u nginx --no-pager",
+  "sudo journalctl -b --no-pager | head -n 5",
+  "sudo journalctl -u ssh -n 4 --no-pager",
+  "sudo systemctl reload nginx",
+  "sudo journalctl -u nginx -n 3 --no-pager"
+ ]
+}

@@ -1,0 +1,41 @@
+ana@web-01:~$ journalctl -u nginx --no-pager
+Hint: You are currently not seeing messages from other users and the system.
+      Users in groups 'adm', 'systemd-journal' can see all messages.
+      Pass -q to turn off this notice.
+-- No entries --
+ana@web-01:~$ sudo journalctl -u nginx --no-pager
+[sudo] password for ana:
+Nov 02 09:30:29 web-01 systemd[1]: Starting nginx.service - A high performance w
+eb server and a reverse proxy server...
+Nov 02 09:30:29 web-01 systemd[1]: Started nginx.service - A high performance we
+b server and a reverse proxy server.
+ana@web-01:~$ sudo journalctl -b --no-pager | head -n 5
+Nov 02 09:00:20 localhost kernel: Linux version 6.12.113+deb13-cloud-amd64 (debi
+an-kernel@lists.debian.org) (x86_64-linux-gnu-gcc-14 (Debian 14.2.0-19) 14.2.0,
+GNU ld (GNU Binutils for Debian) 2.44) #1 SMP PREEMPT_DYNAMIC Debian 6.12.113-1
+(2026-10-15)
+Nov 02 09:00:20 localhost kernel: Command line: BOOT_IMAGE=/boot/vmlinuz-6.12.11
+3+deb13-cloud-amd64 root=PARTUUID=84fd0772-d38a-4fe7-b574-dcb86f5e263f ro consol
+e=tty0 console=ttyS0,115200 earlyprintk=ttyS0,115200 consoleblank=0
+Nov 02 09:00:20 localhost kernel: BIOS-provided physical RAM map:
+Nov 02 09:00:20 localhost kernel: BIOS-e820: [mem 0x0000000000000000-0x000000000
+009fbff] usable
+Nov 02 09:00:20 localhost kernel: BIOS-e820: [mem 0x000000000009fc00-0x000000000
+009ffff] reserved
+ana@web-01:~$ sudo journalctl -u ssh -n 4 --no-pager
+Nov 02 09:01:35 web-01 sshd[1853]: Server listening on :: port 22.
+Nov 02 09:01:35 web-01 systemd[1]: Started ssh.service - OpenBSD Secure Shell se
+rver.
+Nov 02 09:30:38 web-01 sshd-session[2271]: Accepted password for ana from 192.0.
+2.1 port 34854 ssh2
+Nov 02 09:30:38 web-01 sshd-session[2271]: pam_unix(sshd:session): session opene
+d for user ana(uid=1000) by ana(uid=0)
+ana@web-01:~$ sudo systemctl reload nginx
+ana@web-01:~$ sudo journalctl -u nginx -n 3 --no-pager
+Nov 02 09:30:44 web-01 systemd[1]: Reloading nginx.service - A high performance
+web server and a reverse proxy server...
+Nov 02 09:30:45 web-01 nginx[2321]: 2026/11/02 09:30:45 [notice] 2321#2321: sign
+al process started
+Nov 02 09:30:45 web-01 systemd[1]: Reloaded nginx.service - A high performance w
+eb server and a reverse proxy server.
+ana@web-01:~$

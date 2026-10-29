@@ -6,8 +6,8 @@ APT::Periodic::Update-Package-Lists "1";
 APT::Periodic::Unattended-Upgrade "1";
 ana@web-01:~$ systemctl list-timers --no-pager 'apt-daily*'
 NEXT                 LEFT LAST PASSED UNIT                 ACTIVATES
-Mon 2026-11-02 19:0…   9h -         - apt-daily.timer      apt-daily.service
-Tue 2026-11-03 06:1…  20h -         - apt-daily-upgrade.t… apt-daily-upgrade.se…
+Mon 2026-11-02 19:2…   9h -         - apt-daily.timer      apt-daily.service
+Tue 2026-11-03 06:4…  21h -         - apt-daily-upgrade.t… apt-daily-upgrade.se…
 
 2 timers listed.
 Pass --all to see loaded but inactive timers, too.

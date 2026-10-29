@@ -20,13 +20,13 @@ ana@web-01:~$ ls /usr
 bin  games  include  lib  lib64  libexec  local  sbin  share  src
 ana@web-01:~$ ls /proc | head
 1
-10
 102
-105
+108
 11
-117
 13
-138
+139
 14
-144
+15
+16
+17
 ana@web-01:~$

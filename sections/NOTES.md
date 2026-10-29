@@ -19,3 +19,12 @@ The pinned Debian image (2026-10-26) was current on the day it was captured: `ap
   network). Never quoted.
 - Rocky Linux: sudo's first-use lecture is shown once, in access/01-root-sudo/rocky; later Rocky
   sections record (in setup) that Ana has already seen it.
+- The setup channel is the QEMU guest agent, so `qemu-ga` shows in `ps`/`pstree` (services/01).
+  A provider's agent; never a login.
+- Timings (boot 1 min 37 s in `systemd-analyze`, apt/dnf speeds) are an emulated VM's: never quoted.
+
+## services/04-enable-start — the reboot
+
+Once (of three captures) the laptop's ssh reported `Bad packet length … Connection corrupted` when
+web-01 rebooted, an artifact of the link between the VMs. A real reboot reads `Connection to
+192.0.2.10 closed by remote host.`, as the committed capture does. If the artifact appears, re-capture.

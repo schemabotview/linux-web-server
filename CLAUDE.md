@@ -15,8 +15,8 @@ Change it first; never drift from it.
 ## Status
 
 Plan agreed 2026-10-29. The simulator works (`scripts/sim.py`): one real VM, commands in, real
-output out. Courses 1 (`first-login`, 02–07; 01 comes last) and 2 (`access`) are authored and
-captured. The app is not scaffolded yet.
+output out. Courses 1–4 are authored and captured (`first-login` 01 comes last); open questions
+for the owner are in `sections/NOTES.md`. The app is not scaffolded yet.
 
 ## Commands
 
@@ -36,7 +36,10 @@ Needs `qemu-system-x86`, `qemu-utils`, `genisoimage`, `openssh-client`, and Pyth
 - `web-01` Debian 13 (192.0.2.10), `web-02` Rocky Linux 10 (192.0.2.20): the official cloud images,
   pinned, under QEMU, set up as a fresh VPS (`ana` with the provider's password, in sudo/wheel).
 - Every `run` starts from the snapshot `fresh`: a section never depends on another. What it assumes
-  (nginx installed, a user added) goes in its `setup`, run as root OFF screen. On Debian a setup
+  (nginx installed, a user added) goes in its `setup`, run as root OFF screen through the QEMU guest
+  agent — never a login, so no root key and nothing in the auth log. The agent is the one trace:
+  `qemu-ga` in `ps`/`pstree` (a provider's agent; on Rocky its own SELinux domain is permissive,
+  everything else enforcing). On Debian a setup
   that installs packages starts with `apt-get update` (a fresh image has no package lists).
 - `sections/<course>/<NN-id>/section.json` = `vm` + `setup` + `session` (commands; `answer` for
   prompts — `@password` is never echoed; `tty` for a full-screen program). Output beside it:
@@ -47,7 +50,9 @@ Needs `qemu-system-x86`, `qemu-utils`, `genisoimage`, `openssh-client`, and Pyth
   web-01); `{"window": "second"}` opens a second terminal (`second.txt`), as §2.6 tests a lockdown.
 - Each VM has its own network, so a server sees the laptop's logins as coming from 192.0.2.1
   (`Last login: … from 192.0.2.1`, `who`, auth logs). Scenes and narration never quote that address.
-- A command that does not return in 5 minutes fails with the screen it is stuck on (a pager:
+- `{"pause": N}` waits N seconds typing nothing (a reboot); a server's ports 22, 80, 443 and 8080
+  are reachable from the laptop.
+- A command that does not return in 15 minutes fails with the screen it is stuck on (a pager:
   `journalctl` needs `--no-pager`, or a `tty` item).
 - `first-login/03-ssh` was captured by the earlier recorder (ssh from a laptop VM); it has no
   session to run.

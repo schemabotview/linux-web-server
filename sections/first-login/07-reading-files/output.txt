@@ -8,7 +8,7 @@ ana@web-01:~$ tail -n 5 /etc/ssh/sshd_config
 #       ForceCommand cvs server
 ClientAliveInterval 120
 ana@web-01:~$ echo $$
-2021
+2080
 ana@web-01:~$ ls /proc/$$
 arch_status         fd                 net            setgroups
 attr                fdinfo             ns             smaps
@@ -27,5 +27,5 @@ exe                 mountstats         sessionid      wchan
 ana@web-01:~$ cat /proc/$$/comm
 bash
 ana@web-01:~$ ls -l /proc/$$/cwd
-lrwxrwxrwx 1 ana ana 0 Nov  2 09:12 /proc/2021/cwd -> /home/ana
+lrwxrwxrwx 1 ana ana 0 Nov  2 09:24 /proc/2080/cwd -> /home/ana
 ana@web-01:~$

@@ -1,8 +1,8 @@
 [ana@web-02 ~]$ sudo dnf install -y nginx
 [sudo] password for ana:
-Rocky Linux 10 - BaseOS                         798 kB/s |  42 MB     00:53
-Rocky Linux 10 - AppStream                      1.2 MB/s | 2.9 MB     00:02
-Rocky Linux 10 - Extras                         8.0 kB/s | 6.1 kB     00:00
+Rocky Linux 10 - BaseOS                         6.6 MB/s |  42 MB     00:06
+Rocky Linux 10 - AppStream                      2.8 MB/s | 2.9 MB     00:01
+Rocky Linux 10 - Extras                         5.9 kB/s | 6.1 kB     00:01
 Dependencies resolved.
 ================================================================================
  Package               Arch       Version                   Repository     Size
@@ -21,18 +21,12 @@ Install  4 Packages
 Total download size: 727 k
 Installed size: 1.9 M
 Downloading Packages:
-(1/4): nginx-filesystem-1.26.3-6.el10_2.7.noarc  74 kB/s |  11 kB     00:00
-(2/4): nginx-1.26.3-6.el10_2.7.x86_64.rpm       166 kB/s |  32 kB     00:00
-(3/4): rocky-logos-httpd-100.5-3.el10.noarch.rp 477 kB/s |  24 kB     00:00
-(4/4): nginx-core-1.26.3-6.el10_2.7.x86_64.rpm  2.0 MB/s | 659 kB     00:00
+(1/4): nginx-filesystem-1.26.3-6.el10_2.7.noarc  43 kB/s |  11 kB     00:00
+(2/4): rocky-logos-httpd-100.5-3.el10.noarch.rp  89 kB/s |  24 kB     00:00
+(3/4): nginx-1.26.3-6.el10_2.7.x86_64.rpm        39 kB/s |  32 kB     00:00
+(4/4): nginx-core-1.26.3-6.el10_2.7.x86_64.rpm  141 kB/s | 659 kB     00:04
 --------------------------------------------------------------------------------
-Total                                           988 kB/s | 727 kB     00:00
-Rocky Linux 10 - AppStream                      151 kB/s | 1.6 kB     00:00
-Importing GPG key 0x6FEDFC85:
- Userid     : "Release Engineering (Rocky Linux 10) <releng@rockylinux.org>"
- Fingerprint: FC22 6859 C086 0BF0 DDB9 5B08 5B10 6C73 6FED FC85
- From       : /etc/pki/rpm-gpg/RPM-GPG-KEY-Rocky-10
-Key imported successfully
+Total                                           145 kB/s | 727 kB     00:05
 Running transaction check
 Transaction check succeeded.
 Running transaction test
@@ -72,5 +66,5 @@ usr/lib/systemd/system/nginx.service'.
 [ana@web-02 ~]$ curl -sI http://localhost | head -n 3
 HTTP/1.1 200 OK
 Server: nginx/1.26.3
-Date: Mon, 02 Nov 2026 09:18:47 GMT
+Date: Mon, 02 Nov 2026 09:08:26 GMT
 [ana@web-02 ~]$

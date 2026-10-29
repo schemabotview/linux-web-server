@@ -6,6 +6,6 @@ deploy:x:1001:1001:Site deploys:/home/deploy:/bin/bash
 uid=1001(deploy) gid=1001(deploy) groups=1001(deploy)
 [ana@web-02 ~]$ ls -l /home
 total 0
-drwx------. 2 ana    ana    62 Nov  2 09:09 ana
-drwx------. 2 deploy deploy 62 Nov  2 09:22 deploy
+drwx------. 2 ana    ana    62 Nov  2 09:05 ana
+drwx------. 2 deploy deploy 62 Nov  2 09:06 deploy
 [ana@web-02 ~]$

@@ -1,0 +1,34 @@
+{
+ "vm": "laptop",
+ "with": [
+  "web-01"
+ ],
+ "setup": [
+  {
+   "on": "web-01",
+   "run": "apt-get update -q >/dev/null && apt-get install -y -q nginx >/dev/null 2>&1"
+  },
+  "su - ana -c \"ssh-keygen -q -t ed25519 -N '' -C ana@laptop -f ~/.ssh/id_ed25519 && ssh-keyscan -q -t ed25519 192.0.2.10 > ~/.ssh/known_hosts\" && cat ~ana/.ssh/id_ed25519.pub",
+  {
+   "on": "web-01",
+   "pipe": true,
+   "run": "install -d -m 700 -o ana -g ana ~ana/.ssh && install -m 600 -o ana -g ana /dev/stdin ~ana/.ssh/authorized_keys"
+  }
+ ],
+ "session": [
+  "ssh ana@192.0.2.10",
+  "systemctl is-enabled nginx; systemctl is-active nginx",
+  "sudo systemctl disable nginx",
+  "systemctl is-enabled nginx; systemctl is-active nginx",
+  "sudo reboot",
+  {
+   "pause": 120
+  },
+  "ssh ana@192.0.2.10",
+  "uptime",
+  "systemctl is-enabled nginx; systemctl is-active nginx",
+  "sudo systemctl enable --now nginx",
+  "systemctl is-enabled nginx; systemctl is-active nginx",
+  "exit"
+ ]
+}
