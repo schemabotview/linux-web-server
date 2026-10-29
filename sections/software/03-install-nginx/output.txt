@@ -1,0 +1,70 @@
+ana@web-01:~$ sudo apt install -y nginx
+[sudo] password for ana:
+Installing:
+  nginx
+
+Installing dependencies:
+  nginx-common
+
+Suggested packages:
+  fcgiwrap  nginx-doc  ssl-cert
+
+Summary:
+  Upgrading: 0, Installing: 2, Removing: 0, Not Upgrading: 0
+  Download size: 725 kB
+  Space needed: 1906 kB / 8987 MB available
+
+Get:1 file:/etc/apt/mirrors/debian-security.list Mirrorlist [39 B]
+Get:2 https://deb.debian.org/debian-security trixie-security/main amd64 nginx-co
+mmon all 1.26.3-3+deb13u10 [112 kB]
+Get:3 https://deb.debian.org/debian-security trixie-security/main amd64 nginx am
+d64 1.26.3-3+deb13u10 [614 kB]
+Fetched 725 kB in 1s (523 kB/s)
+Preconfiguring packages ...
+Selecting previously unselected package nginx-common.
+(Reading database ... 20630 files and directories currently installed.)
+Preparing to unpack .../nginx-common_1.26.3-3+deb13u10_all.deb ...
+Unpacking nginx-common (1.26.3-3+deb13u10) ...
+Selecting previously unselected package nginx.
+Preparing to unpack .../nginx_1.26.3-3+deb13u10_amd64.deb ...
+Unpacking nginx (1.26.3-3+deb13u10) ...
+Setting up nginx-common (1.26.3-3+deb13u10) ...
+Created symlink '/etc/systemd/system/multi-user.target.wants/nginx.service' → '/
+usr/lib/systemd/system/nginx.service'.
+Setting up nginx (1.26.3-3+deb13u10) ...
+Upgrading binary: nginx.
+Processing triggers for man-db (2.13.1-1) ...
+ana@web-01:~$ dpkg -L nginx
+/.
+/usr
+/usr/sbin
+/usr/sbin/nginx
+/usr/share
+/usr/share/doc
+/usr/share/doc/nginx
+/usr/share/doc/nginx/changelog.Debian.gz
+/usr/share/doc/nginx/changelog.gz
+/usr/share/doc/nginx/copyright
+/usr/share/man
+/usr/share/man/man8
+/usr/share/man/man8/nginx.8.gz
+ana@web-01:~$ dpkg -S /etc/nginx/nginx.conf
+nginx-common: /etc/nginx/nginx.conf
+ana@web-01:~$ ls /etc/nginx
+conf.d          koi-win            nginx.conf       sites-enabled
+fastcgi.conf    mime.types         proxy_params     snippets
+fastcgi_params  modules-available  scgi_params      uwsgi_params
+koi-utf         modules-enabled    sites-available  win-utf
+ana@web-01:~$ systemctl is-active nginx
+active
+ana@web-01:~$ ls /var/www/html /var/log/nginx
+/var/log/nginx:
+access.log  error.log
+
+/var/www/html:
+index.nginx-debian.html
+ana@web-01:~$ curl -sI http://localhost | head -n 3
+HTTP/1.1 200 OK
+Server: nginx
+Date: Mon, 02 Nov 2026 09:11:45 GMT
+ana@web-01:~$

@@ -1,0 +1,15 @@
+{
+ "vm": "web-02",
+ "session": [
+  "sudo dnf install -y nginx",
+  "rpm -qf /etc/nginx/nginx.conf",
+  "ls /etc/nginx",
+  "systemctl is-active nginx",
+  "ls /usr/share/nginx/html",
+  "sudo systemctl enable --now nginx",
+  "curl -sI http://localhost | head -n 3"
+ ],
+ "setup": [
+  "mkdir -p /var/db/sudo/lectured && touch /var/db/sudo/lectured/ana /var/db/sudo/lectured/1000"
+ ]
+}

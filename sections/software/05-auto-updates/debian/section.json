@@ -1,0 +1,9 @@
+{
+ "vm": "web-01",
+ "session": [
+  "dpkg -l unattended-upgrades | tail -n 1",
+  "cat /etc/apt/apt.conf.d/20auto-upgrades",
+  "systemctl list-timers --no-pager 'apt-daily*'",
+  "sudo unattended-upgrade --dry-run -v"
+ ]
+}

@@ -1,0 +1,33 @@
+ana@web-01:~$ sudo apt update
+[sudo] password for ana:
+Get:1 file:/etc/apt/mirrors/debian.list Mirrorlist [30 B]
+Get:2 file:/etc/apt/mirrors/debian-security.list Mirrorlist [39 B]
+Get:3 https://deb.debian.org/debian trixie InRelease [140 kB]
+Get:4 https://deb.debian.org/debian trixie-updates InRelease [47.3 kB]
+Get:5 https://deb.debian.org/debian trixie-backports InRelease [54.0 kB]
+Get:6 https://deb.debian.org/debian-security trixie-security InRelease [43.4 kB]
+Get:7 https://deb.debian.org/debian trixie/main Sources [10.5 MB]
+Get:8 https://deb.debian.org/debian trixie/main amd64 Packages [9678 kB]
+Get:9 https://deb.debian.org/debian trixie/main Translation-en [6486 kB]
+Get:10 https://deb.debian.org/debian trixie-updates/main Sources [820 B]
+Get:11 https://deb.debian.org/debian trixie-updates/main amd64 Packages [720 B]
+Get:12 https://deb.debian.org/debian trixie-updates/main Translation-en [772 B]
+Get:13 https://deb.debian.org/debian trixie-backports/main Sources [336 kB]
+Get:14 https://deb.debian.org/debian trixie-backports/main amd64 Packages [294 k
+B]
+Get:15 https://deb.debian.org/debian trixie-backports/main Translation-en [230 k
+B]
+Get:16 https://deb.debian.org/debian-security trixie-security/main Sources [243
+kB]
+Get:17 https://deb.debian.org/debian-security trixie-security/main amd64 Package
+s [270 kB]
+Get:18 https://deb.debian.org/debian-security trixie-security/main Translation-e
+n [166 kB]
+Fetched 28.5 MB in 14s (2049 kB/s)
+All packages are up to date.
+ana@web-01:~$ apt list --upgradable
+ana@web-01:~$ sudo apt upgrade -y
+Summary:
+  Upgrading: 0, Installing: 0, Removing: 0, Not Upgrading: 0
+ana@web-01:~$ apt list --upgradable
+ana@web-01:~$

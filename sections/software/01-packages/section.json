@@ -1,0 +1,9 @@
+{
+ "vm": "web-01",
+ "session": [
+  "cat /etc/apt/sources.list.d/debian.sources",
+  "ls /usr/share/keyrings",
+  "sudo apt update",
+  "ls /var/lib/apt/lists | head -4"
+ ]
+}

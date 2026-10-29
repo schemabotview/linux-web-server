@@ -5,5 +5,8 @@
   "getent passwd deploy",
   "id deploy",
   "ls -l /home"
+ ],
+ "setup": [
+  "mkdir -p /var/db/sudo/lectured && touch /var/db/sudo/lectured/ana /var/db/sudo/lectured/1000"
  ]
 }

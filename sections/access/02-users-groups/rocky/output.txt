@@ -1,14 +1,4 @@
 [ana@web-02 ~]$ sudo useradd --comment 'Site deploys' deploy
-
-We trust you have received the usual lecture from the local System
-Administrator. It usually boils down to these three things:
-
-    #1) Respect the privacy of others.
-    #2) Think before you type.
-    #3) With great power comes great responsibility.
-
-For security reasons, the password you type will not be visible.
-
 [sudo] password for ana:
 [ana@web-02 ~]$ getent passwd deploy
 deploy:x:1001:1001:Site deploys:/home/deploy:/bin/bash
@@ -17,5 +7,5 @@ uid=1001(deploy) gid=1001(deploy) groups=1001(deploy)
 [ana@web-02 ~]$ ls -l /home
 total 0
 drwx------. 2 ana    ana    62 Nov  2 09:09 ana
-drwx------. 2 deploy deploy 62 Nov  2 09:10 deploy
+drwx------. 2 deploy deploy 62 Nov  2 09:22 deploy
 [ana@web-02 ~]$

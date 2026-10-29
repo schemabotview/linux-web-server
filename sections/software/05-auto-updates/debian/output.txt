@@ -1,0 +1,29 @@
+ana@web-01:~$ dpkg -l unattended-upgrades | tail -n 1
+ii  unattended-upgrades 2.12         all          automatic installation of secu
+rity upgrades
+ana@web-01:~$ cat /etc/apt/apt.conf.d/20auto-upgrades
+APT::Periodic::Update-Package-Lists "1";
+APT::Periodic::Unattended-Upgrade "1";
+ana@web-01:~$ systemctl list-timers --no-pager 'apt-daily*'
+NEXT                 LEFT LAST PASSED UNIT                 ACTIVATES
+Mon 2026-11-02 19:0…   9h -         - apt-daily.timer      apt-daily.service
+Tue 2026-11-03 06:1…  20h -         - apt-daily-upgrade.t… apt-daily-upgrade.se…
+
+2 timers listed.
+Pass --all to see loaded but inactive timers, too.
+ana@web-01:~$ sudo unattended-upgrade --dry-run -v
+[sudo] password for ana:
+Checking if system is running on battery is skipped. Please install powermgmt-ba
+se package to check power status and skip installing updates when the system is
+running on battery.
+Checking if connection is metered is skipped. Please install python3-gi package
+to detect metered connections and skip downloading updates.
+Starting unattended upgrades script
+Allowed origins are: origin=Debian,codename=trixie,label=Debian, origin=Debian,c
+odename=trixie,label=Debian-Security, origin=Debian,codename=trixie-security,lab
+el=Debian-Security
+Initial blacklist:
+Initial whitelist (not strict):
+No packages found that can be upgraded unattended and no pending auto-removals
+The list of kept packages can't be calculated in dry-run mode.
+ana@web-01:~$

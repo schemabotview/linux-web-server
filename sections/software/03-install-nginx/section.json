@@ -1,0 +1,13 @@
+{
+ "vm": "web-01",
+ "setup": ["apt-get update -q >/dev/null"],
+ "session": [
+  "sudo apt install -y nginx",
+  "dpkg -L nginx",
+  "dpkg -S /etc/nginx/nginx.conf",
+  "ls /etc/nginx",
+  "systemctl is-active nginx",
+  "ls /var/www/html /var/log/nginx",
+  "curl -sI http://localhost | head -n 3"
+ ]
+}

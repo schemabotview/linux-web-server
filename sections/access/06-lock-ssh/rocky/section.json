@@ -4,5 +4,8 @@
   "systemctl is-active sshd",
   "sudo ls /etc/ssh/sshd_config.d",
   "sudo sshd -T | grep -E '^(passwordauth|permitroot)'"
+ ],
+ "setup": [
+  "mkdir -p /var/db/sudo/lectured && touch /var/db/sudo/lectured/ana /var/db/sudo/lectured/1000"
  ]
 }

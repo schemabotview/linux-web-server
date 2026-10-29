@@ -1,0 +1,9 @@
+{
+ "vm": "web-01",
+ "session": [
+  "sudo apt update",
+  "apt list --upgradable",
+  "sudo apt upgrade -y",
+  "apt list --upgradable"
+ ]
+}

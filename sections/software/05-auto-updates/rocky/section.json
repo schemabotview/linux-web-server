@@ -1,0 +1,13 @@
+{
+ "vm": "web-02",
+ "session": [
+  "rpm -q dnf-automatic",
+  "sudo dnf install -y dnf-automatic",
+  "grep -E '^(upgrade_type|apply_updates)' /etc/dnf/automatic.conf",
+  "sudo systemctl enable --now dnf-automatic.timer",
+  "systemctl list-timers --no-pager 'dnf-automatic*'"
+ ],
+ "setup": [
+  "mkdir -p /var/db/sudo/lectured && touch /var/db/sudo/lectured/ana /var/db/sudo/lectured/1000"
+ ]
+}

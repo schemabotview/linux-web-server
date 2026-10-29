@@ -1,0 +1,56 @@
+[ana@web-02 ~]$ rpm -q dnf-automatic
+package dnf-automatic is not installed
+[ana@web-02 ~]$ sudo dnf install -y dnf-automatic
+[sudo] password for ana:
+Rocky Linux 10 - BaseOS                         7.3 MB/s |  42 MB     00:05
+Rocky Linux 10 - AppStream                       40 kB/s | 2.9 MB     01:12
+Rocky Linux 10 - Extras                         5.6 kB/s | 6.1 kB     00:01
+Dependencies resolved.
+================================================================================
+ Package           Arch       Version                          Repository  Size
+================================================================================
+Installing:
+ dnf-automatic     noarch     4.20.0-22.el10_2.rocky.0.1       baseos      37 k
+
+Transaction Summary
+================================================================================
+Install  1 Package
+
+Total download size: 37 k
+Installed size: 79 k
+Downloading Packages:
+dnf-automatic-4.20.0-22.el10_2.rocky.0.1.noarch 105 kB/s |  37 kB     00:00
+--------------------------------------------------------------------------------
+Total                                            46 kB/s |  37 kB     00:00
+Rocky Linux 10 - BaseOS                         180 kB/s | 1.6 kB     00:00
+Importing GPG key 0x6FEDFC85:
+ Userid     : "Release Engineering (Rocky Linux 10) <releng@rockylinux.org>"
+ Fingerprint: FC22 6859 C086 0BF0 DDB9 5B08 5B10 6C73 6FED FC85
+ From       : /etc/pki/rpm-gpg/RPM-GPG-KEY-Rocky-10
+Key imported successfully
+Running transaction check
+Transaction check succeeded.
+Running transaction test
+Transaction test succeeded.
+Running transaction
+  Preparing        :                                                        1/1
+  Installing       : dnf-automatic-4.20.0-22.el10_2.rocky.0.1.noarch        1/1
+  Running scriptlet: dnf-automatic-4.20.0-22.el10_2.rocky.0.1.noarch        1/1
+
+Installed:
+  dnf-automatic-4.20.0-22.el10_2.rocky.0.1.noarch
+
+Complete!
+[ana@web-02 ~]$ grep -E '^(upgrade_type|apply_updates)' /etc/dnf/automatic.conf
+upgrade_type = default
+apply_updates = no
+[ana@web-02 ~]$ sudo systemctl enable --now dnf-automatic.timer
+Created symlink '/etc/systemd/system/timers.target.wants/dnf-automatic.timer' →
+'/usr/lib/systemd/system/dnf-automatic.timer'.
+[ana@web-02 ~]$ systemctl list-timers --no-pager 'dnf-automatic*'
+NEXT                  LEFT LAST PASSED UNIT                ACTIVATES
+Tue 2026-11-03 06:39…  21h -         - dnf-automatic.timer dnf-automatic.service
+
+1 timers listed.
+Pass --all to see loaded but inactive timers, too.
+[ana@web-02 ~]$
