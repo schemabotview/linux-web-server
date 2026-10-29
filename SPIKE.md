@@ -170,7 +170,11 @@ What part 2 found and decided:
   the release `states` with the run's own token, pulls it back and compares sha256s, then commits
   the transcripts that match. The VMs trust the cloud proxy's CA from `scripts/proxy-ca.crt` when
   the base is built outside a session, so a session can record the next step from it. A pull needs
-  no token. Re-run the workflow after editing a step; record new steps in a session from pulled
+  no token. **Published 2026-10-29** by run 40894807643: `base.tar` 763.0 MB,
+  `first-login--03-ssh.tar` 20.2 MB, `first-login--04-commands.tar` 10.9 MB; a cloud session pulled
+  them, resumed all four VMs at Ana's open ssh prompt, and web-01 fetched over HTTPS through the
+  proxy. The base's recorder key (`.machine/ctl_key`, for gw and the laptop) stayed on the runner:
+  recording does not use it, but an off-screen setup over ssh would. Re-run the workflow after editing a step; record new steps in a session from pulled
   states, then publish them the same way.
 - graphl-flow 0.7.0 is on its branch, not on npm.
 - The macOS capture waits for the owner's run of `scripts/macos-capture.sh`.
