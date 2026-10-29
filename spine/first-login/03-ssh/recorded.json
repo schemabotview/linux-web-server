@@ -2,27 +2,27 @@
  "key": "d5d529c5e45c9e2991c5d54387d6f9ece6b1cf997875de080bf7d90ffaecad01",
  "from": "base",
  "title": "ana@web-01: ~",
- "session_sha": "3e022e500c304ef3444be37a092b395a21a6040ea73fe910a8187d53a1a53bc6",
+ "session_sha": "ba14e89d86ccba170664cb8ef555e0719f41eb350886f31ad2ff12fe72b4d44b",
  "states": {
   "gw": {
    "ram": "delta",
-   "ram_sha": "a7e5bcbeb8202441861fefb12544d3b6e2e72c3659d9ee6a0065b7a5b916026f",
-   "disk_sha": "ffd368f3cb1a6bf9102c9d0b88dce94869919d1a82ac62f204021feb47f3c546"
+   "ram_sha": "1fccb268131cc93e0710bf5162b75d31345e4184a1951c990137fae157e67430",
+   "disk_sha": "c0c3a66359387896ab7cae95cb77dbe0892ed18a265cad940bfe6fae49c5415f"
   },
   "web-01": {
    "ram": "delta",
-   "ram_sha": "e5d115ed7ff51bfd29bd45b8c008ed8be84918762a0ebce70da0d153ca11a992",
-   "disk_sha": "65867b0ce66cb0c4590f6ba68411dc7cf1a6418d148d4b7f50b7a31f8e420131"
+   "ram_sha": "609d5b3eae6885d60c43cd0c0ae5b92d5f16db4deae93dc28bf6e111e6761354",
+   "disk_sha": "8943233a9e80c5c0be004cbc067c89e321c97e88f65aa6e8bfb1bca5a636d79c"
   },
   "web-02": {
    "ram": "delta",
-   "ram_sha": "0512fbddfa0fb9e96238fb3993d99ee4cd0ad13428c39964abf23690eadee03f",
-   "disk_sha": "1b05381f280009d5141bae54a4f10771e80f59337291caa4c14edc0a0b1fddfe"
+   "ram_sha": "ac9e6842d64f5d557260dd9f7c5f1cfe47cc6797caaa4b0e0aca144183ae97ff",
+   "disk_sha": "81d68822d65ca1da8892a0a00ea32a6f06a34be2bd6d595f84bd4b2e1e92652d"
   },
   "laptop": {
    "ram": "delta",
-   "ram_sha": "1e8a1fa619b06e5cfe3e8935a55b84145168a4882afe3ef522533dc67429179d",
-   "disk_sha": "2fbbb9efb315eb6c5c29d6e0ea369a2e6cc3bea92beb59d1943fd61ed9559e89"
+   "ram_sha": "d059bd8dfd2cf44193d84024ffd8f06f8967e9ad50ea79029d87def5e2324492",
+   "disk_sha": "699c6dd28c60d4aea0961ff795ebf611cdc7dd0fda0970736b015c880f83079a"
   }
  }
 }

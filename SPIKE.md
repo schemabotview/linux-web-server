@@ -163,8 +163,12 @@ What part 2 found and decided:
 
 - **Release assets need a token**: no tool in a cloud session creates a release. `scripts/states.py`
   pushes and pulls them (release `states`, one asset per step, every file checked against
-  state.json and recorded.json); push needs RELEASE_TOKEN in the environment. The owner is adding
-  one (2026-10-29). Until a push, states live only in the container that recorded them.
+  state.json and recorded.json); push needs RELEASE_TOKEN in the environment. The token is set
+  and GitHub grants it push on the repo, but the cloud session's egress proxy refuses the write:
+  `POST /releases` → 403 "Creating, editing, or deleting releases is not permitted for this session
+  type" (2026-10-29). The base and both steps were rebuilt and re-recorded that day; the states are
+  NOT published and live only in the container that recorded them. Push from a machine outside
+  the cloud session (or a session type that allows release writes); a pull needs no token.
 - graphl-flow 0.7.0 is on its branch, not on npm.
 - The macOS capture waits for the owner's run of `scripts/macos-capture.sh`.
 - Repo scaffold (vite + shell + graphl-flow 0.7), the console frame, the server map, checks.

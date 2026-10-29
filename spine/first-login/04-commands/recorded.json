@@ -2,27 +2,27 @@
  "key": "923bc23a7466c1c3c46df2cc33ce4e68541ee49d1d6844e9d1848e24bc5f9167",
  "from": "first-login/03-ssh",
  "title": "ana@web-01: ~",
- "session_sha": "87cd1f18412dfaa75a272ad92cb82cb773449ca0b7dd62931380a15d3505d092",
+ "session_sha": "b882ad1592df6591aabaaa04ea5115fc8890b6094ad186f228a4f11ef75b948c",
  "states": {
   "gw": {
    "ram": "delta",
-   "ram_sha": "f46e394e93ebadc8218368552ced6b16efa8d95e12d4baafe9fed92227741f59",
-   "disk_sha": "4e64c5f7fcbef1c98e6643cf1f033c8ae4831013ecfa27c62cd402b1c3f1ff18"
+   "ram_sha": "32d98d933d0dab48a27bf7d97e5728015a82318cef8adbe833062aade2f6dd0d",
+   "disk_sha": "2e19c71fcc7c04e38a5105aa92781884d8356eae692b3b0e9b380c310a5c2c99"
   },
   "web-01": {
    "ram": "delta",
-   "ram_sha": "b1b3032ab604d646e73f83554b1c847e02469dd1530ccdd709530d5866bfffb8",
-   "disk_sha": "feae7e69c631d32c517106f42291bc7524398a0333893e0c6152b22f39cda233"
+   "ram_sha": "41d86c22cb80ff4f5ba41bd41c75d3796224cb43826c7923ff738d3a5be57b7c",
+   "disk_sha": "fc9d19f204d9b4d6afdce7d3bf749a2a4d56fc04f3f5b38056dd893499c972cc"
   },
   "web-02": {
    "ram": "delta",
-   "ram_sha": "2d7175412a998c7880a32d361d6b214b84efffb5c95190a7038cff5389f778e5",
-   "disk_sha": "288767f88ec41111194f3c9e1b720c37cdd72b30b4d04f1f8fb8b28ff5906e2f"
+   "ram_sha": "57c6a060ac5be10ff8b8fbfe89ab79fbaf95b7b607f58739f2d9e315fac0f988",
+   "disk_sha": "caf74ed669730541298e7fbaa3eedd556c227caad56ce3ce23941eaeb4799eb8"
   },
   "laptop": {
    "ram": "delta",
-   "ram_sha": "57d020a59c1b7d514095caa079f84b1733cda7963363b2b353b210b198ee5945",
-   "disk_sha": "315122e60201aa6bb042df4bea6e0081cb45f4c57491c0a062cd5dace2c3d282"
+   "ram_sha": "668d5bf5021f581fae893f1e01af1dc7aff1f7689f77e6d5a0d901537fa2d52b",
+   "disk_sha": "53843fb7f7d63151415f68b215f0d5421fcaef1aaf0970e1e4f0d3cadff768ba"
   }
  }
 }
