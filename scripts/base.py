@@ -21,6 +21,7 @@ What the machinery adds OFF SCREEN, all of it named here and in SPIKE.md:
 - the laptop's sshd takes the recorder's key from /etc/ssh/ctl/ana (never ~/.ssh);
 - rsync on the laptop (its own tools are not a lesson).
 """
+import os
 import socket
 import sys
 import time
@@ -31,7 +32,7 @@ from machine import KEY, TERM, RUN, STATES, VMS, VM, image, save_state, sh, ssh_
 PASSWORD = 'mango-river-4821'   # the provider's password for ana on web-01 and web-02; never echoed
 # The live session's proxy CA when there is one (it may rotate), else the committed copy.
 _LIVE_CA = Path('/root/.ccr/agent-proxy-ca.crt')
-PROXY_CA = (_LIVE_CA if _LIVE_CA.exists() else Path(__file__).with_name('proxy-ca.crt')).read_text()
+PROXY_CA = (_LIVE_CA if os.access(_LIVE_CA, os.R_OK) else Path(__file__).with_name('proxy-ca.crt')).read_text()
 
 
 def indent(text: str, n: int) -> str:

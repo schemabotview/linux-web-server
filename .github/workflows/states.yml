@@ -7,7 +7,7 @@ name: states
 on:
   workflow_dispatch:
   push:
-    paths: [.github/workflows/states.yml]
+    paths: [.github/workflows/states.yml, scripts/**, spine/**/step.json]
 
 permissions:
   contents: write
