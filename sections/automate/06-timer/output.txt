@@ -1,0 +1,64 @@
+ana@web-01:~$ sudo tee /etc/systemd/system/site-report.service <<'EOF'
+> [Unit]
+> Description=Nightly report: requests per status
+>
+> [Service]
+> Type=oneshot
+> ExecStart=/bin/sh -c "awk '{print $9}' /var/log/nginx/access.log | sort | uniq
+ -c"
+> EOF
+[sudo] password for ana:
+[Unit]
+Description=Nightly report: requests per status
+
+[Service]
+Type=oneshot
+ExecStart=/bin/sh -c "awk '{print $9}' /var/log/nginx/access.log | sort | uniq -
+c"
+ana@web-01:~$ sudo tee /etc/systemd/system/site-report.timer <<'EOF'
+> [Unit]
+> Description=Run site-report every night
+>
+> [Timer]
+> OnCalendar=*-*-* 02:00
+> Persistent=true
+>
+> [Install]
+> WantedBy=timers.target
+> EOF
+[Unit]
+Description=Run site-report every night
+
+[Timer]
+OnCalendar=*-*-* 02:00
+Persistent=true
+
+[Install]
+WantedBy=timers.target
+ana@web-01:~$ sudo systemctl daemon-reload
+ana@web-01:~$ sudo systemctl enable --now site-report.timer
+Created symlink '/etc/systemd/system/timers.target.wants/site-report.timer' → '/
+etc/systemd/system/site-report.timer'.
+ana@web-01:~$ systemctl list-timers --no-pager site-report.timer
+NEXT                      LEFT LAST PASSED UNIT              ACTIVATES
+Tue 2026-11-03 02:00:00 …  16h -         - site-report.timer site-report.service
+
+1 timers listed.
+Pass --all to see loaded but inactive timers, too.
+ana@web-01:~$ sudo systemctl start site-report.service
+ana@web-01:~$ sudo journalctl -u site-report.service --no-pager -o cat
+Starting site-report.service - Nightly report: requests per status...
+     18 200
+      6 404
+site-report.service: Deactivated successfully.
+Finished site-report.service - Nightly report: requests per status.
+ana@web-01:~$ ls /etc/cron.d /etc/cron.daily 2>&1 | head -n 6
+/etc/cron.d:
+e2scrub_all
+
+/etc/cron.daily:
+apt-compat
+dpkg
+ana@web-01:~$ systemctl is-active cron
+inactive
+ana@web-01:~$

@@ -1,0 +1,28 @@
+ana@laptop:~$ cat > ~/deploy.sh <<'EOF'
+> #!/bin/bash
+> # deploy.sh: publish ~/site to ana.example
+> site_dir="$HOME/site"
+> target="deploy@192.0.2.10:/var/www/ana.example/"
+>
+> echo "Deploying $site_dir to $target"
+> rsync -a --delete "$site_dir/" "$target"
+> echo "Done."
+> EOF
+ana@laptop:~$ chmod +x ~/deploy.sh
+ana@laptop:~$ ~/deploy.sh
+Deploying /home/ana/site to deploy@192.0.2.10:/var/www/ana.example/
+Done.
+ana@laptop:~$ echo $?
+0
+ana@laptop:~$ mv ~/site ~/site.old
+ana@laptop:~$ ~/deploy.sh
+Deploying /home/ana/site to deploy@192.0.2.10:/var/www/ana.example/
+rsync: [sender] change_dir "/home/ana/site" failed: No such file or directory (2
+)
+rsync error: some files/attrs were not transferred (see previous errors) (code 2
+3) at main.c(1394) [sender=3.5.0]
+Done.
+ana@laptop:~$ echo $?
+0
+ana@laptop:~$ mv ~/site.old ~/site
+ana@laptop:~$

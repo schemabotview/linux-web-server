@@ -1,0 +1,18 @@
+ana@web-01:~$ ls /etc/hostname /nope
+ls: cannot access '/nope': No such file or directory
+/etc/hostname
+ana@web-01:~$ ls /etc/hostname /nope > out.txt
+ls: cannot access '/nope': No such file or directory
+ana@web-01:~$ cat out.txt
+/etc/hostname
+ana@web-01:~$ ls /etc/hostname /nope > out.txt 2>&1
+ana@web-01:~$ cat out.txt
+ls: cannot access '/nope': No such file or directory
+/etc/hostname
+ana@web-01:~$ ls /etc/hostname /nope 2>&1 > out.txt
+ls: cannot access '/nope': No such file or directory
+ana@web-01:~$ cat out.txt
+/etc/hostname
+ana@web-01:~$ ls /etc /nope 2>/dev/null | wc -l
+142
+ana@web-01:~$

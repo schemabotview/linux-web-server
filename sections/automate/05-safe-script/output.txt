@@ -1,0 +1,30 @@
+ana@laptop:~$ cat > ~/deploy.sh <<'EOF'
+> #!/bin/bash
+> # deploy.sh: publish ~/site to ana.example
+> set -euo pipefail
+> trap 'echo "deploy.sh: failed at line $LINENO" >&2' ERR
+>
+> site_dir="$HOME/site"
+> target="deploy@192.0.2.10:/var/www/ana.example/"
+>
+> if [ ! -f "$site_dir/index.html" ]; then
+>     echo "deploy.sh: no $site_dir/index.html, nothing to deploy" >&2
+>     exit 1
+> fi
+>
+> echo "Deploying $site_dir to $target"
+> rsync -a --delete "$site_dir/" "$target"
+> echo "Done."
+> EOF
+ana@laptop:~$ mv ~/site ~/site.old
+ana@laptop:~$ ~/deploy.sh
+deploy.sh: no /home/ana/site/index.html, nothing to deploy
+ana@laptop:~$ echo $?
+1
+ana@laptop:~$ mv ~/site.old ~/site
+ana@laptop:~$ ~/deploy.sh
+Deploying /home/ana/site to deploy@192.0.2.10:/var/www/ana.example/
+Done.
+ana@laptop:~$ echo $?
+0
+ana@laptop:~$

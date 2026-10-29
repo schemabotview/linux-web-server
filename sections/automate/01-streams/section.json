@@ -1,0 +1,13 @@
+{
+ "vm": "web-01",
+ "session": [
+  "ls /etc/hostname /nope",
+  "ls /etc/hostname /nope > out.txt",
+  "cat out.txt",
+  "ls /etc/hostname /nope > out.txt 2>&1",
+  "cat out.txt",
+  "ls /etc/hostname /nope 2>&1 > out.txt",
+  "cat out.txt",
+  "ls /etc /nope 2>/dev/null | wc -l"
+ ]
+}

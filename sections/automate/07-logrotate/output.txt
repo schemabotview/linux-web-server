@@ -1,0 +1,64 @@
+ana@web-01:~$ cat /etc/logrotate.d/nginx
+/var/log/nginx/*.log {
+        daily
+        missingok
+        rotate 14
+        compress
+        delaycompress
+        notifempty
+        create 0640 www-data adm
+        sharedscripts
+        prerotate
+                if [ -d /etc/logrotate.d/httpd-prerotate ]; then \
+                        run-parts /etc/logrotate.d/httpd-prerotate; \
+                fi \
+        endscript
+        postrotate
+                invoke-rc.d nginx rotate >/dev/null 2>&1
+        endscript
+}
+ana@web-01:~$ ls -l /var/log/nginx
+total 8
+-rw-r----- 1 www-data adm 2828 Nov  2 09:30 access.log
+-rw-r----- 1 www-data adm 1390 Nov  2 09:30 error.log
+ana@web-01:~$ sudo logrotate --force /etc/logrotate.d/nginx
+[sudo] password for ana:
+sudo: logrotate: command not found
+ana@web-01:~$ sudo apt install -y logrotate
+Installing:
+  logrotate
+
+Suggested packages:
+  bsd-mailx  | mailx
+
+Summary:
+  Upgrading: 0, Installing: 1, Removing: 0, Not Upgrading: 0
+  Download size: 62.0 kB
+  Space needed: 155 kB / 8989 MB available
+
+Get:1 file:/etc/apt/mirrors/debian.list Mirrorlist [30 B]
+Get:2 https://deb.debian.org/debian trixie/main amd64 logrotate amd64 3.22.0-1 [
+62.0 kB]
+Selecting previously unselected package logrotate.
+(Reading database ... 20696 files and directories currently installed.)
+Preparing to unpack .../logrotate_3.22.0-1_amd64.deb ...
+Unpacking logrotate (3.22.0-1) ...
+Setting up logrotate (3.22.0-1) ...
+Created symlink '/etc/systemd/system/timers.target.wants/logrotate.timer' → '/us
+r/lib/systemd/system/logrotate.timer'.
+logrotate.service is a disabled or a static unit, not starting it.
+Processing triggers for man-db (2.13.1-1) ...
+ana@web-01:~$ systemctl list-timers --no-pager logrotate.timer
+NEXT                        LEFT LAST PASSED UNIT            ACTIVATES
+Tue 2026-11-03 00:17:08 UTC  14h -         - logrotate.timer logrotate.service
+
+1 timers listed.
+Pass --all to see loaded but inactive timers, too.
+ana@web-01:~$ sudo logrotate --force /etc/logrotate.d/nginx
+ana@web-01:~$ ls -l /var/log/nginx
+total 8
+-rw-r----- 1 www-data adm    0 Nov  2 09:31 access.log
+-rw-r----- 1 www-data adm 2828 Nov  2 09:30 access.log.1
+-rw-r----- 1 www-data adm    0 Nov  2 09:31 error.log
+-rw-r----- 1 www-data adm 1390 Nov  2 09:30 error.log.1
+ana@web-01:~$

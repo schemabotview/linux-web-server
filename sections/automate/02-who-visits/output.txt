@@ -1,0 +1,32 @@
+ana@web-01:~$ sudo wc -l /var/log/nginx/access.log
+[sudo] password for ana:
+24 /var/log/nginx/access.log
+ana@web-01:~$ sudo tail -n 2 /var/log/nginx/access.log
+192.0.2.10 - - [02/Nov/2026:09:30:56 +0000] "GET / HTTP/1.1" 200 75 "-" "Mozilla
+/5.0 (X11; Linux x86_64) Firefox/140.0"
+192.0.2.10 - - [02/Nov/2026:09:30:57 +0000] "GET / HTTP/1.1" 200 75 "-" "Mozilla
+/5.0 (X11; Linux x86_64) Firefox/140.0"
+ana@web-01:~$ sudo grep -c ' 404 ' /var/log/nginx/access.log
+6
+ana@web-01:~$ sudo cut -d' ' -f7 /var/log/nginx/access.log | uniq -c
+      9 /
+      4 /about.html
+      1 /wp-login.php
+      1 /.env
+      1 /admin
+      1 /wp-login.php
+      1 /.git/config
+      1 /robots.txt
+      1 /
+      1 /about.html
+      3 /
+ana@web-01:~$ sudo cut -d' ' -f7 /var/log/nginx/access.log | sort | uniq -c | so
+rt -rn
+     13 /
+      5 /about.html
+      2 /wp-login.php
+      1 /robots.txt
+      1 /admin
+      1 /.git/config
+      1 /.env
+ana@web-01:~$

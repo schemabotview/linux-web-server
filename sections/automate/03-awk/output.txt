@@ -1,0 +1,21 @@
+ana@web-01:~$ sudo awk '{print $9}' /var/log/nginx/access.log | sort | uniq -c
+[sudo] password for ana:
+     18 200
+      6 404
+ana@web-01:~$ sudo awk '$9 == 404 {print $7}' /var/log/nginx/access.log | sort |
+ uniq -c | sort -rn
+      2 /wp-login.php
+      1 /robots.txt
+      1 /admin
+      1 /.git/config
+      1 /.env
+ana@web-01:~$ sudo awk -F'"' '{print $6}' /var/log/nginx/access.log | sort | uni
+q -c | sort -rn
+     12 Mozilla/5.0 (X11; Linux x86_64) Firefox/140.0
+      5 Mozilla/5.0 zgrab/0.x
+      4 Mozilla/5.0 (Macintosh) Safari/605.1.15
+      3 Mozilla/5.0 (compatible; Googlebot/2.1)
+ana@web-01:~$ sudo awk '{bytes += $10} END {print NR, "requests,", bytes, "bytes
+"}' /var/log/nginx/access.log
+24 requests, 1926 bytes
+ana@web-01:~$
