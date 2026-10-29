@@ -1,0 +1,10 @@
+{
+ "vm": "web-02",
+ "setup": [
+  "mkdir -p /var/db/sudo/lectured && touch /var/db/sudo/lectured/ana /var/db/sudo/lectured/1000"
+ ],
+ "session": [
+  "systemctl is-active firewalld",
+  "rpm -q firewalld nftables"
+ ]
+}

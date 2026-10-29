@@ -56,6 +56,7 @@ MACHINE = REPO / '.machine'              # images, disks, keys — never committ
 SECTIONS = REPO / 'sections'
 PASSWORD = 'mango-river-4821'            # the provider's password for ana; never echoed
 CLOCK = '2026-11-02T09:00:00'            # every VM's clock starts here: dates in output are stable
+SECTION_CLOCK = '2026-11-02T09:30:00Z'   # and every section starts here, on every VM it uses
 COLS, ROWS = 80, 44
 
 IMAGE = {
@@ -152,7 +153,8 @@ class VM:
             return False
 
     def start(self, extra: list[str]) -> None:
-        net = f'user,id=net,net=192.0.2.0/24,host=192.0.2.1,dhcpstart={self.spec["ip"]}'
+        # no IPv6 on QEMU's user network: its fec0:: site-local address is QEMU's, not a provider's
+        net = f'user,id=net,ipv6=off,net=192.0.2.0/24,host=192.0.2.1,dhcpstart={self.spec["ip"]}'
         if self.name == 'laptop':
             net += f',hostfwd=tcp:127.0.0.1:{self.spec["port"]}-:22'
             # Each VM has its own network; from the laptop, a server's address:port is that server's port.
@@ -221,7 +223,11 @@ class VM:
 
         try:
             call('guest-sync', id=int(time.time() * 1000) % 2**31)   # skip anything stale on the channel
-            exe = {'path': '/bin/sh', 'arg': ['-c', cmd], 'capture-output': True}
+            argv = ['/bin/sh', '-c', cmd]
+            if self.spec['image'] == 'rocky':
+                # as a system service, so what it creates gets the labels SELinux gives it normally
+                argv = ['systemd-run', '--quiet', '--wait', '--pipe', '--collect'] + argv
+            exe = {'path': argv[0], 'arg': argv[1:], 'capture-output': True}
             if stdin:
                 exe['input-data'] = base64.b64encode(stdin.encode()).decode()
             pid, end = call('guest-exec', **exe)['pid'], time.time() + timeout
@@ -294,6 +300,9 @@ class VM:
     def reset(self) -> None:
         self.hmp('loadvm fresh')
         self.ready(300)
+        # one clock for every VM in the section (each VM's own clock drifted with its own run time)
+        when = time.mktime(time.strptime(SECTION_CLOCK, '%Y-%m-%dT%H:%M:%SZ')) - time.timezone
+        self.agent(f'date -u -s @{int(when)} >/dev/null && hwclock -w 2>/dev/null; true')
 
     def down(self) -> None:
         if self.running():
@@ -319,6 +328,9 @@ class Terminal:
             return self.child.read_nonblocking(65536, timeout=timeout)
         except pexpect.TIMEOUT:
             return b''
+        except pexpect.EOF:
+            screen = bytes(self.stream[-400:]).decode(errors='replace')
+            raise SystemExit(f'the terminal\'s connection closed; the screen ends with:\n{screen}')
 
     def idle(self, seconds: float) -> None:
         """Type nothing; what arrives meanwhile is on screen (a connection closing, a prompt)."""
@@ -453,8 +465,14 @@ if __name__ == '__main__':
         for name in args or list(VMS):
             VM(name).down()
     elif cmd == 'run' and args:
-        for s in args:
-            run(s)
+        failed = []
+        for s in args:                  # one section failing does not stop the others
+            try:
+                run(s)
+            except SystemExit as e:
+                print(f'{s}: FAILED — {e}', flush=True)
+                failed.append(s)
+        sys.exit(f'failed: {" ".join(failed)}' if failed else 0)
     elif cmd == 'sh' and len(args) == 2:
         vm = VM(args[0])
         vm.up()

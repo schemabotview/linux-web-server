@@ -1,7 +1,7 @@
 ana@web-01:~$ ps -o pid,ppid,user,cmd -p 1,$$
     PID    PPID USER     CMD
       1       0 root     /sbin/init
-   2289    2288 ana      -bash
+   2290    2289 ana      -bash
 ana@web-01:~$ pstree
 systemd─┬─2*[agetty]
         ├─dbus-daemon
@@ -18,9 +18,9 @@ systemd─┬─2*[agetty]
         └─unattended-upgr
 ana@web-01:~$ ps -o pid,ppid,user,cmd -C nginx
     PID    PPID USER     CMD
-   2256       1 root     nginx: master process /usr/sbin/nginx -g daemon on; mas
-   2259    2256 www-data nginx: worker process
-   2260    2256 www-data nginx: worker process
+   2257       1 root     nginx: master process /usr/sbin/nginx -g daemon on; mas
+   2259    2257 www-data nginx: worker process
+   2260    2257 www-data nginx: worker process
 ana@web-01:~$ ls -l /proc/1/exe
 ls: cannot read symbolic link '/proc/1/exe': Permission denied
 lrwxrwxrwx 1 root root 0 Nov  2 09:00 /proc/1/exe

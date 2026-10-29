@@ -1,0 +1,34 @@
+[ana@web-02 ~]$ mkdir ~/site && echo '<h1>ana.example</h1>' > ~/site/index.html
+[ana@web-02 ~]$ sudo mkdir -p /var/www
+[sudo] password for ana:
+[ana@web-02 ~]$ sudo mv ~/site /var/www/ana.example
+[ana@web-02 ~]$ ls -l /var/www/ana.example
+total 4
+-rw-r--r--. 1 ana ana 21 Nov  2 09:31 index.html
+[ana@web-02 ~]$ curl -sI -H 'Host: ana.example' http://127.0.0.1/ | head -n 1
+HTTP/1.1 403 Forbidden
+[ana@web-02 ~]$ sudo ausearch -m avc -c nginx -ts recent | tail -n 3
+type=PROCTITLE msg=audit(1793611912.809:253): proctitle=6E67696E783A20776F726B65
+722070726F63657373
+type=SYSCALL msg=audit(1793611912.809:253): arch=c000003e syscall=257 success=no
+ exit=-13 a0=ffffff9c a1=556ad4b1938d a2=800 a3=0 items=0 ppid=6263 pid=6264 aui
+d=4294967295 uid=993 gid=993 euid=993 suid=993 fsuid=993 egid=993 sgid=993 fsgid
+=993 tty=(none) ses=4294967295 comm="nginx" exe="/usr/sbin/nginx" subj=system_u:
+system_r:httpd_t:s0 key=(null)
+type=AVC msg=audit(1793611912.809:253): avc:  denied  { read } for  pid=6264 com
+m="nginx" name="index.html" dev="vda4" ino=8389376 scontext=system_u:system_r:ht
+tpd_t:s0 tcontext=unconfined_u:object_r:user_home_t:s0 tclass=file permissive=0
+[ana@web-02 ~]$ ls -Z /var/www/ana.example
+unconfined_u:object_r:user_home_t:s0 index.html
+[ana@web-02 ~]$ sudo semanage fcontext -a -t httpd_sys_content_t '/var/www/ana.e
+xample(/.*)?'
+[ana@web-02 ~]$ sudo restorecon -Rv /var/www/ana.example
+Relabeled /var/www/ana.example from unconfined_u:object_r:user_home_t:s0 to unco
+nfined_u:object_r:httpd_sys_content_t:s0
+Relabeled /var/www/ana.example/index.html from unconfined_u:object_r:user_home_t
+:s0 to unconfined_u:object_r:httpd_sys_content_t:s0
+[ana@web-02 ~]$ ls -Z /var/www/ana.example
+unconfined_u:object_r:httpd_sys_content_t:s0 index.html
+[ana@web-02 ~]$ curl -sI -H 'Host: ana.example' http://127.0.0.1/ | head -n 1
+HTTP/1.1 200 OK
+[ana@web-02 ~]$

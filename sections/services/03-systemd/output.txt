@@ -2,21 +2,21 @@ ana@web-01:~$ systemctl status nginx --no-pager
 ● nginx.service - A high performance web server and a reverse proxy server
      Loaded: loaded (/usr/lib/systemd/system/nginx.service; enabled; preset: ena
 bled)
-     Active: active (running) since Mon 2026-11-02 09:26:03 UTC; 11s ago
- Invocation: fbf378c14472492b8c11c20c72ba802a
+     Active: active (running) since Mon 2026-11-02 09:30:42 UTC; 10s ago
+ Invocation: 4c8ac3f767944ec7b13a8d02f6bd6621
        Docs: man:nginx(8)
-    Process: 2227 ExecStartPre=/usr/sbin/nginx -t -q -g daemon on; master_proces
+    Process: 2228 ExecStartPre=/usr/sbin/nginx -t -q -g daemon on; master_proces
 s on; (code=exited, status=0/SUCCESS)
     Process: 2229 ExecStart=/usr/sbin/nginx -g daemon on; master_process on; (co
 de=exited, status=0/SUCCESS)
    Main PID: 2257 (nginx)
       Tasks: 3 (limit: 1732)
-     Memory: 2.7M (peak: 6.9M)
-        CPU: 784ms
+     Memory: 2.8M (peak: 6.6M)
+        CPU: 836ms
      CGroup: /system.slice/nginx.service
              ├─2257 "nginx: master process /usr/sbin/nginx -g daemon on; master…
-             ├─2259 "nginx: worker process"
-             └─2260 "nginx: worker process"
+             ├─2260 "nginx: worker process"
+             └─2261 "nginx: worker process"
 
 Warning: some journal files were not opened due to insufficient permissions.
 ana@web-01:~$ systemctl cat nginx --no-pager
@@ -56,6 +56,6 @@ WantedBy=multi-user.target
 ana@web-01:~$ systemctl show nginx -p Requires -p Wants -p After --no-pager
 Requires=sysinit.target system.slice
 Wants=network-online.target
-After=basic.target sysinit.target systemd-journald.socket network-online.target
-system.slice remote-fs.target nss-lookup.target
+After=basic.target remote-fs.target systemd-journald.socket sysinit.target netwo
+rk-online.target system.slice nss-lookup.target
 ana@web-01:~$

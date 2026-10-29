@@ -15,7 +15,7 @@ Change it first; never drift from it.
 ## Status
 
 Plan agreed 2026-10-29. The simulator works (`scripts/sim.py`): one real VM, commands in, real
-output out. Courses 1–4 are authored and captured (`first-login` 01 comes last); open questions
+output out. All 7 courses are authored and captured (`first-login` 01 comes last); open questions
 for the owner are in `sections/NOTES.md`. The app is not scaffolded yet.
 
 ## Commands
@@ -51,7 +51,11 @@ Needs `qemu-system-x86`, `qemu-utils`, `genisoimage`, `openssh-client`, and Pyth
 - Each VM has its own network, so a server sees the laptop's logins as coming from 192.0.2.1
   (`Last login: … from 192.0.2.1`, `who`, auth logs). Scenes and narration never quote that address.
 - `{"pause": N}` waits N seconds typing nothing (a reboot); a server's ports 22, 80, 443 and 8080
-  are reachable from the laptop.
+  are reachable from the laptop. Test a CLOSED port on the server itself (from the laptop it reads
+  as a dropped connection, not "refused").
+- Every section's VMs share one clock, set to 09:30 at the start.
+- Ana's terminal logs in with her password; a section whose setup turns passwords off (after §2.6)
+  runs on the laptop and `ssh`es in with her key.
 - A command that does not return in 15 minutes fails with the screen it is stuck on (a pager:
   `journalctl` needs `--no-pager`, or a `tty` item).
 - `first-login/03-ssh` was captured by the earlier recorder (ssh from a laptop VM); it has no

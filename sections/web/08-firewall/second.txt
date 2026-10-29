@@ -1,0 +1,8 @@
+ana@laptop:~$ ssh ana@192.0.2.10 hostname
+web-01
+ana@laptop:~$ curl -s -o /dev/null -w '%{http_code}\n' http://ana.example/
+200
+ana@laptop:~$ curl -s -m 5 -o /dev/null -w '%{http_code}\n' http://ana.example:8
+080/
+000
+ana@laptop:~$

@@ -1,0 +1,33 @@
+ana@web-01:~$ sudo nginx -t
+[sudo] password for ana:
+nginx: the configuration file /etc/nginx/nginx.conf syntax is ok
+nginx: configuration file /etc/nginx/nginx.conf test is successful
+ana@web-01:~$ ps -o pid,cmd -C nginx
+    PID CMD
+   2256 nginx: master process /usr/sbin/nginx -g daemon on; master_process on;
+   2307 nginx: worker process
+   2308 nginx: worker process
+ana@web-01:~$ sudo systemctl reload nginx
+ana@web-01:~$ ps -o pid,cmd -C nginx
+    PID CMD
+   2256 nginx: master process /usr/sbin/nginx -g daemon on; master_process on;
+   2351 nginx: worker process
+   2352 nginx: worker process
+ana@web-01:~$ echo 'server { listen 80 }' | sudo tee /etc/nginx/conf.d/broken.co
+nf
+server { listen 80 }
+ana@web-01:~$ sudo nginx -t
+2026/11/02 09:31:01 [emerg] 2362#2362: unexpected "}" in /etc/nginx/conf.d/broke
+n.conf:1
+nginx: configuration file /etc/nginx/nginx.conf test failed
+ana@web-01:~$ sudo systemctl reload nginx
+Job for nginx.service failed.
+See "systemctl status nginx.service" and "journalctl -xeu nginx.service" for det
+ails.
+ana@web-01:~$ systemctl is-active nginx
+active
+ana@web-01:~$ sudo rm /etc/nginx/conf.d/broken.conf
+ana@web-01:~$ sudo nginx -t
+nginx: the configuration file /etc/nginx/nginx.conf syntax is ok
+nginx: configuration file /etc/nginx/nginx.conf test is successful
+ana@web-01:~$

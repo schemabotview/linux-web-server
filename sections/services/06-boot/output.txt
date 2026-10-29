@@ -8,41 +8,41 @@ BOOT_IMAGE=/boot/vmlinuz-6.12.113+deb13-cloud-amd64 root=PARTUUID=84fd0772-d38a-
 5200 consoleblank=0
 ana@web-01:~$ sudo journalctl -b -o short-monotonic --no-pager | head -n 6
 [sudo] password for ana:
-[   17.086554] localhost kernel: Linux version 6.12.113+deb13-cloud-amd64 (debia
+[   17.434221] localhost kernel: Linux version 6.12.113+deb13-cloud-amd64 (debia
 n-kernel@lists.debian.org) (x86_64-linux-gnu-gcc-14 (Debian 14.2.0-19) 14.2.0, G
 NU ld (GNU Binutils for Debian) 2.44) #1 SMP PREEMPT_DYNAMIC Debian 6.12.113-1 (
 2026-10-15)
-[   17.090079] localhost kernel: Command line: BOOT_IMAGE=/boot/vmlinuz-6.12.113
+[   17.438016] localhost kernel: Command line: BOOT_IMAGE=/boot/vmlinuz-6.12.113
 +deb13-cloud-amd64 root=PARTUUID=84fd0772-d38a-4fe7-b574-dcb86f5e263f ro console
 =tty0 console=ttyS0,115200 earlyprintk=ttyS0,115200 consoleblank=0
-[   17.091216] localhost kernel: BIOS-provided physical RAM map:
-[   17.091376] localhost kernel: BIOS-e820: [mem 0x0000000000000000-0x0000000000
+[   17.438877] localhost kernel: BIOS-provided physical RAM map:
+[   17.439020] localhost kernel: BIOS-e820: [mem 0x0000000000000000-0x0000000000
 09fbff] usable
-[   17.091473] localhost kernel: BIOS-e820: [mem 0x000000000009fc00-0x0000000000
+[   17.439111] localhost kernel: BIOS-e820: [mem 0x000000000009fc00-0x0000000000
 09ffff] reserved
-[   17.091626] localhost kernel: BIOS-e820: [mem 0x00000000000f0000-0x0000000000
+[   17.439252] localhost kernel: BIOS-e820: [mem 0x00000000000f0000-0x0000000000
 0fffff] reserved
 ana@web-01:~$ sudo journalctl -b -o short-monotonic --no-pager -t kernel -t syst
 emd -g 'Run /init|systemd 2|Reached target multi-user'
-[   17.309893] localhost kernel: Run /init as init process
-[   17.342638] localhost systemd[1]: systemd 257.13-1~deb13u1 running in system
+[   17.712724] localhost kernel: Run /init as init process
+[   17.748692] localhost systemd[1]: systemd 257.13-1~deb13u1 running in system
 mode (+PAM +AUDIT +SELINUX +APPARMOR +IMA +IPE +SMACK +SECCOMP +GCRYPT -GNUTLS +
 OPENSSL +ACL +BLKID +CURL +ELFUTILS +FIDO2 +IDN2 -IDN +IPTC +KMOD +LIBCRYPTSETUP
  +LIBCRYPTSETUP_PLUGINS +LIBFDISK +PCRE2 +PWQUALITY +P11KIT +QRENCODE +TPM2 +BZI
 P2 +LZ4 +XZ +ZLIB +ZSTD +BPF_FRAMEWORK +BTF -XKBCOMMON -UTMP +SYSVINIT +LIBARCHI
 VE)
-[   90.539130] web-01 systemd[1]: Reached target multi-user.target - Multi-User
+[   88.760934] web-01 systemd[1]: Reached target multi-user.target - Multi-User
 System.
 ana@web-01:~$ systemd-analyze --no-pager
-Startup finished in 10.161s (kernel) + 2min 8.926s (userspace) = 2min 19.087s
-graphical.target reached after 1min 20.386s in userspace.
+Startup finished in 10.064s (kernel) + 2min 9.244s (userspace) = 2min 19.308s
+graphical.target reached after 1min 18.702s in userspace.
 ana@web-01:~$ systemd-analyze blame --no-pager | head -n 8
-47.095s cloud-final.service
-43.331s cloud-init-network.service
-11.135s cloud-init-main.service
-10.227s cloud-init-local.service
- 9.488s apparmor.service
- 9.458s dev-vda1.device
- 4.559s cloud-config.service
- 3.423s systemd-binfmt.service
+48.799s cloud-final.service
+41.436s cloud-init-network.service
+12.840s cloud-init-main.service
+10.523s apparmor.service
+10.136s cloud-init-local.service
+ 9.592s dev-vda1.device
+ 4.553s cloud-config.service
+ 4.153s systemd-binfmt.service
 ana@web-01:~$

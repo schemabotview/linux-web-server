@@ -1,0 +1,48 @@
+ana@web-01:~$ grep include /etc/nginx/nginx.conf
+include /etc/nginx/modules-enabled/*.conf;
+        include /etc/nginx/mime.types;
+        include /etc/nginx/conf.d/*.conf;
+        include /etc/nginx/sites-enabled/*;
+ana@web-01:~$ ls -l /etc/nginx/sites-available /etc/nginx/sites-enabled
+/etc/nginx/sites-available:
+total 4
+-rw-r--r-- 1 root root 2412 Sep 15 10:37 default
+
+/etc/nginx/sites-enabled:
+total 0
+lrwxrwxrwx 1 root root 34 Nov  2 09:30 default -> /etc/nginx/sites-available/def
+ault
+ana@web-01:~$ grep -Ev '^\s*(#|$)' /etc/nginx/sites-available/default
+server {
+        listen 80 default_server;
+        listen [::]:80 default_server;
+        root /var/www/html;
+        index index.html index.htm index.nginx-debian.html;
+        server_name _;
+        location / {
+                try_files $uri $uri/ =404;
+        }
+}
+ana@web-01:~$ sudo tee /etc/nginx/sites-available/ana.example <<'EOF'
+> server {
+>     listen 80;
+>     server_name ana.example;
+>     root /var/www/ana.example;
+>     index index.html;
+> }
+> EOF
+[sudo] password for ana:
+server {
+    listen 80;
+    server_name ana.example;
+    root /var/www/ana.example;
+    index index.html;
+}
+ana@web-01:~$ sudo ln -s /etc/nginx/sites-available/ana.example /etc/nginx/sites
+-enabled/
+ana@web-01:~$ sudo rm /etc/nginx/sites-enabled/default
+ana@web-01:~$ ls -l /etc/nginx/sites-enabled
+total 0
+lrwxrwxrwx 1 root root 38 Nov  2 09:30 ana.example -> /etc/nginx/sites-available
+/ana.example
+ana@web-01:~$

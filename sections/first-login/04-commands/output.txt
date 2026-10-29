@@ -14,20 +14,20 @@ drwxr-xr-x 2 root root   4096 Oct 26 04:58 ssh_config.d
 -rw-r--r-- 1 root root   3446 Oct 26 04:59 sshd_config
 drwxr-xr-x 2 root root   4096 Nov  2 09:01 sshd_config.d
 ana@web-01:~$ ls -l --human-readable /var/log
-total 160K
+total 164K
 lrwxrwxrwx  1 root root              39 Oct 26 04:58 README -> ../../usr/share/d
 oc/systemd/README.logs
 drwxr-xr-x  2 root root            4.0K Nov  2 09:02 apt
 -rw-rw----  1 root utmp               0 Oct 26 04:56 btmp
--rw-r-----  1 root adm             7.6K Nov  2 09:02 cloud-init-output.log
--rw-r-----  1 root adm             112K Nov  2 09:02 cloud-init.log
+-rw-r-----  1 root adm             7.4K Nov  2 09:02 cloud-init-output.log
+-rw-r-----  1 root adm             113K Nov  2 09:02 cloud-init.log
 -rw-r--r--  1 root root             927 Nov  2 09:02 dpkg.log
 drwxr-sr-x+ 3 root systemd-journal 4.0K Nov  2 09:00 journal
--rw-rw-r--  1 root utmp            286K Nov  2 09:23 lastlog
+-rw-rw-r--  1 root utmp            286K Nov  2 09:30 lastlog
 drwx------  2 root root            4.0K Oct 26 04:58 private
 drwxr-xr-x  3 root root            4.0K Oct 26 04:58 runit
 drwxr-x---  2 root adm             4.0K Nov  2 09:01 unattended-upgrades
--rw-rw-r--  1 root utmp            1.2K Nov  2 09:23 wtmp
--rw-r--r--  1 root root            8.0K Nov  2 09:23 wtmp.db
+-rw-rw-r--  1 root utmp            1.2K Nov  2 09:30 wtmp
+-rw-r--r--  1 root root            8.0K Nov  2 09:30 wtmp.db
 ana@web-01:~$ man ls
 ana@web-01:~$

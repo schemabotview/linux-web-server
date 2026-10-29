@@ -1,0 +1,31 @@
+ana@web-01:~$ ss -tln
+State     Recv-Q    Send-Q       Local Address:Port        Peer Address:Port
+LISTEN    0         4096         127.0.0.53%lo:53               0.0.0.0:*
+LISTEN    0         4096            127.0.0.54:53               0.0.0.0:*
+LISTEN    0         4096               0.0.0.0:5355             0.0.0.0:*
+LISTEN    0         511                0.0.0.0:80               0.0.0.0:*
+LISTEN    0         128                0.0.0.0:22               0.0.0.0:*
+LISTEN    0         4096                  [::]:5355                [::]:*
+LISTEN    0         128                   [::]:22                  [::]:*
+ana@web-01:~$ sudo ss -tlnp
+[sudo] password for ana:
+State     Recv-Q    Send-Q       Local Address:Port        Peer Address:Port
+Process
+LISTEN    0         4096         127.0.0.53%lo:53               0.0.0.0:*
+ users:(("systemd-resolve",pid=360,fd=19))
+LISTEN    0         4096            127.0.0.54:53               0.0.0.0:*
+ users:(("systemd-resolve",pid=360,fd=21))
+LISTEN    0         4096               0.0.0.0:5355             0.0.0.0:*
+ users:(("systemd-resolve",pid=360,fd=12))
+LISTEN    0         511                0.0.0.0:80               0.0.0.0:*
+ users:(("nginx",pid=2309,fd=5),("nginx",pid=2308,fd=5),("nginx",pid=2258,fd=5))
+LISTEN    0         128                0.0.0.0:22               0.0.0.0:*
+ users:(("sshd",pid=1849,fd=6))
+LISTEN    0         4096                  [::]:5355                [::]:*
+ users:(("systemd-resolve",pid=360,fd=14))
+LISTEN    0         128                   [::]:22                  [::]:*
+ users:(("sshd",pid=1849,fd=7))
+ana@web-01:~$ ss -tn
+State    Recv-Q    Send-Q       Local Address:Port        Peer Address:Port
+ESTAB    0         36              192.0.2.10:22             192.0.2.1:50238
+ana@web-01:~$

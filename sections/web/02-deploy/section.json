@@ -1,0 +1,38 @@
+{
+ "vm": "laptop",
+ "with": [
+  "web-01"
+ ],
+ "setup": [
+  {
+   "on": "web-01",
+   "run": "apt-get update -q >/dev/null && apt-get install -y -q nginx >/dev/null 2>&1 && apt-get install -y -q rsync >/dev/null 2>&1"
+  },
+  {
+   "on": "web-01",
+   "run": "adduser --quiet --disabled-password --comment 'Site deploys' deploy && install -d -o deploy -g deploy /var/www/ana.example && printf '<!doctype html>\\n<title>ana.example</title>\\n<h1>Hello from ana.example</h1>\\n' > /var/www/ana.example/index.html && chown deploy:deploy /var/www/ana.example/index.html"
+  },
+  {
+   "on": "web-01",
+   "run": "printf 'server {\\n    listen 80;\\n    server_name ana.example;\\n    root /var/www/ana.example;\\n    index index.html;\\n}\\n' > /etc/nginx/sites-available/ana.example && ln -s /etc/nginx/sites-available/ana.example /etc/nginx/sites-enabled/ && rm /etc/nginx/sites-enabled/default && systemctl reload nginx"
+  },
+  "apt-get update -q >/dev/null && apt-get install -y -q rsync >/dev/null 2>&1",
+  "printf '192.0.2.10 ana.example   # stand-in for public DNS: ana.example is a documentation name\\n' >> /etc/hosts",
+  "su - ana -c \"mkdir ~/site && printf '<!doctype html>\\n<title>ana.example</title>\\n<h1>Ana</h1>\\n<p>I run my own server.</p>\\n' > ~/site/index.html && printf '<!doctype html>\\n<title>About</title>\\n<h1>About</h1>\\n' > ~/site/about.html\"",
+  "su - ana -c \"ssh-keygen -q -t ed25519 -N '' -C ana@laptop -f ~/.ssh/id_ed25519 && ssh-keyscan -q -t ed25519 192.0.2.10 > ~/.ssh/known_hosts\" && cat ~ana/.ssh/id_ed25519.pub",
+  {
+   "on": "web-01",
+   "pipe": true,
+   "run": "install -d -m 700 -o deploy -g deploy ~deploy/.ssh && install -m 600 -o deploy -g deploy /dev/stdin ~deploy/.ssh/authorized_keys"
+  }
+ ],
+ "session": [
+  "ls -l ~/site",
+  "rsync -av ~/site/ deploy@192.0.2.10:/var/www/ana.example/",
+  "ssh deploy@192.0.2.10 ls -l /var/www/ana.example",
+  "curl -s http://ana.example/",
+  "echo '<p>Now with an about page.</p>' >> ~/site/index.html",
+  "rsync -av ~/site/ deploy@192.0.2.10:/var/www/ana.example/",
+  "curl -s http://ana.example/"
+ ]
+}

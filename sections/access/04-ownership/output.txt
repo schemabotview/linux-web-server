@@ -3,21 +3,21 @@ ana@web-01:~$ umask
 ana@web-01:~$ sudo mkdir -p /var/www/ana.example
 [sudo] password for ana:
 ana@web-01:~$ ls -ld /var/www/ana.example
-drwxr-xr-x 2 root root 4096 Nov  2 09:22 /var/www/ana.example
+drwxr-xr-x 2 root root 4096 Nov  2 09:30 /var/www/ana.example
 ana@web-01:~$ sudo chown deploy:deploy /var/www/ana.example
 ana@web-01:~$ ls -ld /var/www/ana.example
-drwxr-xr-x 2 deploy deploy 4096 Nov  2 09:22 /var/www/ana.example
+drwxr-xr-x 2 deploy deploy 4096 Nov  2 09:30 /var/www/ana.example
 ana@web-01:~$ sudo -u deploy sh -c 'echo "<h1>ana.example</h1>" > /var/www/ana.e
 xample/index.html'
 ana@web-01:~$ ls -l /var/www/ana.example
 total 4
--rw-rw-r-- 1 deploy deploy 21 Nov  2 09:22 index.html
+-rw-rw-r-- 1 deploy deploy 21 Nov  2 09:30 index.html
 ana@web-01:~$ touch /var/www/ana.example/notes.txt
 touch: cannot touch '/var/www/ana.example/notes.txt': Permission denied
 ana@web-01:~$ sudo chmod 640 /var/www/ana.example/index.html
 ana@web-01:~$ ls -l /var/www/ana.example
 total 4
--rw-r----- 1 deploy deploy 21 Nov  2 09:22 index.html
+-rw-r----- 1 deploy deploy 21 Nov  2 09:30 index.html
 ana@web-01:~$ cat /var/www/ana.example/index.html
 cat: /var/www/ana.example/index.html: Permission denied
 ana@web-01:~$ sudo chmod 644 /var/www/ana.example/index.html

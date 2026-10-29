@@ -1,0 +1,6 @@
+[ana@web-02 ~]$ systemctl is-active firewalld
+inactive
+[ana@web-02 ~]$ rpm -q firewalld nftables
+package firewalld is not installed
+package nftables is not installed
+[ana@web-02 ~]$

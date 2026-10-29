@@ -1,0 +1,172 @@
+ana@laptop:~$ ssh ana@192.0.2.10
+Linux web-01 6.12.113+deb13-cloud-amd64 #1 SMP PREEMPT_DYNAMIC Debian 6.12.113-1
+ (2026-10-15) x86_64
+
+The programs included with the Debian GNU/Linux system are free software;
+the exact distribution terms for each program are described in the
+individual files in /usr/share/doc/*/copyright.
+
+Debian GNU/Linux comes with ABSOLUTELY NO WARRANTY, to the extent
+permitted by applicable law.
+ana@web-01:~$ curl -sSI https://ana.example/
+curl: (7) Failed to connect to ana.example port 443 after 29 ms: Could not conne
+ct to server
+ana@web-01:~$ sudo apt install -y certbot python3-certbot-nginx
+[sudo] password for ana:
+Installing:
+  certbot  python3-certbot-nginx
+
+Installing dependencies:
+  libicu76                python3-icu            python3-pyparsing
+  python3-acme            python3-josepy         python3-pytz
+  python3-certbot         python3-openssl        python3-rfc3339
+  python3-configargparse  python3-parsedatetime
+
+Suggested packages:
+  python-certbot-doc      python-acme-doc           python-openssl-doc
+  python3-certbot-apache  python-certbot-nginx-doc  python-pyparsing-doc
+
+Summary:
+  Upgrading: 0, Installing: 13, Removing: 0, Not Upgrading: 0
+  Download size: 11.2 MB
+  Space needed: 46.1 MB / 8969 MB available
+
+Get:1 file:/etc/apt/mirrors/debian.list Mirrorlist [30 B]
+Get:2 https://deb.debian.org/debian trixie/main amd64 python3-openssl all 25.0.0
+-1+deb13u1 [52.5 kB]
+Get:3 https://deb.debian.org/debian trixie/main amd64 python3-josepy all 2.0.0-1
+ [23.6 kB]
+Get:4 https://deb.debian.org/debian trixie/main amd64 python3-pytz all 2025.2-3
+[152 kB]
+Get:5 https://deb.debian.org/debian trixie/main amd64 python3-rfc3339 all 2.0.1-
+1 [6272 B]
+Get:6 https://deb.debian.org/debian trixie/main amd64 python3-acme all 4.0.0-1 [
+48.6 kB]
+Get:7 https://deb.debian.org/debian trixie/main amd64 python3-configargparse all
+ 1.7-2 [31.4 kB]
+Get:8 https://deb.debian.org/debian trixie/main amd64 python3-parsedatetime all
+2.6-3 [41.2 kB]
+Get:9 https://deb.debian.org/debian trixie/main amd64 python3-certbot all 4.0.0-
+2+deb13u1 [300 kB]
+Get:10 https://deb.debian.org/debian trixie/main amd64 certbot all 4.0.0-2+deb13
+u1 [130 kB]
+Get:11 https://deb.debian.org/debian trixie/main amd64 libicu76 amd64 76.1-4 [97
+22 kB]
+Get:12 https://deb.debian.org/debian trixie/main amd64 python3-pyparsing all 3.1
+.2-1 [146 kB]
+Get:13 https://deb.debian.org/debian trixie/main amd64 python3-certbot-nginx all
+ 4.0.0-2 [65.7 kB]
+Get:14 https://deb.debian.org/debian trixie/main amd64 python3-icu amd64 2.14-1+
+b3 [516 kB]
+Fetched 11.2 MB in 2s (5944 kB/s)
+Selecting previously unselected package python3-openssl.
+(Reading database ... 20708 files and directories currently installed.)
+Preparing to unpack .../00-python3-openssl_25.0.0-1+deb13u1_all.deb ...
+Unpacking python3-openssl (25.0.0-1+deb13u1) ...
+Selecting previously unselected package python3-josepy.
+Preparing to unpack .../01-python3-josepy_2.0.0-1_all.deb ...
+Unpacking python3-josepy (2.0.0-1) ...
+Selecting previously unselected package python3-pytz.
+Preparing to unpack .../02-python3-pytz_2025.2-3_all.deb ...
+Unpacking python3-pytz (2025.2-3) ...
+Selecting previously unselected package python3-rfc3339.
+Preparing to unpack .../03-python3-rfc3339_2.0.1-1_all.deb ...
+Unpacking python3-rfc3339 (2.0.1-1) ...
+Selecting previously unselected package python3-acme.
+Preparing to unpack .../04-python3-acme_4.0.0-1_all.deb ...
+Unpacking python3-acme (4.0.0-1) ...
+Selecting previously unselected package python3-configargparse.
+Preparing to unpack .../05-python3-configargparse_1.7-2_all.deb ...
+Unpacking python3-configargparse (1.7-2) ...
+Selecting previously unselected package python3-parsedatetime.
+Preparing to unpack .../06-python3-parsedatetime_2.6-3_all.deb ...
+Unpacking python3-parsedatetime (2.6-3) ...
+Selecting previously unselected package python3-certbot.
+Preparing to unpack .../07-python3-certbot_4.0.0-2+deb13u1_all.deb ...
+Unpacking python3-certbot (4.0.0-2+deb13u1) ...
+Selecting previously unselected package certbot.
+Preparing to unpack .../08-certbot_4.0.0-2+deb13u1_all.deb ...
+Unpacking certbot (4.0.0-2+deb13u1) ...
+Selecting previously unselected package libicu76:amd64.
+Preparing to unpack .../09-libicu76_76.1-4_amd64.deb ...
+Unpacking libicu76:amd64 (76.1-4) ...
+Selecting previously unselected package python3-pyparsing.
+Preparing to unpack .../10-python3-pyparsing_3.1.2-1_all.deb ...
+Unpacking python3-pyparsing (3.1.2-1) ...
+Selecting previously unselected package python3-certbot-nginx.
+Preparing to unpack .../11-python3-certbot-nginx_4.0.0-2_all.deb ...
+Unpacking python3-certbot-nginx (4.0.0-2) ...
+Selecting previously unselected package python3-icu.
+Preparing to unpack .../12-python3-icu_2.14-1+b3_amd64.deb ...
+Unpacking python3-icu (2.14-1+b3) ...
+Setting up python3-configargparse (1.7-2) ...
+Setting up python3-parsedatetime (2.6-3) ...
+Setting up python3-openssl (25.0.0-1+deb13u1) ...
+Setting up python3-pytz (2025.2-3) ...
+Setting up python3-pyparsing (3.1.2-1) ...
+Setting up python3-josepy (2.0.0-1) ...
+Setting up libicu76:amd64 (76.1-4) ...
+Setting up python3-rfc3339 (2.0.1-1) ...
+Setting up python3-icu (2.14-1+b3) ...
+Setting up python3-acme (4.0.0-1) ...
+Setting up python3-certbot (4.0.0-2+deb13u1) ...
+Setting up certbot (4.0.0-2+deb13u1) ...
+Created symlink '/etc/systemd/system/timers.target.wants/certbot.timer' → '/usr/
+lib/systemd/system/certbot.timer'.
+Setting up python3-certbot-nginx (4.0.0-2) ...
+Processing triggers for man-db (2.13.1-1) ...
+Processing triggers for libc-bin (2.41-12+deb13u4) ...
+ana@web-01:~$ sudo certbot --nginx -d ana.example --server https://localhost:140
+00/dir -m ana@ana.example --agree-tos -n
+Saving debug log to /var/log/letsencrypt/letsencrypt.log
+Account registered.
+Requesting a certificate for ana.example
+
+Successfully received certificate.
+Certificate is saved at: /etc/letsencrypt/live/ana.example/fullchain.pem
+Key is saved at:         /etc/letsencrypt/live/ana.example/privkey.pem
+This certificate expires on 2027-01-31.
+These files will be updated when the certificate renews.
+Certbot has set up a scheduled task to automatically renew this certificate in t
+he background.
+
+Deploying certificate
+Successfully deployed certificate for ana.example to /etc/nginx/sites-enabled/an
+a.example
+Congratulations! You have successfully enabled HTTPS on https://ana.example
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+If you like Certbot, please consider supporting our work by:
+ * Donating to ISRG / Let's Encrypt:   https://letsencrypt.org/donate
+ * Donating to EFF:                    https://eff.org/donate-le
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+ana@web-01:~$ grep -n 'listen\|ssl\|Certbot' /etc/nginx/sites-available/ana.exam
+ple
+6:    listen 443 ssl; # managed by Certbot
+7:    ssl_certificate /etc/letsencrypt/live/ana.example/fullchain.pem; # managed
+ by Certbot
+8:    ssl_certificate_key /etc/letsencrypt/live/ana.example/privkey.pem; # manag
+ed by Certbot
+9:    include /etc/letsencrypt/options-ssl-nginx.conf; # managed by Certbot
+10:    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem; # managed by Certbot
+16:    } # managed by Certbot
+19:    listen 80;
+21:    return 404; # managed by Certbot
+ana@web-01:~$ sudo ls /etc/letsencrypt/live/ana.example
+README  cert.pem  chain.pem  fullchain.pem  privkey.pem
+ana@web-01:~$ exit
+logout
+Connection to 192.0.2.10 closed.
+ana@laptop:~$ curl -sSI https://ana.example/ | head -n 1
+HTTP/1.1 200 OK
+ana@laptop:~$ curl -sI http://ana.example/ | head -n 3
+HTTP/1.1 301 Moved Permanently
+Server: nginx
+Date: Mon, 02 Nov 2026 09:34:40 GMT
+ana@laptop:~$ openssl s_client -connect ana.example:443 -servername ana.example
+-showcerts </dev/null 2>/dev/null | grep -E '^ *[0-9] s:|^ *i:'
+ 0 s:
+   i:CN=Pebble Intermediate CA 39ce7c
+ 1 s:CN=Pebble Intermediate CA 39ce7c
+   i:CN=Pebble Root CA 58ef03
+ana@laptop:~$

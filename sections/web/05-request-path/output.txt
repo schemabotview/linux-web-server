@@ -1,0 +1,38 @@
+ana@laptop:~$ getent hosts ana.example
+192.0.2.10      ana.example
+ana@laptop:~$ curl -v http://ana.example/
+* Host ana.example:80 was resolved.
+* IPv6: (none)
+* IPv4: 192.0.2.10
+*   Trying 192.0.2.10:80...
+* Connected to ana.example (192.0.2.10) port 80
+* using HTTP/1.x
+> GET / HTTP/1.1
+> Host: ana.example
+> User-Agent: curl/8.14.1
+> Accept: */*
+>
+* Request completely sent off
+< HTTP/1.1 200 OK
+< Server: nginx
+< Date: Mon, 02 Nov 2026 09:31:00 GMT
+< Content-Type: text/html
+< Content-Length: 75
+< Last-Modified: Mon, 02 Nov 2026 09:30:53 GMT
+< Connection: keep-alive
+< ETag: "6ae8584d-4b"
+< Accept-Ranges: bytes
+<
+<!doctype html>
+<title>ana.example</title>
+<h1>Hello from ana.example</h1>
+* Connection #0 to host ana.example left intact
+ana@laptop:~$ curl -sI http://ana.example/missing.html
+HTTP/1.1 404 Not Found
+Server: nginx
+Date: Mon, 02 Nov 2026 09:31:00 GMT
+Content-Type: text/html
+Content-Length: 146
+Connection: keep-alive
+
+ana@laptop:~$

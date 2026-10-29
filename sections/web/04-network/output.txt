@@ -1,0 +1,60 @@
+ana@web-01:~$ ip addr
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group defaul
+t qlen 1000
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    inet 127.0.0.1/8 scope host lo
+       valid_lft forever preferred_lft forever
+    inet6 ::1/128 scope host noprefixroute
+       valid_lft forever preferred_lft forever
+2: ens3: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc fq_codel state UP grou
+p default qlen 1000
+    link/ether 52:54:00:00:02:10 brd ff:ff:ff:ff:ff:ff
+    altname enp0s3
+    altname enx525400000210
+    inet 192.0.2.10/24 metric 100 brd 192.0.2.255 scope global dynamic ens3
+       valid_lft 83784sec preferred_lft 83784sec
+    inet6 fe80::5054:ff:fe00:210/64 scope link proto kernel_ll
+       valid_lft forever preferred_lft forever
+ana@web-01:~$ ip route
+default via 192.0.2.1 dev ens3 proto dhcp src 192.0.2.10 metric 100
+192.0.2.0/24 dev ens3 proto kernel scope link src 192.0.2.10 metric 100
+192.0.2.1 dev ens3 proto dhcp scope link src 192.0.2.10 metric 100
+192.0.2.3 dev ens3 proto dhcp scope link src 192.0.2.10 metric 100
+ana@web-01:~$ cat /etc/resolv.conf
+# This is /run/systemd/resolve/stub-resolv.conf managed by man:systemd-resolved(
+8).
+# Do not edit.
+#
+# This file might be symlinked as /etc/resolv.conf. If you're looking at
+# /etc/resolv.conf and seeing this text, you have followed the symlink.
+#
+# This is a dynamic resolv.conf file for connecting local clients to the
+# internal DNS stub resolver of systemd-resolved. This file lists all
+# configured search domains.
+#
+# Run "resolvectl status" to see details about the uplink DNS servers
+# currently in use.
+#
+# Third party programs should typically not access this file directly, but only
+# through the symlink at /etc/resolv.conf. To manage man:resolv.conf(5) in a
+# different way, replace this symlink by a static file or a different symlink.
+#
+# See man:systemd-resolved.service(8) for details about the supported modes of
+# operation for /etc/resolv.conf.
+
+nameserver 127.0.0.53
+options edns0 trust-ad
+search .
+ana@web-01:~$ grep hosts /etc/nsswitch.conf
+hosts:          files myhostname resolve [!UNAVAIL=return] dns
+ana@web-01:~$ getent hosts deb.debian.org
+151.101.66.132  debian.map.fastlydns.net
+151.101.194.132 debian.map.fastlydns.net
+151.101.130.132 debian.map.fastlydns.net
+151.101.2.132   debian.map.fastlydns.net
+ana@web-01:~$ getent hosts ana.example
+192.0.2.10      ana.example
+ana@web-01:~$ grep ana.example /etc/hosts
+192.0.2.10 ana.example   # stand-in for public DNS: ana.example is a documentati
+on name
+ana@web-01:~$

@@ -1,0 +1,13 @@
+{
+ "vm": "web-01",
+ "setup": [
+  "apt-get update -q >/dev/null && apt-get install -y -q nginx >/dev/null 2>&1",
+  "adduser --quiet --disabled-password --comment 'Site deploys' deploy && install -d -o deploy -g deploy /var/www/ana.example && printf '<!doctype html>\\n<title>ana.example</title>\\n<h1>Hello from ana.example</h1>\\n' > /var/www/ana.example/index.html && chown deploy:deploy /var/www/ana.example/index.html",
+  "printf 'server {\\n    listen 80;\\n    server_name ana.example;\\n    root /var/www/ana.example;\\n    index index.html;\\n}\\n' > /etc/nginx/sites-available/ana.example && ln -s /etc/nginx/sites-available/ana.example /etc/nginx/sites-enabled/ && rm /etc/nginx/sites-enabled/default && systemctl reload nginx"
+ ],
+ "session": [
+  "ss -tln",
+  "sudo ss -tlnp",
+  "ss -tn"
+ ]
+}

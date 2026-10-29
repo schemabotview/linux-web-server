@@ -1,0 +1,15 @@
+{
+ "vm": "web-01",
+ "setup": [
+  "printf '192.0.2.10 ana.example   # stand-in for public DNS: ana.example is a documentation name\\n' >> /etc/hosts"
+ ],
+ "session": [
+  "ip addr",
+  "ip route",
+  "cat /etc/resolv.conf",
+  "grep hosts /etc/nsswitch.conf",
+  "getent hosts deb.debian.org",
+  "getent hosts ana.example",
+  "grep ana.example /etc/hosts"
+ ]
+}

@@ -1,0 +1,12 @@
+{
+ "vm": "web-02",
+ "setup": [
+  "mkdir -p /var/db/sudo/lectured && touch /var/db/sudo/lectured/ana /var/db/sudo/lectured/1000",
+  "dnf -q -y install nginx >/dev/null"
+ ],
+ "session": [
+  "grep include /etc/nginx/nginx.conf",
+  "ls /etc/nginx/conf.d",
+  "ls /etc/nginx/sites-available"
+ ]
+}

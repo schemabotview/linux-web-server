@@ -1,0 +1,104 @@
+ana@laptop:~$ curl -s -o /dev/null -w '%{http_code}\n' http://ana.example:8080/
+200
+ana@laptop:~$ ssh ana@192.0.2.10
+Linux web-01 6.12.113+deb13-cloud-amd64 #1 SMP PREEMPT_DYNAMIC Debian 6.12.113-1
+ (2026-10-15) x86_64
+
+The programs included with the Debian GNU/Linux system are free software;
+the exact distribution terms for each program are described in the
+individual files in /usr/share/doc/*/copyright.
+
+Debian GNU/Linux comes with ABSOLUTELY NO WARRANTY, to the extent
+permitted by applicable law.
+ana@web-01:~$ sudo nft list ruleset
+[sudo] password for ana:
+sudo: nft: command not found
+ana@web-01:~$ sudo apt install -y nftables
+Installing:
+  nftables
+
+Installing dependencies:
+  libjansson4  libnftables1
+
+Suggested packages:
+  firewalld
+
+Summary:
+  Upgrading: 0, Installing: 3, Removing: 0, Not Upgrading: 0
+  Download size: 448 kB
+  Space needed: 1371 kB / 8987 MB available
+
+Get:1 file:/etc/apt/mirrors/debian.list Mirrorlist [30 B]
+Get:2 https://deb.debian.org/debian trixie/main amd64 libjansson4 amd64 2.14-2+b
+3 [39.8 kB]
+Get:3 https://deb.debian.org/debian trixie/main amd64 libnftables1 amd64 1.1.3-1
+ [332 kB]
+Get:4 https://deb.debian.org/debian trixie/main amd64 nftables amd64 1.1.3-1 [75
+.9 kB]
+Fetched 448 kB in 1s (365 kB/s)
+Selecting previously unselected package libjansson4:amd64.
+(Reading database ... 20696 files and directories currently installed.)
+Preparing to unpack .../libjansson4_2.14-2+b3_amd64.deb ...
+Unpacking libjansson4:amd64 (2.14-2+b3) ...
+Selecting previously unselected package libnftables1:amd64.
+Preparing to unpack .../libnftables1_1.1.3-1_amd64.deb ...
+Unpacking libnftables1:amd64 (1.1.3-1) ...
+Selecting previously unselected package nftables.
+Preparing to unpack .../nftables_1.1.3-1_amd64.deb ...
+Unpacking nftables (1.1.3-1) ...
+Setting up libjansson4:amd64 (2.14-2+b3) ...
+Setting up libnftables1:amd64 (1.1.3-1) ...
+Setting up nftables (1.1.3-1) ...
+Processing triggers for man-db (2.13.1-1) ...
+Processing triggers for libc-bin (2.41-12+deb13u4) ...
+ana@web-01:~$ sudo tee /etc/nftables.conf <<'EOF'
+> #!/usr/sbin/nft -f
+> flush ruleset
+>
+> table inet filter {
+>     chain input {
+>         type filter hook input priority filter; policy drop;
+>         iif lo accept
+>         ct state established,related accept
+>         tcp dport { 22, 80, 443 } accept
+>         icmp type echo-request accept
+>         icmpv6 type { echo-request, nd-neighbor-solicit, nd-router-advert, nd-
+neighbor-advert } accept
+>     }
+> }
+> EOF
+#!/usr/sbin/nft -f
+flush ruleset
+
+table inet filter {
+    chain input {
+        type filter hook input priority filter; policy drop;
+        iif lo accept
+        ct state established,related accept
+        tcp dport { 22, 80, 443 } accept
+        icmp type echo-request accept
+        icmpv6 type { echo-request, nd-neighbor-solicit, nd-router-advert, nd-ne
+ighbor-advert } accept
+    }
+}
+ana@web-01:~$ sudo nft -c -f /etc/nftables.conf && echo syntax OK
+syntax OK
+ana@web-01:~$ sudo systemctl enable --now nftables
+Created symlink '/etc/systemd/system/sysinit.target.wants/nftables.service' → '/
+usr/lib/systemd/system/nftables.service'.
+ana@web-01:~$ sudo nft list ruleset
+table inet filter {
+        chain input {
+                type filter hook input priority filter; policy drop;
+                iif "lo" accept
+                ct state established,related accept
+                tcp dport { 22, 80, 443 } accept
+                icmp type echo-request accept
+                icmpv6 type { echo-request, nd-router-advert, nd-neighbor-solici
+t, nd-neighbor-advert } accept
+        }
+}
+ana@web-01:~$ exit
+logout
+Connection to 192.0.2.10 closed.
+ana@laptop:~$

@@ -1,0 +1,35 @@
+ana@laptop:~$ ls -l ~/site
+total 8
+-rw-rw-r-- 1 ana ana 52 Nov  2 09:32 about.html
+-rw-rw-r-- 1 ana ana 84 Nov  2 09:32 index.html
+ana@laptop:~$ rsync -av ~/site/ deploy@192.0.2.10:/var/www/ana.example/
+sending incremental file list
+./
+about.html
+index.html
+
+sent 323 bytes  received 63 bytes  110.29 bytes/sec
+total size is 136  speedup is 0.35
+ana@laptop:~$ ssh deploy@192.0.2.10 ls -l /var/www/ana.example
+total 8
+-rw-rw-r-- 1 deploy deploy 52 Nov  2 09:32 about.html
+-rw-rw-r-- 1 deploy deploy 84 Nov  2 09:32 index.html
+ana@laptop:~$ curl -s http://ana.example/
+<!doctype html>
+<title>ana.example</title>
+<h1>Ana</h1>
+<p>I run my own server.</p>
+ana@laptop:~$ echo '<p>Now with an about page.</p>' >> ~/site/index.html
+ana@laptop:~$ rsync -av ~/site/ deploy@192.0.2.10:/var/www/ana.example/
+sending incremental file list
+index.html
+
+sent 260 bytes  received 41 bytes  200.67 bytes/sec
+total size is 167  speedup is 0.55
+ana@laptop:~$ curl -s http://ana.example/
+<!doctype html>
+<title>ana.example</title>
+<h1>Ana</h1>
+<p>I run my own server.</p>
+<p>Now with an about page.</p>
+ana@laptop:~$

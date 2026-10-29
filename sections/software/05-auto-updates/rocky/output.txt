@@ -2,9 +2,9 @@
 package dnf-automatic is not installed
 [ana@web-02 ~]$ sudo dnf install -y dnf-automatic
 [sudo] password for ana:
-Rocky Linux 10 - BaseOS                         6.0 MB/s |  42 MB     00:06
-Rocky Linux 10 - AppStream                      2.3 MB/s | 2.9 MB     00:01
-Rocky Linux 10 - Extras                          11 kB/s | 6.1 kB     00:00
+Rocky Linux 10 - BaseOS                         5.9 MB/s |  42 MB     00:07
+Rocky Linux 10 - AppStream                      3.1 MB/s | 2.9 MB     00:00
+Rocky Linux 10 - Extras                         5.0 kB/s | 6.1 kB     00:01
 Dependencies resolved.
 ================================================================================
  Package           Arch       Version                          Repository  Size
@@ -19,9 +19,9 @@ Install  1 Package
 Total download size: 37 k
 Installed size: 79 k
 Downloading Packages:
-dnf-automatic-4.20.0-22.el10_2.rocky.0.1.noarch  71 kB/s |  37 kB     00:00
+dnf-automatic-4.20.0-22.el10_2.rocky.0.1.noarch 244 kB/s |  37 kB     00:00
 --------------------------------------------------------------------------------
-Total                                            46 kB/s |  37 kB     00:00
+Total                                            94 kB/s |  37 kB     00:00
 Running transaction check
 Transaction check succeeded.
 Running transaction test
@@ -43,7 +43,7 @@ Created symlink '/etc/systemd/system/timers.target.wants/dnf-automatic.timer' �
 '/usr/lib/systemd/system/dnf-automatic.timer'.
 [ana@web-02 ~]$ systemctl list-timers --no-pager 'dnf-automatic*'
 NEXT                  LEFT LAST PASSED UNIT                ACTIVATES
-Tue 2026-11-03 06:26…  21h -         - dnf-automatic.timer dnf-automatic.service
+Tue 2026-11-03 06:43…  21h -         - dnf-automatic.timer dnf-automatic.service
 
 1 timers listed.
 Pass --all to see loaded but inactive timers, too.
