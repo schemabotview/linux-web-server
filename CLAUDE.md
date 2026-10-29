@@ -15,7 +15,8 @@ Change it first; never drift from it.
 ## Status
 
 Plan agreed 2026-10-29. The simulator works (`scripts/sim.py`): one real VM, commands in, real
-output out. `first-login/04-commands` is captured with it. The app is not scaffolded yet.
+output out. Course 1 (`first-login`) 02–07 are authored and captured; 01 comes last. The app
+is not scaffolded yet.
 
 ## Commands
 
