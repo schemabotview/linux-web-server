@@ -14,8 +14,8 @@ Change it first; never drift from it.
 
 ## Status
 
-Plan agreed 2026-10-29. Nothing is scaffolded or authored yet. Next: the spike (`COURSE-PLAN.md`,
-Build order).
+Plan agreed 2026-10-29. Spike part 1 (the machine) done: `SPIKE.md`. Nothing is scaffolded or
+authored yet.
 
 ## Invariants (from the plan)
 

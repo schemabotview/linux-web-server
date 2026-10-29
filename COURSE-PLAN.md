@@ -1,7 +1,7 @@
 # Learn Linux by running your own web server — plan
 
-**Status: v1 plan, agreed with the owner (2026-10-29).** Nothing is authored yet. Next: the spike
-(see Build order).
+**Status: v1 plan, agreed with the owner (2026-10-29).** Nothing is authored yet. Spike part 1
+(the machine) done, see `SPIKE.md`; part 2 (the engine, the recorder, the macOS script) next.
 
 ## The idea
 
@@ -70,16 +70,20 @@ The points where they differ (every row verified in the spike before a frame quo
 
 | point | Debian / Ubuntu | Red Hat family | macOS (laptop) |
 | --- | --- | --- | --- |
+| prompt | `ana@web-01:~$` | `[ana@web-02 ~]$` | `ana@MacBook ~ %` (zsh) |
 | packages | `apt`, `dpkg` | `dnf`, `rpm` | `brew` (not built in) |
 | admin group | `sudo` | `wheel` | `admin` |
-| add a user | `adduser` | `useradd` + `passwd` | — |
-| nginx layout | `sites-available/` + `sites-enabled/`, user `www-data` | `conf.d/`, user `nginx` | — |
-| SSH service | `ssh` | `sshd` | — |
-| firewall | nftables (`ufw` on Ubuntu) | `firewalld` | — |
-| mandatory access control | AppArmor | SELinux | — |
-| automatic updates | `unattended-upgrades` | `dnf-automatic` | — |
-| system log | the journal | the journal + `/var/log/messages` | `log show` |
+| add a user | `adduser` (an interactive script) | `useradd` + `passwd` (`adduser` is a link to `useradd`) | — |
+| nginx layout | `sites-available/` + `sites-enabled/`, user `www-data`, root `/var/www/html` | `conf.d/`, user `nginx`, root `/usr/share/nginx/html` | — |
+| SSH service | `ssh` (`sshd` is an alias) | `sshd` | — |
+| firewall | nftables, installed by us (`ufw` on Ubuntu) | `firewalld`, installed by us | — |
+| mandatory access control | AppArmor | SELinux (`ls -l` shows a `.`) | — |
+| automatic updates | `unattended-upgrades`, already installed | `dnf-automatic`, installed by us | — |
+| system log | the journal only | the journal + `/var/log/messages` (rsyslog) | `log show` |
 | shell and tools | bash, GNU | bash, GNU | zsh, BSD tools (`sed -i ''`, no `ip`/`ss`, Apple's `rsync`) |
+
+The Linux columns are measured on the pinned cloud images (`SPIKE.md` §5); the macOS column
+waits for the owner's capture.
 
 Other families (Arch, SUSE) get one mention in §1.2.
 
@@ -122,19 +126,23 @@ developed.
 A container shows the host's kernel, boot, disks and memory — exactly what a Linux course teaches.
 So every server is a real VM:
 
-- **`web-01`**: the official Debian 13 cloud image under QEMU, set up by cloud-init.
-- **`web-02`**: the official Rocky Linux 10 cloud image, the same way.
+- **`web-01`**: the official Debian 13 cloud image (`20261026-2643`) under QEMU, set up by cloud-init.
+- **`web-02`**: the official Rocky Linux 10.2 cloud image (`20260525.0`), the same way.
 - **`laptop`**: a small Linux VM standing in for Ana's laptop (SSH, keys, `rsync`, backups' target);
   the macOS differences come from the owner's capture.
-- No KVM here, so QEMU runs unaccelerated (TCG): slow, and acceptable because **each step is
-  recorded once** (as in aws-ecommerce): a step runs from its parent's recorded state, and its state
-  after is a qcow2 overlay on the parent's disk. The check runs nothing.
-- Determinism: packages pinned through `snapshot.debian.org` (and a pinned Rocky mirror snapshot);
-  each VM's clock set at boot (`-rtc base=`), no NTP; PIDs, timings and inode numbers masked as
-  volatile, read by scenes from the session, never said in narration.
-- Labelled stand-ins: HTTPS uses **real certbot against a local ACME CA** (Pebble), labelled as
-  standing in for Let's Encrypt, because `ana.example` is not on public DNS. Firmware and GRUB are
-  this VM's own, labelled "a VM".
+- **`gw`**: the hosting provider's gateway, a stand-in, never on screen as a machine: NAT, DNS
+  (`ana.example`), and the local ACME CA. Every other VM has ONE network card, on the shared LAN
+  (192.0.2.0/24), so `ip addr` and `ip route` show what a VPS shows.
+- No KVM here, so QEMU runs unaccelerated (TCG): a boot is 1–3 minutes, acceptable because **each
+  step is recorded once**. A step resumes every VM from its parent's **saved running state**
+  (`savevm`, 7 s) — a server runs continuously, so uptime, PIDs and the journal carry on, and the
+  course reboots only when a section reboots. The check runs nothing.
+- Determinism: images pinned by checksum; each VM's clock pinned (`-rtc base=…,clock=vm`), so it runs
+  only while a step runs; PIDs, timings and inode numbers masked as volatile, read by scenes from the
+  session, never said in narration.
+- Labelled stand-ins: HTTPS uses **real certbot against a local ACME CA** (Pebble, from Debian),
+  labelled as standing in for Let's Encrypt, because `ana.example` is not on public DNS. Firmware and
+  GRUB are this VM's own, labelled "a VM". What the machinery adds off screen is in `SPIKE.md`.
 
 ## Facts (frozen once a frame quotes them)
 
@@ -182,7 +190,7 @@ Extend this table; never change a value a frame already quotes.
 | 2 | `update` ≠ `upgrade` | the index refreshed vs packages replaced |
 | 3 | Install nginx: what it put where | `dpkg -L`: binary, config, unit, logs, web root |
 | 4 | The same install on Rocky Linux | real `dnf install nginx` on `web-02`; the layout differences |
-| 5 | Automatic security updates | `unattended-upgrades` / `dnf-automatic` |
+| 5 | Automatic security updates | already on Debian's image — is it on, and what will it do? (`dnf-automatic` card: installed by hand) |
 
 **4. `services` · Processes and services · 6**
 
@@ -206,8 +214,8 @@ Extend this table; never change a value a frame already quotes.
 | 5 | ◆ A request's path | DNS → TCP → nginx → file (`curl -v`) |
 | 6 | Ports and sockets | `ss -tlnp`: socket → process → port |
 | 7 | HTTPS with certbot | certificate chain; the local CA, labelled |
-| 8 | A firewall | nftables default-deny, tested from the laptop (`ufw` / `firewalld` card) |
-| 9 | On Red Hat, SELinux says no | rwx is right, nginx is still denied: `ls -Z`, the label, `restorecon` |
+| 8 | A firewall | install nftables; default-deny, tested from the laptop (`ufw` / `firewalld` card) |
+| 9 | On Red Hat, SELinux says no | the site `mv`d from home: rwx is right, nginx answers 403; the AVC denial, `ls -Z`, `semanage fcontext` + `restorecon` |
 
 **6. `automate` · Logs and automation · 7**
 

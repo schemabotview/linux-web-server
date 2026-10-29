@@ -1,0 +1,7 @@
+node_modules/
+dist/
+# VM images and overlays are never committed by accident; a step's state is committed deliberately
+*.qcow2
+*.iso
+spike/vm/key
+spike/vm/key.pub
