@@ -1,0 +1,28 @@
+{
+ "key": "d5d529c5e45c9e2991c5d54387d6f9ece6b1cf997875de080bf7d90ffaecad01",
+ "from": "base",
+ "title": "ana@web-01: ~",
+ "session_sha": "3e022e500c304ef3444be37a092b395a21a6040ea73fe910a8187d53a1a53bc6",
+ "states": {
+  "gw": {
+   "ram": "delta",
+   "ram_sha": "a7e5bcbeb8202441861fefb12544d3b6e2e72c3659d9ee6a0065b7a5b916026f",
+   "disk_sha": "ffd368f3cb1a6bf9102c9d0b88dce94869919d1a82ac62f204021feb47f3c546"
+  },
+  "web-01": {
+   "ram": "delta",
+   "ram_sha": "e5d115ed7ff51bfd29bd45b8c008ed8be84918762a0ebce70da0d153ca11a992",
+   "disk_sha": "65867b0ce66cb0c4590f6ba68411dc7cf1a6418d148d4b7f50b7a31f8e420131"
+  },
+  "web-02": {
+   "ram": "delta",
+   "ram_sha": "0512fbddfa0fb9e96238fb3993d99ee4cd0ad13428c39964abf23690eadee03f",
+   "disk_sha": "1b05381f280009d5141bae54a4f10771e80f59337291caa4c14edc0a0b1fddfe"
+  },
+  "laptop": {
+   "ram": "delta",
+   "ram_sha": "1e8a1fa619b06e5cfe3e8935a55b84145168a4882afe3ef522533dc67429179d",
+   "disk_sha": "2fbbb9efb315eb6c5c29d6e0ea369a2e6cc3bea92beb59d1943fd61ed9559e89"
+  }
+ }
+}

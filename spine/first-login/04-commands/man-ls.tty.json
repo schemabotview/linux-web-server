@@ -1,0 +1,172 @@
+{
+ "screen": [
+  "LS(1)                            User Commands                            LS(1)",
+  "",
+  "NAME",
+  "       ls - list directory contents",
+  "",
+  "SYNOPSIS",
+  "       ls [OPTION]... [FILE]...",
+  "",
+  "DESCRIPTION",
+  "       List  information  about  the  FILEs (the current directory by default).",
+  "       Sort entries alphabetically if none of -cftuvSUX nor  --sort  is  speci\u2010",
+  "       fied.",
+  "",
+  "       Mandatory arguments to long options are mandatory for short options too.",
+  "",
+  "       -a, --all",
+  "              do not ignore entries starting with .",
+  "",
+  "       -A, --almost-all",
+  "              do not list implied . and ..",
+  "",
+  "       --author",
+  "              with -l, print the author of each file",
+  "",
+  "       -b, --escape",
+  "              print C-style escapes for nongraphic characters",
+  "",
+  "       --block-size=SIZE",
+  "              with   -l,   scale  sizes  by  SIZE  when  printing  them;  e.g.,",
+  "              '--block-size=M'; see SIZE format below",
+  "",
+  "       -B, --ignore-backups",
+  "              do not list implied entries ending with ~",
+  "",
+  "       -c     with -lt: sort by, and show, ctime (time of last change  of  file",
+  "              status information); with -l: show ctime and sort by name; other\u2010",
+  "              wise: sort by ctime, newest first",
+  "",
+  "       -C     list entries by columns",
+  "",
+  "       --color[=WHEN]",
+  "              color the output WHEN; more info below",
+  "",
+  " Manual page ls(1) line 1 (press h for help or q to quit)"
+ ],
+ "inverse": [
+  [
+   43,
+   0,
+   57
+  ]
+ ],
+ "bold": [
+  [
+   2,
+   0,
+   4
+  ],
+  [
+   5,
+   0,
+   8
+  ],
+  [
+   6,
+   7,
+   10
+  ],
+  [
+   8,
+   0,
+   11
+  ],
+  [
+   10,
+   46,
+   56
+  ],
+  [
+   10,
+   61,
+   69
+  ],
+  [
+   15,
+   7,
+   9
+  ],
+  [
+   15,
+   11,
+   16
+  ],
+  [
+   18,
+   7,
+   9
+  ],
+  [
+   18,
+   11,
+   23
+  ],
+  [
+   21,
+   7,
+   15
+  ],
+  [
+   22,
+   19,
+   21
+  ],
+  [
+   24,
+   7,
+   9
+  ],
+  [
+   24,
+   11,
+   19
+  ],
+  [
+   27,
+   7,
+   19
+  ],
+  [
+   28,
+   21,
+   23
+  ],
+  [
+   31,
+   7,
+   9
+  ],
+  [
+   31,
+   11,
+   27
+  ],
+  [
+   34,
+   7,
+   14
+  ],
+  [
+   34,
+   19,
+   22
+  ],
+  [
+   35,
+   40,
+   42
+  ],
+  [
+   38,
+   7,
+   14
+  ],
+  [
+   40,
+   7,
+   14
+  ]
+ ]
+}

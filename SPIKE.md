@@ -1,8 +1,8 @@
 # Spike — can real VMs record this course here?
 
-**2026-10-29. Part 1 (the machine) done; part 2 (graphl-flow 0.7.0, the recorder, the macOS script)
-open.** Scripts in `spike/vm/` are the spike's, not the course's tooling: they prove each piece and
-will be folded into one recorder.
+**2026-10-29. Both parts done.** Part 1 proved the machine (`spike/vm/`, kept as the record of how
+each piece was proven); part 2 built the course's real tooling (`scripts/`: `machine.py`, `base.py`,
+`record.py`, `macos-capture.sh`), graphl-flow 0.7.0, and recorded the first two steps of the chain.
 
 ## Verdict
 
@@ -71,8 +71,8 @@ One shared LAN, a QEMU multicast socket (`230.0.2.1:5555`), 192.0.2.0/24. No hos
 - Size: 315 MiB of RAM state per VM (1.5 GiB guest); **88 MiB** zstd-compressed. Dropping caches
   first does not help (freed pages keep their contents). Open: virtio-balloon free page reporting,
   which hands freed pages back as zeroes.
-- Consequence: at ~47 steps × 3–4 VMs, saved RAM is ~10+ GB — **not for git**. Disk overlays
-  (MBs) can be committed; RAM states need a home outside git. **Owner decision** (§8).
+- Consequence: whole RAM images at ~47 steps × 4 VMs would be ~10+ GB. Part 2 stores each step as
+  a delta against its parent instead: 9–18 MB a step for all four VMs (§9).
 
 ## 5. Families, measured (corrects the plan's table)
 
@@ -121,17 +121,52 @@ uses the `mv`: it is the mistake people actually make.
 
 ## 8. Decisions for the owner
 
-1. **Where saved VM states live.** Disk overlays (MBs per step) can be committed. RAM states (~88 MiB
-   per VM per step, until balloon free-page reporting is tried) cannot. Options: GitHub release
-   assets per course; Git LFS; or a bucket. Without them, a fresh cloud session must re-record from
-   the last state it has.
+1. **Where saved VM states live** — resolved 2026-10-29: GitHub release assets. Part 2 made them
+   small (deltas, §9), but uploading them is still open (§10).
 
-## 9. Part 2 (open)
+## 9. Part 2 — the recorder (`scripts/`)
 
-- One recorder (`scripts/record.py`): steps as `step.json` + typed commands, `savevm` per step, the
-  transcript checked like the other repos' `check:spine`.
-- `laptop` VM; hide `sr0` / the seed; balloon free-page reporting; confirm Pebble's 90 days.
-- graphl-flow 0.7.0: `console` (both prompt forms, root `#`, folds, addressable lines), `tty`
-  (with inverse video from pyte's attributes), ini / nginx / nftables highlighting, icons, the
-  console-frame study.
-- The macOS capture script for the owner.
+**`base.py`** builds the chain's first state from the pinned images in ~15 min (four VMs on four
+host cores): gw, then web-01, web-02 and laptop in parallel, each from a cloud-init seed; the seed is
+hot-unplugged; every VM's running state is saved. **`record.py <step>`** resumes all four VMs from
+the parent's state, types the step's session at Ana's terminal, saves all four, and writes
+`session.txt`, any `<name>.tty.json`, and `recorded.json`. **`record.py --check`** runs nothing.
+`first-login/03-ssh` (55 s) and `first-login/04-commands` (56 s) are recorded.
+
+What part 2 found and decided:
+
+- **Ana's terminal is inside the laptop** (its ttyS1, an auto-login getty on a host socket), not a
+  session the recorder opens. Her shell, and the ssh session she has open, are the laptop's own
+  state: step 04 begins at `ana@web-01:~$` because step 03 logged her in. Sections continue.
+- **The recorder is the terminal emulator, so it sets the window size**: a serial line has none
+  (agetty resets it to 24 × 80, and `man` drew a 24-row page). On attach it sets 44 × 80; the kernel
+  sends SIGWINCH and Ana's ssh passes the size on, as resizing a window does.
+- **The window title** bash sets (`ESC ] 0 ; ana@web-01: ~`) is kept in `recorded.json`: the console
+  frame's title bar is the terminal's real title.
+- **`ssh web-01` resolves over LLMNR, not DNS** — real Debian behaviour: systemd-resolved never
+  sends a single-label name to DNS, and web-01 answered for itself on the link (`fe80::…%ens3`).
+  A fresh VPS is reached at its address, so §1.3 is `ssh ana@192.0.2.10`; a short name for the
+  server can be a lesson of its own (`~/.ssh/config`).
+- **First login uses the provider's password** (`ana`, password logins on, no key): §2.5–2.6 put a
+  key on and turn passwords off. `sudo` asks for the password too; the recorder answers it.
+- **`-nodefaults -vga std`** removes QEMU's phantom CD (`sr0`); the earlier hang was not it. Every
+  device sits at an explicit PCI address so a state resumes on exactly the device set that saved it.
+- **State size**: the base is ~720 MB (four full RAM images + first-boot disks). A step is a delta:
+  `zstd --patch-from` against the parent's RAM (byte-exact round trip) + a compressed disk overlay —
+  **9–18 MB for all four VMs**. Restoring step N replays N deltas (~2 s a VM a step); no keyframes
+  are needed. Free-page reporting did not shrink a full RAM image (the 82 MB is used memory).
+- graphl-flow 0.7.0 rendering the REAL transcripts found two bugs the fixtures had not: blank rows
+  collapsed and screen rows lost leading spaces (a flex row drops whitespace-only text). Fixed, with
+  `check` assertions confirmed to fail on the old rendering.
+
+## 10. Open
+
+- **Release assets cannot be uploaded from a cloud session** (no tool here creates a release or
+  uploads to one). Until they are, the states live only in the container that recorded them: a new
+  session re-records the chain from `base.py` (~15 min) and each step (~1 min) — the committed
+  transcripts are then re-recorded too, so fingerprints, PIDs and times change (scenes read those
+  from the session, never type them). Options: the owner uploads them from a session's container
+  via a one-off token, or a GitHub Actions workflow records and publishes them.
+- graphl-flow 0.7.0 is on its branch, not on npm.
+- The macOS capture waits for the owner's run of `scripts/macos-capture.sh`.
+- Repo scaffold (vite + shell + graphl-flow 0.7), the console frame, the server map, checks.

@@ -152,6 +152,8 @@ So every server is a real VM:
 | servers | `web-01` Debian 13 (192.0.2.10), `web-02` Rocky Linux 10 (192.0.2.20) |
 | laptop | `laptop` (192.0.2.100); macOS capture from the owner's Mac |
 | people | `ana` (admin: `sudo` / `wheel`), `deploy` (owns the web root, no sudo) |
+| first login | `ssh ana@192.0.2.10`, the provider's password (password logins on, no key until §2.5) |
+| Ana's terminal | the laptop's console, 80 × 44; she stays logged in from section to section |
 | addresses | 192.0.2.0/24 (TEST-NET-1, documentation range) |
 | versions | pinned by the spike, recorded here |
 
@@ -165,7 +167,7 @@ Extend this table; never change a value a frame already quotes.
 | --- | --- | --- |
 | 1 | The server we'll build | the finished site over HTTPS; the server map, complete (recorded last) |
 | 2 | ◆ Linux, its families, and macOS | kernel → distributions; the Debian and Red Hat trees; where macOS sits; real `uname`, `os-release` from both servers |
-| 3 | SSH in | the host key fingerprint; reading the prompt |
+| 3 | SSH in | `ssh ana@192.0.2.10`: the host key fingerprint, the password; reading the prompt (recorded) |
 | 4 | Commands, options, arguments, `man` | a command line split into its parts; man sections |
 | 5 | ◆ The directory tree | `/etc`, `/var`, `/home`, `/usr`, `/proc` — what lives where, and why |
 | 6 | Moving around | `pwd`, `cd`, `ls -l` read column by column |

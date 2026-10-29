@@ -1,0 +1,20 @@
+{
+ "from": "base",
+ "session": [
+  {
+   "type": "ssh ana@192.0.2.10",
+   "answer": [
+    [
+     "fingerprint\\]\\)\\? $",
+     "yes"
+    ],
+    [
+     "password: $",
+     "@password"
+    ]
+   ]
+  },
+  "whoami",
+  "hostname"
+ ]
+}
