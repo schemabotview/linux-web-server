@@ -1,0 +1,8 @@
+{
+  "_comment": "Per-repo publishing identity, read by @graphlearning/shell's scripts (gen-audio, thumb, gen-descriptions). Env vars (CONCEPT, SITE, APP_PATH, HASHTAGS, PANEL_BG) still override.",
+  "concept": "Linux",
+  "site": "https://graphl.in",
+  "appPath": "/linux-web-server",
+  "hashtags": "#Linux #LearnLinux #SysAdmin #WebServer #TechEducation",
+  "panelBg": "radial-gradient(118% 104% at 70% 34%, #3fb950 0%, #2ea043 44%, #0f141a 100%)"
+}
