@@ -1,0 +1,5 @@
+/* This repo's whole design surface — the token @graphlearning/shell leaves to the repo. Imported
+   AFTER the shell's stylesheet in main.tsx, so it wins the cascade. A terminal green as --brand. */
+:root {
+  --brand: #2ea043;
+}

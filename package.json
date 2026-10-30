@@ -1,0 +1,41 @@
+{
+  "name": "linux-web-server",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "description": "Learn Linux by running your own web server: a GraphL concept app. Scenes render with @graphlearning/graphl-flow; the app shell is @graphlearning/shell. Every console is real output from a real VM (scripts/sim.py).",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "check": "node scripts/check-content.mjs && node scripts/check-render.mjs",
+    "check:captures": "node scripts/check-captures.mjs",
+    "preview": "vite preview",
+    "build:snapshot": "vite build --outDir dist-snapshot",
+    "capture": "vite preview --outDir dist-snapshot --port 5181",
+    "record": "graphl-record",
+    "record:all": "caffeinate -ims graphl-record-all",
+    "record:reels": "graphl-record-reels",
+    "shots:4k": "graphl-shots-4k",
+    "gen:audio": "graphl-gen-audio",
+    "gen:desc": "graphl-gen-desc",
+    "thumb": "graphl-thumb",
+    "shots": "node scripts/shots.mjs"
+  },
+  "dependencies": {
+    "@graphlearning/graphl-flow": "^0.7.0",
+    "@graphlearning/shell": "^1.0.4",
+    "lucide-react": "^1.28.0",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0"
+  },
+  "devDependencies": {
+    "@types/react": "^19.2.0",
+    "@types/react-dom": "^19.2.0",
+    "@vitejs/plugin-react": "^4.3.4",
+    "esbuild": "^0.25.0",
+    "playwright": "1.63.0",
+    "puppeteer": "^25.3.0",
+    "typescript": "~5.7.2",
+    "vite": "^6.0.5"
+  }
+}

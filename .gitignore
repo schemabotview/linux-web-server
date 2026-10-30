@@ -7,3 +7,11 @@ spike/vm/key
 spike/vm/key.pub
 .machine/
 __pycache__/
+dist-snapshot
+out
+.tmp
+segments
+images
+*.local
+.claude
+.DS_Store

@@ -4,6 +4,14 @@ Written 2026-10-30 for whoever continues this, on any account. Branch:
 `claude/optimistic-hopper-4l5fgg` (last pushed commit before this file: `3ad69f8`). Read `CLAUDE.md`
 first, then `COURSE-PLAN.md` (the source of truth), then `sections/NOTES.md` (open questions).
 
+## Update 2026-10-30 (branch `claude/elegant-darwin-gaw871`)
+
+graphl-flow 0.7.0 is on npm, so the app is scaffolded and the pilot is rendered: Course 2 `access`
+and ◆ Boot, narrated (narration is a string per section in `src/content/`, as in
+python-expense-tracker; the shell's `gen:audio` writes `scripts/audio-manifest.json` from it, the
+input python-expense-tracker's Colab notebook turns into wavs — not run or copied here yet). Awaiting the owner's
+review of both frame kinds. Everything below is the earlier state.
+
 ## Where things stand
 
 - **The simulator works**: `scripts/sim.py`, one file. Real VMs under QEMU (`web-01` Debian 13,

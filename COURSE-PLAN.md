@@ -258,9 +258,11 @@ section can also go out as a Short (`record-reels`).
    - certbot against Pebble; SELinux denying a custom web root on `web-02`.
    - Verify every row of the family table; write the macOS capture script.
    - graphl-flow 0.7.0: `console`, `tty`, config highlighting, icons, the console-frame study.
-3. **Repo scaffold:** vite + graphl-flow + shell, the console frame and the server map on one fit
-   each, `check-content` / `check-render` / `check:spine`, `CLAUDE.md`.
+3. ~~**Repo scaffold:** vite + graphl-flow + shell, the console frame on one fit,
+   `check-content` / `check-render` / `check:captures`, `CLAUDE.md`.~~ Done 2026-10-30. The server
+   map is built with its first section (`first-login/01`).
 4. **Pilot:** Course 2 (`access`) + ◆ Boot (4.6) → owner review of both frame kinds on 4K routes.
+   Rendered 2026-10-30, awaiting review.
 5. The remaining courses one at a time, each reviewed on its rendered routes, then narrated.
 6. Record all 7 → the one film.
 
