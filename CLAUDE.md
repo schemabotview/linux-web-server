@@ -48,7 +48,7 @@ python3 scripts/sim.py up [web-01|web-02|laptop] # start a VM (first time: build
 python3 scripts/sim.py run first-login/04-commands   # capture a section's real output
 python3 scripts/sim.py sh web-01 'ls -l /etc'    # one command as ana, real output (quick checks)
 python3 scripts/sim.py down                      # stop the VMs
-zsh scripts/macos-capture.sh                     # the owner, once, on a Mac
+zsh scripts/macos-capture.sh                     # the owner, once, on a Mac → sections/macos/capture.txt (read-only; masks names and addresses)
 ```
 
 Needs `qemu-system-x86`, `qemu-utils`, `genisoimage`, `openssh-client`, and Python's `pexpect` and
