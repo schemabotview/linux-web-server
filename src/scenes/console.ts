@@ -62,11 +62,16 @@ export function rowsFrom(text: string, first: string, last?: string, from = 1): 
  * Fold rows out of a transcript: every row is kept except the runs from `first` through `last`, each
  * of which graphl-flow draws as one `··· N lines` row. For a long output (an SSH banner, randomart)
  * and for a row a scene must never quote (a server sees the laptop as 192.0.2.1 — CLAUDE.md). A run's
- * optional third element is the row to search from (the second of two login banners).
+ * optional third element is the row to search from (the second of two login banners). Either end may
+ * be a row NUMBER computed from found rows (`rowOf(…) - 1`) where no text marks it.
  */
-export function fold(text: string, ...runs: [first: string, last?: string, from?: number][]): [number, number][] {
+export function fold(text: string, ...runs: [first: string | number, last?: string | number, from?: number][]): [number, number][] {
   const n = text.split('\n').length
-  const out = new Set(runs.flatMap(([first, last, from]) => rowsFrom(text, first, last, from)))
+  const row = (end: string | number, from: number) => (typeof end === 'number' ? end : rowOf(text, end, from))
+  const out = new Set(runs.flatMap(([first, last, from = 1]) => {
+    const a = row(first, from), b = last === undefined ? a : row(last, a)
+    return Array.from({ length: b - a + 1 }, (_, i) => a + i)
+  }))
   const show: [number, number][] = []
   for (let r = 1; r <= n; r++) {
     if (out.has(r)) continue

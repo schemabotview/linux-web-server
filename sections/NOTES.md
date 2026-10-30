@@ -58,3 +58,12 @@ capture from an older pinned image; or re-capture after Debian's next kernel upd
 
 first-login/01 (the finished server, recorded last) and operate/07 (the runbook and "where next")
 are the server map and narration; they quote output already captured elsewhere.
+
+## web/04-network — the gateway is 192.0.2.1
+
+`ip route` reads `default via 192.0.2.1`: the lab network's gateway, the same address a server
+sees the laptop's logins come from. The console shows the real row (a route table without its
+gateway would teach nothing); the picture and narration call it "the gateway" and never quote it.
+Rows where a server names the LAPTOP by that address (sshd's `Accepted … from`, `Last login … from`,
+`ss -tn`'s peer) are folded on screen instead. If the owner would rather fold the route row too,
+it is one `fold()` run.

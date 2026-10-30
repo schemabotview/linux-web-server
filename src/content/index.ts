@@ -2,6 +2,7 @@ import { firstLogin } from './first-login'
 import { access } from './access'
 import { software } from './software'
 import { services } from './services'
+import { web } from './web'
 import type { Course, Section } from './types'
 
 // Course registry, in syllabus order. One course per chapter of COURSE-PLAN.md; a course is
@@ -12,6 +13,7 @@ export const COURSES: Record<string, Course> = {
   [access.id]: access,
   [software.id]: software,
   [services.id]: services,
+  [web.id]: web,
 }
 
 export type { Course, Section }

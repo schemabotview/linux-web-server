@@ -11,6 +11,7 @@
 //   5. Every console holds what it shows: its drawn rows (folds count one each) fit its height, and no
 //      row is wider than COLS — a real 80-column terminal wrapped it already, so a wider row means the
 //      text did not come from a capture. The frame's console holds CONSOLE_ROWS: fold with `fold()`.
+//      A fold of ONE row saves nothing and is a mis-anchored needle.
 //   6. Once a course has narration audio, every section of it has its wav — a missing one plays
 //      silence and records a silent segment, with no error anywhere.
 //
@@ -46,6 +47,13 @@ for (const [id, scene] of Object.entries(SCENES)) {
     const rows = FRAME.drawnRows(c.code, c.show)
     const room = c.id === 'console' ? FRAME.CONSOLE_ROWS : c.h ? Math.floor((c.h - 51) / 24) : Infinity
     if (rows > room) problems.push(`scene ${id}  console '${c.id}' draws ${rows} rows; it holds ${room} — fold with fold()`)
+    // A fold row replaces the rows it hides, so folding ONE row saves nothing: it is a needle that
+    // matched its own first row (`fold(t, ['> #!/usr/sbin/nft -f', '>'])` folded one row, not three).
+    const shown = c.show ?? []
+    for (let i = 0; i < shown.length; i++) {
+      const gap = (i === 0 ? shown[0][0] - 1 : shown[i][0] - shown[i - 1][1] - 1)
+      if (gap === 1) problems.push(`scene ${id}  console '${c.id}' folds a single row (${shown[i][0] - 1}) — it saves nothing; check the fold's needles`)
+    }
     const wide = c.code.split('\n').find((l) => l.length > FRAME.COLS)
     if (wide) problems.push(`scene ${id}  console '${c.id}' has a row of ${wide.length} columns (> ${FRAME.COLS}) — not a capture's row: "${wide.slice(0, 40)}…"`)
   }
