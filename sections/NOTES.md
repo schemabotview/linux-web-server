@@ -80,3 +80,19 @@ either 6 new sections or a narrow map strip in each first section's picture; `mu
 Pebble for Let's Encrypt (web/07, first-login/01); the access log's visits, replayed with curl and
 chosen User-Agents (automate/02, 03, 06); the 3 GB log made with fallocate (operate/01); the
 missing semicolon and chmod 600 made on purpose (operate/04); the test service on 8080 (web/08).
+
+## macOS — the owner's capture (2026-10-30)
+
+`sections/macos/capture.txt`, from `scripts/macos-capture.sh` on macOS 26.6.2. Read before use: no
+real user name, computer name, MAC or IP address in it. Drawn as Mac cards in first-login/02
+(Darwin, no /proc, no os-release), access/05 (OpenSSH 10.3, ssh-copy-id built in), web/02
+(openrsync, protocol 29) and web/04 (no ip/ss; ifconfig, netstat).
+
+- "command not found" reads `(eval):1: command not found: ip`: the script ran each command through
+  `eval`. A Terminal window prints `zsh: command not found: ip`. Kept as captured; if the owner wants
+  Terminal's exact wording, the script can run each command with `zsh -ic` and be run again.
+- `log show` was NOT captured: in zsh, `log` is a shell builtin (it lists logins), so `command -v log`
+  answered `log` and `log help` failed. The script now calls `/usr/bin/log`; a re-run would capture it.
+  Nothing in the course quotes it.
+- `sed -i ""` (BSD) vs `sed -i` (GNU) is captured — the GNU form fails on the Mac — and is in the plan's
+  family table; no section draws it yet.

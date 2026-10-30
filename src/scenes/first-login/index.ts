@@ -1,5 +1,6 @@
 import type { SceneModel } from '@graphlearning/graphl-flow'
-import { CONSOLE_W, consoleFrame, consoleH, consoleNode, drawnRows, rowOf, rowsFrom, transcript, ttyNode } from '../console'
+import { CONSOLE_W, consoleFrame, consoleH, consoleNode, drawnRows, macCard, rowOf, rowsFrom, transcript, ttyNode } from '../console'
+import mac from '../../../sections/macos/capture.txt?raw'
 import famDebian from '../../../sections/first-login/02-families/debian/output.txt?raw'
 import famRocky from '../../../sections/first-login/02-families/rocky/output.txt?raw'
 import ssh from '../../../sections/first-login/03-ssh/output.txt?raw'
@@ -39,12 +40,15 @@ const families: SceneModel = {
         { type: 'item', id: 'f-suse', title: 'SUSE', chip: true },
       ] },
       { type: 'group', id: 'f-notlinux', title: 'Not Linux', sub: 'Unix-like, its own kernel', icon: 'apple', tone: 'neutral', dashed: true, children: [
-        { type: 'item', id: 'f-mac', title: 'macOS', sub: 'zsh and BSD tools', icon: 'apple' },
+        { type: 'item', id: 'f-mac', title: 'macOS', sub: 'Darwin 25 · zsh and BSD tools', icon: 'apple' },
       ] },
     ] },
     { type: 'group', id: 'proof', dir: 'row', bare: true, children: [
-      consoleNode('deb-console', { output: famDebian, title: WEB01, highlight: [...rowsFrom(debT, 'Linux 6.12'), ...rowsFrom(debT, 'PRETTY_NAME')] },
-        { w: CONSOLE_W, h: consoleH(drawnRows(debT)) }),
+      { type: 'group', id: 'left', bare: true, children: [
+        consoleNode('deb-console', { output: famDebian, title: WEB01, highlight: [...rowsFrom(debT, 'Linux 6.12'), ...rowsFrom(debT, 'PRETTY_NAME')] },
+          { w: CONSOLE_W, h: consoleH(drawnRows(debT)) }),
+        macCard('mac', mac, ['uname -sr', 'ls /proc', 'cat /etc/os-release'], [], ['Darwin 25.6.0', 'ls: /proc: No such file']),
+      ] },
       consoleNode('rocky-console', { output: famRocky, title: '[ana@web-02 ~]', highlight: [...rowsFrom(rockyT, 'Linux 6.12'), ...rowsFrom(rockyT, 'ID_LIKE'), ...rowsFrom(rockyT, 'PRETTY_NAME')] },
         { w: CONSOLE_W, h: consoleH(drawnRows(rockyT)) }),
     ] },

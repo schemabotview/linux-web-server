@@ -4,6 +4,7 @@
 //      sections/**/output.txt or second.txt, byte for byte (console.ts `transcript`). A console typed
 //      by hand, or a capture edited after the fact, fails here — scenes import captures with `?raw`.
 //      A `tty` is a contiguous slice of a <name>.tty.json screen, row for row (console.ts `ttyNode`).
+//      A Mac console is the owner's sections/macos/capture.txt, rebuilt block for block (macCard).
 //   2. Every section.json has the output.txt its run wrote (`sim.py run` writes them side by side).
 //
 // It reports, without failing, the captures no scene draws yet: until every course is authored, that
@@ -36,11 +37,21 @@ for (const f of files.filter((f) => f.endsWith('section.json'))) {
 
 // --- 1. every console is a capture --------------------------------------------------------------
 const captures = new Map(files.filter((f) => /(output|second)\.txt$/.test(f)).map((f) => [FRAME.transcript(readFileSync(f, 'utf8')), relative('.', f)]))
+// The owner's Mac capture is command blocks, not a screen: a Mac console (its title starts with
+// "macOS") must equal the console rebuilt from the capture for the commands it shows.
+const MAC = 'sections/macos/capture.txt'
+const macCapture = existsSync(MAC) ? readFileSync(MAC, 'utf8') : null
 const used = new Set()
 for (const [id, scene] of Object.entries(SCENES))
   for (const c of consolesOf(scene)) {
     const from = captures.get(c.code)
     if (from) used.add(from)
+    else if (c.filename?.startsWith('macOS') && macCapture) {
+      let rebuilt = null
+      try { rebuilt = FRAME.macTranscript(macCapture, FRAME.macCommands(c.code)) } catch {}
+      if (rebuilt === c.code) used.add(MAC)
+      else problems.push(`scene ${id}  Mac console '${c.id}' is not the macOS capture's output — build it with macCard()`)
+    }
     else problems.push(`scene ${id}  console '${c.id}' is not a capture — import an output.txt with ?raw, never type a transcript`)
   }
 
@@ -56,6 +67,6 @@ if (problems.length) {
   console.error(`✗ ${problems.length} capture problem(s):\n` + problems.map((p) => '  ' + p).join('\n'))
   process.exit(1)
 }
-const unused = [...captures.values(), ...screens.map(([f]) => f)].filter((f) => !used.has(f)).sort()
-console.log(`✓ every console and screen is a capture — ${used.size} of ${captures.size + screens.length} captures drawn`)
+const unused = [...captures.values(), ...screens.map(([f]) => f), ...(macCapture ? [MAC] : [])].filter((f) => !used.has(f)).sort()
+console.log(`✓ every console and screen is a capture — ${used.size} of ${captures.size + screens.length + (macCapture ? 1 : 0)} captures drawn`)
 if (unused.length) console.log(`  not drawn by any scene yet (${unused.length}):\n` + unused.map((f) => '    ' + f).join('\n'))

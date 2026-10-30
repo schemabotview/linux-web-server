@@ -79,11 +79,11 @@ The points where they differ (every row verified in the spike before a frame quo
 | firewall | nftables, installed by us (`ufw` on Ubuntu) | `firewalld`, installed by us | — |
 | mandatory access control | AppArmor | SELinux (`ls -l` shows a `.`) | — |
 | automatic updates | `unattended-upgrades`, already installed | `dnf-automatic`, installed by us | — |
-| system log | the journal only | the journal + `/var/log/messages` (rsyslog) | `log show` |
-| shell and tools | bash, GNU | bash, GNU | zsh, BSD tools (`sed -i ''`, no `ip`/`ss`, Apple's `rsync`) |
+| system log | the journal only | the journal + `/var/log/messages` (rsyslog) | `log show` (not captured: zsh's own `log` builtin answered) |
+| shell and tools | bash, GNU | bash, GNU | zsh 5.9, BSD tools (`sed -i ''`; no `--version`; no `ip`/`ss`; `rsync` is openrsync, protocol 29) |
 
-The Linux columns are measured on the pinned cloud images (`SPIKE.md` §5); the macOS column
-waits for the owner's capture.
+The Linux columns are measured on the pinned cloud images (`SPIKE.md` §5); the macOS column on the
+owner's Mac, macOS 26.6.2 (`sections/macos/capture.txt`, 2026-10-30), except where it says otherwise.
 
 Other families (Arch, SUSE) get one mention in §1.2.
 
@@ -176,7 +176,7 @@ Extend this table; never change a value a frame already quotes.
 | 2 | Users and groups | `/etc/passwd` fields; the `deploy` user (`adduser` / `useradd` card) |
 | 3 | Permissions | rwx, and the kernel's check, one path lit |
 | 4 | `chown`, `chmod`, `umask` | the web root belongs to `deploy` |
-| 5 | SSH keys from the laptop | key pair → `authorized_keys`; macOS note |
+| 5 | SSH keys from the laptop | key pair → `authorized_keys`; Mac card (real OpenSSH on macOS) |
 | 6 | Lock SSH down | no passwords, no root login; tested from a second session first (`ssh` / `sshd` card) |
 
 **3. `software` · Install software · 5**

@@ -1,5 +1,6 @@
 import type { SceneModel } from '@graphlearning/graphl-flow'
-import { CONSOLE_W, consoleFrame, consoleH, consoleNode, drawnRows, familyCard, fold, rowsFrom, transcript } from '../console'
+import { CONSOLE_W, consoleFrame, consoleH, consoleNode, drawnRows, familyCard, fold, macCard, rowsFrom, transcript } from '../console'
+import mac from '../../../sections/macos/capture.txt?raw'
 import sudo from '../../../sections/access/01-root-sudo/debian/output.txt?raw'
 import sudoRocky from '../../../sections/access/01-root-sudo/rocky/output.txt?raw'
 import users from '../../../sections/access/02-users-groups/debian/output.txt?raw'
@@ -146,7 +147,7 @@ const sshKeys = consoleFrame({
       ['the server asks for', 'ana’s password', 'proof she holds the private key'],
       ['what crosses the network', 'the password', 'a signature — never the key'],
     ] },
-    { type: 'note', id: 'mac', tone: 'neutral', text: 'macOS ships the same OpenSSH tools: ssh-keygen works the same there — macOS, not captured.' },
+    macCard('mac', mac, ['ssh -V', 'command -v ssh-copy-id rsync brew'], [], ['OpenSSH_10.3p1', '/usr/bin/ssh-copy-id']),
   ],
   edges: [{ from: 'k-pub', to: 'k-auth', label: 'ssh-copy-id' }],
 })

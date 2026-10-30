@@ -111,6 +111,11 @@ Needs `qemu-system-x86`, `qemu-utils`, `genisoimage`, `openssh-client`, and Pyth
 - A stand-in is said on screen and in narration: Pebble (§5.7), the replayed visits in the access log
   (§6.2, §6.3), the 3 GB log made with fallocate (§7.1), the two faults made on purpose (§7.4), the
   test service on 8080 (§5.8).
+- `macCard(id, capture, cmds)`: the owner's Mac (`sections/macos/capture.txt`, command blocks, not a
+  screen) drawn as the zsh console it came from — the capture's own prompt, tabs expanded, rows wrapped
+  at 80. `check:captures` rebuilds every Mac console from the capture (confirmed to fail on an edited
+  one). Used in §1.2, §2.5, §5.2 and §5.4. "command not found" reads `(eval):1:` because the script ran
+  each command through `eval`; that is the real captured text and stays.
 - `src/scenes/map.ts` is the server map: one fixed layout, every part tagged with the section that
   built it, every number from a capture. Drawn complete in first-login/01 and operate/07.
 - A ◆ full scene has no fixed fit: it is height-bound around a console, so a console of ~40 rows

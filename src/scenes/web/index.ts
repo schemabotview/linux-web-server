@@ -1,5 +1,6 @@
 import type { SceneModel } from '@graphlearning/graphl-flow'
-import { CONSOLE_W, consoleFrame, consoleH, consoleNode, drawnRows, familyCard, fold, rowOf, rowsFrom, transcript } from '../console'
+import { CONSOLE_W, consoleFrame, consoleH, consoleNode, drawnRows, familyCard, fold, macCard, rowOf, rowsFrom, transcript } from '../console'
+import mac from '../../../sections/macos/capture.txt?raw'
 import conf from '../../../sections/web/01-nginx-config/output.txt?raw'
 import confRocky from '../../../sections/web/01-nginx-config/rocky/output.txt?raw'
 import deploy from '../../../sections/web/02-deploy/output.txt?raw'
@@ -65,6 +66,9 @@ const deployFrame = consoleFrame({
       ['first', './  about.html  index.html', 'nothing was there yet'],
       { cells: ['second', 'index.html', 'only the file that changed'], tone: 'store' },
     ] },
+    macCard('mac', mac, ['rsync --version | head -2'], [
+      { type: 'note', id: 'mac-note', tone: 'neutral', text: 'Apple ships openrsync, which speaks an older protocol (29). -a, -v and the trailing slash mean the same.' },
+    ], ['openrsync']),
   ],
   edges: [{ from: 'd-site', to: 'd-rsync' }, { from: 'd-rsync', to: 'd-root' }, { from: 'd-root', to: 'd-nginx' }],
 })
@@ -115,6 +119,7 @@ const networkFrame = consoleFrame({
       { type: 'item', id: 'l-resolve', title: 'resolve', sub: 'systemd-resolved at 127.0.0.53', icon: 'search', stack: true },
       { type: 'item', id: 'l-dns', title: 'DNS', sub: 'deb.debian.org → four addresses', icon: 'globe', stack: true },
     ] },
+    macCard('mac', mac, ['ip addr', 'ifconfig en0 | head -1', 'ss -tln', 'netstat -an -p tcp | head -2'], [], ['command not found: ip', 'command not found: ss']),
   ],
   edges: [{ from: 'l-files', to: 'l-resolve', label: 'not found' }, { from: 'l-resolve', to: 'l-dns', label: 'asks' }],
 })

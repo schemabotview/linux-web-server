@@ -158,3 +158,63 @@ export function ttyNode(id: string, cap: TtyCapture, title: string, [from, to]: 
     h: consoleH(to - from), w: CONSOLE_W, ...place,
   }
 }
+
+// --- macOS -------------------------------------------------------------------------------------
+// The owner's Mac capture (sections/macos/capture.txt, scripts/macos-capture.sh) is not a terminal
+// screen: it is blocks of `### <command>`, its output, `### exit N`. A Mac card draws chosen blocks
+// as the zsh console they came from — the prompt is the capture's own (`ana@MacBook ~ % `), tabs are
+// expanded to 8-column stops and long rows wrapped at 80, as Terminal draws them. Nothing else is
+// changed; check:captures rebuilds every Mac console from the capture and fails one that differs.
+
+export const MAC_PROMPT = 'ana@MacBook ~ % '
+
+/** Each command in the capture → the rows it printed. */
+export function macBlocks(capture: string): Map<string, string[]> {
+  const blocks = new Map<string, string[]>()
+  let cmd: string | null = null
+  for (const row of capture.split('\n')) {
+    if (row.startsWith('### exit ')) cmd = null
+    else if (row.startsWith('### ')) blocks.set((cmd = row.slice(4)), [])
+    else if (cmd !== null) blocks.get(cmd)!.push(row)
+  }
+  return blocks
+}
+
+const expandTabs = (row: string) => row.replace(/[^\t]*\t/g, (run) => run.slice(0, -1).padEnd(Math.floor((run.length - 1) / 8) * 8 + 8))
+const wrap = (row: string) => (row.length <= COLS ? [row] : (row.match(new RegExp(`.{1,${COLS}}`, 'g')) as string[]))
+
+/** The commands as Terminal showed them: prompt + command, its output, and the next prompt. */
+export function macTranscript(capture: string, cmds: string[]): string {
+  const blocks = macBlocks(capture)
+  const rows = cmds.flatMap((cmd) => {
+    const out = blocks.get(cmd)
+    if (!out) throw new Error(`console.ts: the macOS capture has no command ${JSON.stringify(cmd)}`)
+    return [...wrap(MAC_PROMPT + cmd), ...out.map(expandTabs).flatMap(wrap)]
+  })
+  return transcript([...rows, MAC_PROMPT.trimEnd()].join('\n'))
+}
+
+/** The commands a Mac console shows, read back from its rows (a command row exactly COLS wide wrapped). */
+export function macCommands(code: string): string[] {
+  const rows = code.split('\n'), cmds: string[] = []
+  rows.forEach((row, i) => {
+    if (!row.startsWith(MAC_PROMPT) || i === rows.length - 1) return
+    let cmd = row.slice(MAC_PROMPT.length), k = i
+    while (rows[k].length === COLS) cmd += rows[++k]
+    cmds.push(cmd)
+  })
+  return cmds
+}
+
+/**
+ * A Mac card: the same step on the owner's Mac, real output, inside the picture — macOS's answer to
+ * the family card. Its console's title starts with "macOS", which is how check:captures finds it.
+ */
+export function macCard(id: string, capture: string, cmds: string[], children: SceneNode[] = [], highlight: string[] = []): Group {
+  const code = macTranscript(capture, cmds)
+  const lit = highlight.map((needle) => rowOf(code, needle))
+  return {
+    type: 'group', id, title: 'On a Mac', sub: 'macOS 26.6 · the owner’s Mac · real output', icon: 'apple', tone: 'neutral',
+    children: [{ type: 'code', id: `${id}-console`, console: true, cols: COLS, filename: 'macOS — ana@MacBook: ~', code, highlight: lit, w: CONSOLE_W, h: consoleH(code.split('\n').length) }, ...children],
+  }
+}

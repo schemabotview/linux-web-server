@@ -77,7 +77,7 @@ run() {
   run 'printf "hello\n" > g.txt; sed -i "s/hello/hi/" g.txt; cat g.txt'
   run 'id -Gn'
   run 'dsmemberutil checkmembership -U "$(id -un)" -G admin'
-  run 'command -v log && log help 2>&1 | head -1'
+  run '/usr/bin/log help 2>&1 | head -1'   # not `log`: in zsh that is a builtin (logins)
   # The laptop side of the course: SSH, keys, rsync.
   run 'ssh -V'
   run 'ssh-keygen -t ed25519 -N "" -C ana@MacBook -f ./id_ed25519'
