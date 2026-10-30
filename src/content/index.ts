@@ -1,3 +1,4 @@
+import { firstLogin } from './first-login'
 import { access } from './access'
 import { services } from './services'
 import type { Course, Section } from './types'
@@ -6,6 +7,7 @@ import type { Course, Section } from './types'
 // registered here only once it is authored. The pilot (COURSE-PLAN.md, "Build order" 4) is Course 2
 // and ◆ Boot (4.6): `services` holds only its boot section until the rest of Course 4 is authored.
 export const COURSES: Record<string, Course> = {
+  [firstLogin.id]: firstLogin,
   [access.id]: access,
   [services.id]: services,
 }

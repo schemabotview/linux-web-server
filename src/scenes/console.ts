@@ -134,3 +134,21 @@ export function familyCard(id: string, family: keyof typeof FAMILIES, c: Console
     children: [consoleNode(`${id}-console`, c, { w: CONSOLE_W, h: consoleH(rows) }), ...children],
   }
 }
+
+/** A full-screen program's capture (`sections/…/<name>.tty.json`, imported as JSON). */
+export interface TtyCapture { screen: string[]; inverse?: number[][]; bold?: number[][] }
+
+/**
+ * A full-screen program's screen as a `tty`. A capture is the whole 44-row terminal, one row more
+ * than any slot holds, so a scene shows a CONTIGUOUS slice of it, rows [from, to) — never an edited
+ * screen — and the title says which rows (check:captures holds the slice to the capture, row for
+ * row). Inverse and bold runs move with their rows.
+ */
+export function ttyNode(id: string, cap: TtyCapture, title: string, [from, to]: [number, number] = [0, cap.screen.length], place: Partial<Tty> = {}): Tty {
+  const runs = (rs: number[][] = []) => rs.filter(([r]) => r >= from && r < to).map(([r, a, b]) => [r - from, a, b] as [number, number, number])
+  const part = from > 0 || to < cap.screen.length ? ` — rows ${from + 1}–${to} of ${cap.screen.length}` : ''
+  return {
+    type: 'tty', id, title: `${title}${part}`, cols: COLS, screen: cap.screen.slice(from, to), inverse: runs(cap.inverse), bold: runs(cap.bold),
+    h: consoleH(to - from), w: CONSOLE_W, ...place,
+  }
+}

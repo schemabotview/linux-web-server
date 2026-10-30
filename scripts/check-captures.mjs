@@ -3,6 +3,7 @@
 //   1. Every console a scene draws IS a capture: its text equals a transcript of one of
 //      sections/**/output.txt or second.txt, byte for byte (console.ts `transcript`). A console typed
 //      by hand, or a capture edited after the fact, fails here — scenes import captures with `?raw`.
+//      A `tty` is a contiguous slice of a <name>.tty.json screen, row for row (console.ts `ttyNode`).
 //   2. Every section.json has the output.txt its run wrote (`sim.py run` writes them side by side).
 //
 // It reports, without failing, the captures no scene draws yet: until every course is authored, that
@@ -11,7 +12,7 @@
 // Run: npm run check:captures
 import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs'
 import { join, relative } from 'node:path'
-import { consolesOf, loadRegistry } from './registry.mjs'
+import { consolesOf, loadRegistry, ttysOf } from './registry.mjs'
 
 const { SCENES, FRAME } = await loadRegistry()
 const problems = []
@@ -43,10 +44,18 @@ for (const [id, scene] of Object.entries(SCENES))
     else problems.push(`scene ${id}  console '${c.id}' is not a capture — import an output.txt with ?raw, never type a transcript`)
   }
 
+const screens = files.filter((f) => f.endsWith('.tty.json')).map((f) => [relative('.', f), JSON.parse(readFileSync(f, 'utf8')).screen])
+for (const [id, scene] of Object.entries(SCENES))
+  for (const t of ttysOf(scene)) {
+    const from = screens.find(([, screen]) => screen.some((_, i) => t.screen.every((row, k) => screen[i + k] === row)))
+    if (from) used.add(from[0])
+    else problems.push(`scene ${id}  tty '${t.id}' is not a slice of any .tty.json capture`)
+  }
+
 if (problems.length) {
   console.error(`✗ ${problems.length} capture problem(s):\n` + problems.map((p) => '  ' + p).join('\n'))
   process.exit(1)
 }
-const unused = [...captures.values()].filter((f) => !used.has(f)).sort()
-console.log(`✓ every console is a capture — ${used.size} of ${captures.size} captures drawn`)
+const unused = [...captures.values(), ...screens.map(([f]) => f)].filter((f) => !used.has(f)).sort()
+console.log(`✓ every console and screen is a capture — ${used.size} of ${captures.size + screens.length} captures drawn`)
 if (unused.length) console.log(`  not drawn by any scene yet (${unused.length}):\n` + unused.map((f) => '    ' + f).join('\n'))

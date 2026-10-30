@@ -48,3 +48,6 @@ export const isFrame = (scene) => scene.nodes.length === 2 && scene.nodes[0].id 
 
 /** Every console transcript in a scene, wherever it sits (the frame's, a family card's, a full scene's). */
 export const consolesOf = (scene) => nodesOf(scene).map(({ node }) => node).filter((n) => n.type === 'code' && n.console)
+
+/** Every full-screen program's screen in a scene. */
+export const ttysOf = (scene) => nodesOf(scene).map(({ node }) => node).filter((n) => n.type === 'tty')
