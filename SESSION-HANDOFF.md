@@ -4,6 +4,13 @@ Written 2026-10-30 for whoever continues this, on any account. Branch:
 `claude/optimistic-hopper-4l5fgg` (last pushed commit before this file: `3ad69f8`). Read `CLAUDE.md`
 first, then `COURSE-PLAN.md` (the source of truth), then `sections/NOTES.md` (open questions).
 
+## Update 2026-10-30, later: all 7 courses authored
+
+Every section of COURSE-PLAN.md is a scene with narration: 47 sections, all 56 captures drawn,
+`npm run build`, `tsc`, `npm run check` and `npm run check:captures` green, every frame looked at in
+4K shots. Awaiting the owner's review of the whole course. Then: audio (Colab), recording, the film.
+Open questions are in sections/NOTES.md. Read CLAUDE.md "The app" before changing a scene.
+
 ## Update 2026-10-30 (branch `claude/elegant-darwin-gaw871`)
 
 graphl-flow 0.7.0 is on npm, so the app is scaffolded and the pilot is rendered: Course 2 `access`

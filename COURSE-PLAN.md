@@ -1,6 +1,6 @@
 # Learn Linux by running your own web server — plan
 
-**Status: v1 plan, agreed with the owner (2026-10-29).** Nothing is authored yet. Spike part 1
+**Status: v1 plan, agreed with the owner (2026-10-29).** All 47 sections authored 2026-10-30, awaiting review. Spike part 1
 (the machine) done, see `SPIKE.md`; part 2 (the engine, the recorder, the macOS script) next.
 
 ## The idea
@@ -262,8 +262,9 @@ section can also go out as a Short (`record-reels`).
    `check-content` / `check-render` / `check:captures`, `CLAUDE.md`.~~ Done 2026-10-30. The server
    map is built with its first section (`first-login/01`).
 4. **Pilot:** Course 2 (`access`) + ◆ Boot (4.6) → owner review of both frame kinds on 4K routes.
-   Rendered 2026-10-30, awaiting review.
+   Rendered 2026-10-30.
 5. The remaining courses one at a time, each reviewed on its rendered routes, then narrated.
+   All 7 authored and narrated 2026-10-30 (the owner chose to review them together, at the end).
 6. Record all 7 → the one film.
 
 ## Decisions (resolved with the owner, 2026-10-29)

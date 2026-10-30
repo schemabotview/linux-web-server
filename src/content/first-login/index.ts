@@ -1,14 +1,16 @@
 import type { Course, Section } from '../types'
 
 // Course 1 — log in and look around. Narration explains the real output on screen; it never reads a
-// command aloud character by character, and never quotes a PID or a time. §1 (the finished server)
-// is authored last, on the server map.
+// command aloud character by character, and never quotes a PID or a time. §1 (the finished server,
+// payoff first) is drawn on the server map and was authored last, with Course 7.
 const s = (id: string, title: string, scene: string, narration: string): Section => ({ id, title, scene, narration })
 
 export const firstLogin: Course = {
   id: 'first-login',
   title: 'Log in and look around',
   sections: [
+    s('finished', 'The server we’ll build', 'first-login-finished',
+      "This is where we are going. By the end of this course, Ana's own server, web-01, serves her website, ana dot example, over HTTPS. On the right, her laptop asks for the site: two hundred OK over HTTPS, a redirect from plain HTTP, and a certificate chain the laptop trusts. One honest note: that certificate comes from a small local certificate authority standing in for Let's Encrypt, because ana dot example is a name reserved for documentation, and can never be on the public internet. Everything else is exactly what you would run for real. The map on the left is the whole server, and every part on it is a lesson. A firewall that lets in only SSH and the web. Services run by systemd: SSH that accepts keys and nothing else, nginx serving the site, a journal of everything, and timers for security updates, a nightly report and log rotation. Two users, each with exactly the rights they need. And underneath, the Linux kernel on a small virtual machine. We will build all of it from an empty server, one command at a time, in the order a real server needs it: log in and look around, users and permissions, software, services, the website itself, logs and automation, and finally, keeping it running. Every command you see is real, typed into a real Debian server, with its real output. Where something is a stand in, it says so on screen. Let's start with what we are logging into."),
     s('families', 'Linux, its families, and macOS', 'first-login-families',
       "Before we log in, a word on what we are logging into. Strictly speaking, Linux is only the kernel: the core program that manages processes, memory, files and the network. A distribution wraps that kernel with everything else you need, a package manager, default settings, and thousands of tools. Most distributions belong to one of two big families. The Debian family includes Debian itself and Ubuntu, which is built from it, and they install software with apt. The Red Hat family starts with Fedora, flows into Red Hat Enterprise Linux, and from there into free rebuilds such as Rocky Linux and AlmaLinux, which install software with dnf. Others, like Arch and SUSE, have their own tools. This course runs on two real servers, one from each family. Web-01 runs Debian 13, and it is the server we will build. Web-02 runs Rocky Linux 10, and it appears whenever the two families do something differently. The terminals at the bottom ask each server the same two questions. uname reports the kernel: both are Linux six point twelve, built by each distribution. The os-release file names the distribution, and Rocky's even admits its ancestry with ID like: rhel, centos, fedora. And macOS? It is Unix-like, and its terminal will feel familiar, but it is not Linux. It has its own kernel, and its own versions of many tools. Now, the first login."),
     s('ssh', 'SSH in', 'first-login-ssh',

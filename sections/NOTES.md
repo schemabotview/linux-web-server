@@ -67,3 +67,16 @@ gateway would teach nothing); the picture and narration call it "the gateway" an
 Rows where a server names the LAPTOP by that address (sshd's `Accepted … from`, `Last login … from`,
 `ss -tn`'s peer) are folded on screen instead. If the owner would rather fold the route row too,
 it is one `fold()` run.
+
+## The server map — "opens each course"
+
+COURSE-PLAN.md says the map opens each course with the parts not built yet muted. The 47 sections
+have no slot for that (every course's first section has its own console), so the map is drawn
+complete twice: first-login/01 and operate/07. If the owner wants a map at each course's start, it is
+either 6 new sections or a narrow map strip in each first section's picture; `muted` is paint only.
+
+## Stand-ins, all labelled on screen and in narration
+
+Pebble for Let's Encrypt (web/07, first-login/01); the access log's visits, replayed with curl and
+chosen User-Agents (automate/02, 03, 06); the 3 GB log made with fallocate (operate/01); the
+missing semicolon and chmod 600 made on purpose (operate/04); the test service on 8080 (web/08).

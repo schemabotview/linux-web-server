@@ -18,10 +18,20 @@ Plan agreed 2026-10-29. The simulator works (`scripts/sim.py`): one real VM, com
 output out. All 7 courses are captured (`first-login` 01 comes last); open questions for the owner
 are in `sections/NOTES.md`.
 
-App scaffolded 2026-10-30 (graphl-flow ^0.7.0, shell ^1.0.4). **Pilot rendered, awaiting the
-owner's review** (COURSE-PLAN.md, Build order 4): Course 2 `access` (6 console frames) and ◆ Boot
-(`services-boot`, a full scene), narrated, checked at 4K and looked at. No audio yet; the server
-map (`first-login/01`) is not built.
+App scaffolded 2026-10-30 (graphl-flow ^0.7.0, shell ^1.0.4). **All 7 courses, 47 sections,
+authored 2026-10-30, awaiting the owner's review**: 40 console frames, 5 ◆ full scenes and 2 server-map
+scenes, each narrated, checked at 4K and looked at; every one of the 56 captures is drawn. No audio
+yet (`npm run gen:audio` writes the manifest; the wavs are the owner's Colab pass).
+
+| # | Course | Sections | Status |
+| --- | --- | --- | --- |
+| 1 | `first-login` | 7 | authored (§1 on the server map) |
+| 2 | `access` | 6 | authored (the pilot) |
+| 3 | `software` | 5 | authored |
+| 4 | `services` | 6 | authored (◆ Boot was the pilot) |
+| 5 | `web` | 9 | authored |
+| 6 | `automate` | 7 | authored |
+| 7 | `operate` | 7 | authored (§7 on the server map) |
 
 ## Commands
 
@@ -89,6 +99,20 @@ Needs `qemu-system-x86`, `qemu-utils`, `genisoimage`, `openssh-client`, and Pyth
 - `fold(text, [first, last], …)` folds runs to `··· N lines`: long output into 43 rows, and any row a
   scene must not quote (the `Last login … from` row in `access/06`).
 - `familyCard(id, 'rocky', console)`: the Red Hat family's real output inside the picture.
+- `ttyNode(id, cap, title, [from, to])`: a full-screen program's screen. A capture is 44 rows, one more
+  than any slot holds, so a scene shows a CONTIGUOUS slice and the title says which rows;
+  `check:captures` holds the slice to the capture.
+- `fold()` runs may end at a row NUMBER (`rowOf(…) + 2`) where no text marks the row, and take a row to
+  search from. check-content fails a fold of ONE row: it saves nothing, and every one so far was a
+  needle that matched its own first row.
+- Never quote 192.0.2.1 outside a console. `ip route`'s `default via 192.0.2.1` is shown (it IS the
+  gateway) and called "the gateway"; rows where a server names the LAPTOP by it are folded
+  (sections/NOTES.md).
+- A stand-in is said on screen and in narration: Pebble (§5.7), the replayed visits in the access log
+  (§6.2, §6.3), the 3 GB log made with fallocate (§7.1), the two faults made on purpose (§7.4), the
+  test service on 8080 (§5.8).
+- `src/scenes/map.ts` is the server map: one fixed layout, every part tagged with the section that
+  built it, every number from a capture. Drawn complete in first-login/01 and operate/07.
 - A ◆ full scene has no fixed fit: it is height-bound around a console, so a console of ~40 rows
   drops body text under 24px. Fold rows the picture already shows (Boot folds the journal's echo of
   `/proc/cmdline`).
