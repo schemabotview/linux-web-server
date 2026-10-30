@@ -1,0 +1,129 @@
+# macOS capture — 2026-10-30T10:01:06Z
+# user and computer name replaced: maddipotiganesh → ana, maddipotis-MacBook-Pro → MacBook
+
+### cd ~ && print -rP "%n@%m %1~ %# "
+ana@MacBook ~ % 
+### exit 0
+
+### echo $SHELL; zsh --version
+/bin/zsh
+zsh 5.9 (arm64-apple-darwin25.0)
+### exit 0
+
+### sw_vers
+ProductName:		macOS
+ProductVersion:		26.6.2
+BuildVersion:		25G83
+### exit 0
+
+### uname -sr
+Darwin 25.6.0
+### exit 0
+
+### ls /proc
+ls: /proc: No such file or directory
+### exit 1
+
+### cat /etc/os-release
+cat: /etc/os-release: No such file or directory
+### exit 1
+
+### ip addr
+(eval):1: command not found: ip
+### exit 127
+
+### ifconfig en0 | head -4
+en0: flags=8863<UP,BROADCAST,SMART,RUNNING,SIMPLEX,MULTICAST> mtu 1500
+	options=6460<TSO4,TSO6,CHANNEL_IO,PARTIAL_CSUM,ZEROINVERT_CSUM>
+	ether 82:c3:c9:4d:d6:ec
+	inet6 fe80::8e5:4373:3a9:c5e1%en0 prefixlen 64 secured scopeid 0xe 
+### exit 0
+
+### ss -tln
+(eval):1: command not found: ss
+### exit 127
+
+### netstat -an -p tcp | head -4
+Active Internet connections (including servers)
+Proto Recv-Q Send-Q  Local Address                                 Foreign Address                               (state)    
+tcp6       0      0  2a00:23c7:589e:6.49917 2a06:98c1:3101::.443   ESTABLISHED
+tcp4      24      0  192.168.1.181.57088    172.175.38.6.443       CLOSE_WAIT 
+### exit 0
+
+### ls --version
+ls: unrecognized option `--version'
+usage: ls [-@ABCFGHILOPRSTUWXabcdefghiklmnopqrstuvwxy1%,] [--color=when] [-D format] [file ...]
+### exit 1
+
+### sed --version
+sed: illegal option -- -
+usage: sed script [-EHalnru] [-i extension] [file ...]
+	sed [-EHalnu] [-i extension] [-e script] ... [-f script_file] ... [file ...]
+### exit 1
+
+### printf "hello\n" > f.txt; sed -i "" "s/hello/hi/" f.txt; cat f.txt
+hi
+### exit 0
+
+### printf "hello\n" > g.txt; sed -i "s/hello/hi/" g.txt; cat g.txt
+sed: 1: "g.txt
+": extra characters at the end of g command
+hello
+### exit 0
+
+### id -Gn
+staff everyone localaccounts _appserverusr admin _appserveradm com.apple.sharepoint.group.1 _appstore _lpadmin _lpoperator _developer _analyticsusers com.apple.access_ftp com.apple.access_screensharing com.apple.access_ssh com.apple.access_remote_ae
+### exit 0
+
+### dscl . -read /Groups/admin GroupMembership
+GroupMembership: root ana _mbsetupuser
+### exit 0
+
+### log show --last 1m --style compact | head -3
+(eval):log:1: too many arguments
+### exit 0
+
+### ssh -V
+OpenSSH_10.3p1, LibreSSL 3.3.6
+### exit 0
+
+### ssh-keygen -t ed25519 -N "" -C ana@MacBook -f ./id_ed25519
+Generating public/private ed25519 key pair.
+Your identification has been saved in ./id_ed25519
+Your public key has been saved in ./id_ed25519.pub
+The key fingerprint is:
+SHA256:kY5y2MzgBruF5LwXiFGeHWmnA59jQ3gal2IChRQlbdg ana@MacBook
+The key's randomart image is:
++--[ED25519 256]--+
+|+*Oo.o           |
+|o+BEB..  .       |
+|.o*@o+  o        |
+| *.*O* o .       |
+|. *.B+* S        |
+|   = +           |
+|  o .            |
+|   .             |
+|                 |
++----[SHA256]-----+
+### exit 0
+
+### ls -l id_ed25519 id_ed25519.pub
+-rw-------@ 1 ana  staff  399 Oct 30 10:01 id_ed25519
+-rw-r--r--@ 1 ana  staff   93 Oct 30 10:01 id_ed25519.pub
+### exit 0
+
+### command -v ssh-copy-id rsync brew
+/usr/bin/ssh-copy-id
+/usr/bin/rsync
+/opt/homebrew/bin/brew
+### exit 0
+
+### rsync --version | head -2
+openrsync: protocol version 29
+rsync version 2.6.9 compatible
+### exit 0
+
+### brew --version | head -1
+Homebrew 7.0.9
+### exit 0
+
