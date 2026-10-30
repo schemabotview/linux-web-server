@@ -1,5 +1,6 @@
 import { firstLogin } from './first-login'
 import { access } from './access'
+import { software } from './software'
 import { services } from './services'
 import type { Course, Section } from './types'
 
@@ -9,6 +10,7 @@ import type { Course, Section } from './types'
 export const COURSES: Record<string, Course> = {
   [firstLogin.id]: firstLogin,
   [access.id]: access,
+  [software.id]: software,
   [services.id]: services,
 }
 
